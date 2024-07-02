@@ -1,6 +1,6 @@
--- File: logger_test.adb
+-- File: construct.ads
 -- Project: ada-output-logger
--- Created Date: 2024-06-30 17:11:57
+-- Created Date: 2024-06-30 18:23:04
 -- Author: 3urobeat
 --
 -- Last Modified: 2024-07-02 20:28:58
@@ -13,32 +13,24 @@
 -- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
--- File for testing logger functions
+with Ada.Strings.Bounded;
 
 
--- Clean and create build folder once:
--- rm -rf ./build && mkdir ./build
+package Construct is
 
--- Compile and run using:
--- cd build && gnatmake -I../src ../logger_test.adb -o logger-test && ./logger-test ; cd ..
-
-
-with Logger_Type;
-
-use Logger_Type;
+   -- Buffer for constructing message prefix
+   package Construct_Temp_String is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 128);
 
 
-procedure Logger_Test is
-begin
+   -- Returns the current timestamp formatted as ISO 8601
+   function Get_Timestamp return String;
 
-   -- Get some space between us and the compile messages
-   Logger.Nl.EoL;
+   -- Constructs prefix of the message to be logged and returns it
+   function Construct_Message_Prefix(Log_Lvl : String; Origin : String; No_Date : Boolean) return String;
 
-   Logger.Info("Hello World").Nl.EoL;
-   Logger.Debug("Hello World").Nl.EoL;
-   Logger.Warn("Hello World").Nl.EoL;
-   Logger.Error("Hello World").Nl.EoL;
+   -- Construct suffix of the message to be logged and returns it
+   function Construct_Message_Suffix(Remove : Boolean) return String;
 
-   Logger.Info("Hello Again").Nl.EoL;
+private
 
-end Logger_Test;
+end Construct;

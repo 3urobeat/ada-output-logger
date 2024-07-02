@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-06-30 16:56:26
+-- Last Modified: 2024-07-02 20:28:58
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -11,6 +11,11 @@
 -- This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 -- This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 -- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+
+with Construct;
+
+use Construct;
 
 
 package body Logger_Type is
@@ -27,7 +32,7 @@ package body Logger_Type is
    -- Logs a message to stdout with 'DEBUG' prefix
    function Info(this : Logger_Dummy; str : String) return Logger_Dummy is
    begin
-      return this.Log("[INFO] " & str);
+      return this.Log(Construct_Message_Prefix(Colors.brfgcyan & "INFO" & Colors.reset, "", False) & str & Construct_Message_Suffix(False));
    end Info;
 
 
