@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-06-30 17:11:57
+-- Last Modified: 2024-07-02 20:28:58
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -31,12 +31,14 @@ use Logger_Type;
 procedure Logger_Test is
 begin
 
-    -- Get some space between us and the compile messages
-    Logger.Nl.EoL;
+   -- Get some space between us and the compile messages
+   Logger.Nl.EoL;
 
-    Logger.Info("Hello World").Nl.EoL;
-    Logger.Debug("Hello World").Nl.EoL;
-    Logger.Warn("Hello World").Nl.EoL;
-    Logger.Error("Hello World").Nl.EoL;
+   Logger.Info("Hello World").Nl.EoL;
+   Logger.Debug("Hello World").Nl.EoL;
+   Logger.Warn("Hello World").Nl.EoL;
+   Logger.Error("Hello World").Nl.EoL;
+
+   Logger.Info("Hello Again").Nl.EoL;
 
 end Logger_Test;
