@@ -1,0 +1,37 @@
+-- File: file_output.adb
+-- Project: ada-output-logger
+-- Created Date: 2024-07-03 18:57:26
+-- Author: 3urobeat
+--
+-- Last Modified: 2024-07-03 18:57:26
+-- Modified By: 3urobeat
+--
+-- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
+--
+-- This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+-- This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+-- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+
+package body File_Output is
+
+    procedure Open_File(path : String) is
+    begin
+        if Ada.Directories.Exists(path) = False then
+            Create(Output_File, Out_File, path);
+        else
+            Open(Output_File, Out_File, path);
+        end if;
+    end Open_File;
+
+
+    procedure Print_To_File(str : String) is
+    begin
+        if Is_Open(Output_File) = False then
+            Open_File("./output.txt");
+        end if;
+
+        Put_Line(Output_File, str);
+    end Print_To_File;
+
+end File_Output;
