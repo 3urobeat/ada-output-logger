@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 18:23:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-02 20:28:58
+-- Last Modified: 2024-07-03 18:56:09
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -83,7 +83,7 @@ package body Construct is
 
       -- Return carriage return if remove is enabled
       if Remove = True then
-         return ESC & "r";
+         return "" & CR;
       else
          return "";
       end if;
