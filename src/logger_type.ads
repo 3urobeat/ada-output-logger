@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-02 20:28:58
+-- Last Modified: 2024-07-03 18:53:35
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -16,8 +16,10 @@
 with Ada.Text_IO;
 with Colors;
 with Construct;
+with Helpers;
 
 use Ada.Text_IO;
+use Construct;
 
 
 package Logger_Type is
@@ -29,19 +31,19 @@ package Logger_Type is
 
 
    -- Logs a message to stdout without any formatting, use this for appending to an existing message
-   function Log(this : Logger_Dummy; str : String) return Logger_Dummy;
+   function Log(this : Logger_Dummy; STR : String) return Logger_Dummy;
 
    -- Logs a message to stdout with 'INFO' prefix
-   function Info(this : Logger_Dummy; str : String) return Logger_Dummy;
+   function Info(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy;
 
    -- Logs a message to stdout with 'DEBUG' prefix
-   function Debug(this : Logger_Dummy; str : String) return Logger_Dummy;
+   function Debug(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy;
 
    -- Logs a message to stdout with 'WARN' prefix
-   function Warn(this : Logger_Dummy; str : String) return Logger_Dummy;
+   function Warn(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy;
 
    -- Logs a message to stdout with 'ERROR' prefix
-   function Error(this : Logger_Dummy; str : String) return Logger_Dummy;
+   function Error(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy;
 
    -- Logs a newline to stdout
    function Nl(this : Logger_Dummy) return Logger_Dummy;
