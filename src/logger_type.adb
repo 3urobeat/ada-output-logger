@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-03 18:56:09
+-- Last Modified: 2024-07-03 18:57:26
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -20,6 +20,7 @@ package body Logger_Type is
    function Log(this : Logger_Dummy; STR : String) return Logger_Dummy is
    begin
       Put(str);
+      File_Output.Print_To_File(STR);
 
       return this;
    end Log;

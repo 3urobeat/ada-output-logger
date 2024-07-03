@@ -1,6 +1,6 @@
--- File: logger_test.adb
+-- File: file_output.ads
 -- Project: ada-output-logger
--- Created Date: 2024-06-30 17:11:57
+-- Created Date: 2024-07-03 18:57:26
 -- Author: 3urobeat
 --
 -- Last Modified: 2024-07-03 18:57:26
@@ -13,32 +13,20 @@
 -- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
--- File for testing logger functions
+with Ada.Text_IO;
+with Ada.Directories;
+
+use Ada.Text_IO;
 
 
--- Clean and create build folder once:
--- rm -rf ./build && mkdir ./build
+package File_Output is
 
--- Compile and run using:
--- cd build && gnatmake -I../src ../logger_test.adb -o logger-test ; cd .. && ./build/logger-test
+    procedure Open_File(path : String);
 
+    procedure Print_To_File(str : String);
 
-with Logger_Type;
+private
 
-use Logger_Type;
+    Output_File : File_Type;
 
-
-procedure Logger_Test is
-begin
-
-   -- Get some space between us and the compile messages
-   Logger.Nl.EoL;
-
-   Logger.Info(STR => "Hello World", SRC => "logger_test.adb").Nl.EoL;
-   Logger.Debug("Hello World").Nl.EoL;
-   Logger.Warn("Hello World", "logger_test.adb", True, False).Nl.EoL;
-   Logger.Error("Hello World", "", False, True).EoL;
-
-   Logger.Info("Hello Again").Nl.EoL;
-
-end Logger_Test;
+end File_Output;

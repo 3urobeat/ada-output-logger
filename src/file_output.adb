@@ -1,6 +1,6 @@
--- File: logger_test.adb
+-- File: file_output.adb
 -- Project: ada-output-logger
--- Created Date: 2024-06-30 17:11:57
+-- Created Date: 2024-07-03 18:57:26
 -- Author: 3urobeat
 --
 -- Last Modified: 2024-07-03 18:57:26
@@ -13,32 +13,25 @@
 -- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
--- File for testing logger functions
+package body File_Output is
+
+    procedure Open_File(path : String) is
+    begin
+        if Ada.Directories.Exists(path) = False then
+            Create(Output_File, Out_File, path);
+        else
+            Open(Output_File, Out_File, path);
+        end if;
+    end Open_File;
 
 
--- Clean and create build folder once:
--- rm -rf ./build && mkdir ./build
+    procedure Print_To_File(str : String) is
+    begin
+        if Is_Open(Output_File) = False then
+            Open_File("./output.txt");
+        end if;
 
--- Compile and run using:
--- cd build && gnatmake -I../src ../logger_test.adb -o logger-test ; cd .. && ./build/logger-test
+        Put_Line(Output_File, str);
+    end Print_To_File;
 
-
-with Logger_Type;
-
-use Logger_Type;
-
-
-procedure Logger_Test is
-begin
-
-   -- Get some space between us and the compile messages
-   Logger.Nl.EoL;
-
-   Logger.Info(STR => "Hello World", SRC => "logger_test.adb").Nl.EoL;
-   Logger.Debug("Hello World").Nl.EoL;
-   Logger.Warn("Hello World", "logger_test.adb", True, False).Nl.EoL;
-   Logger.Error("Hello World", "", False, True).EoL;
-
-   Logger.Info("Hello Again").Nl.EoL;
-
-end Logger_Test;
+end File_Output;
