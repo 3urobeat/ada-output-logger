@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-02 20:28:58
+-- Last Modified: 2024-07-03 18:53:35
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -13,15 +13,11 @@
 -- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
-with Construct;
-
-use Construct;
-
-
 package body Logger_Type is
 
+
    -- Logs a message to stdout without any formatting, use this for appending to an existing message
-   function Log(this : Logger_Dummy; str : String) return Logger_Dummy is
+   function Log(this : Logger_Dummy; STR : String) return Logger_Dummy is
    begin
       Put(str);
 
@@ -30,30 +26,46 @@ package body Logger_Type is
 
 
    -- Logs a message to stdout with 'DEBUG' prefix
-   function Info(this : Logger_Dummy; str : String) return Logger_Dummy is
+   function Info(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
-      return this.Log(Construct_Message_Prefix(Colors.brfgcyan & "INFO" & Colors.reset, "", False) & str & Construct_Message_Suffix(False));
+      return this.Log(
+         Helpers.Get_Prefix(Colors.brfgcyan, "INFO", SRC, ND)
+         & str
+         & Construct_Message_Suffix(RM)
+      );
    end Info;
 
 
    -- Logs a message to stdout with 'DEBUG' prefix
-   function Debug(this : Logger_Dummy; str : String) return Logger_Dummy is
+   function Debug(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
-      return this.Log("[DEBUG] " & str);
+      return this.Log(
+         Helpers.Get_Prefix(Colors.brfgcyan & Colors.background, "DEBUG", SRC, ND)
+         & str
+         & Construct_Message_Suffix(RM)
+      );
    end Debug;
 
 
    -- Logs a message to stdout with 'WARN' prefix
-   function Warn(this : Logger_Dummy; str : String) return Logger_Dummy is
+   function Warn(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
-      return this.Log("[WARN] " & str);
+      return this.Log(
+         Helpers.Get_Prefix(Colors.fgred, "WARN", SRC, ND)
+         & str
+         & Construct_Message_Suffix(RM)
+      );
    end Warn;
 
 
    -- Logs a message to stdout with 'ERROR' prefix
-   function Error(this : Logger_Dummy; str : String) return Logger_Dummy is
+   function Error(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
-      return this.Log("[ERROR] " & str);
+      return this.Log(
+         Helpers.Get_Prefix(Colors.fgred & Colors.background, "ERROR", SRC, ND)
+         & str
+         & Construct_Message_Suffix(RM)
+      );
    end Error;
 
 
