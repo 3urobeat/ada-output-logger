@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:57:26
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-03 18:57:26
+-- Last Modified: 2024-07-04 19:07:52
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -18,9 +18,9 @@ package body File_Output is
     procedure Open_File(path : String) is
     begin
         if Ada.Directories.Exists(path) = False then
-            Create(Output_File, Out_File, path);
+            Create(Output_File, Append_File, path);
         else
-            Open(Output_File, Out_File, path);
+            Open(Output_File, Append_File, path);
         end if;
     end Open_File;
 
