@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 18:23:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:27:22
+-- Last Modified: 2024-07-05 19:31:08
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -18,7 +18,7 @@ package body Construct is
     -- Returns the current timestamp formatted as ISO 8601
    function Get_Timestamp return String is
    begin
-      return Image(Clock);
+      return Image(Clock); -- TODO: Returns UTC, local might be better I think
    end Get_Timestamp;
 
 
@@ -61,9 +61,6 @@ package body Construct is
          Construct_Temp_String.Append(Temp, Log_Lvl);
          Construct_Temp_String.Append(Temp, "]");
       end if;
-
-
-      -- Color message red if log lvl is error
 
 
       -- Return constructed string

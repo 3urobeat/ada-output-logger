@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:27:22
+-- Last Modified: 2024-07-05 19:31:08
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -56,7 +56,7 @@ package body Logger_Type is
    -- Logs a message to stdout with 'ERROR' prefix
    function Error(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy is
    begin
-      Internal_Prefixed_Log("ERROR", Colors.fgred & Colors.background, STR, SRC, ND);
+      Internal_Prefixed_Log("ERROR", Colors.fgred & Colors.background, Colors.fgred & STR & Colors.reset, SRC, ND);
 
       return this;
    end Error;
