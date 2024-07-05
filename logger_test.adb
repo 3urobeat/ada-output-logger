@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:11:50
+-- Last Modified: 2024-07-05 15:27:22
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -36,8 +36,8 @@ begin
 
    Logger.Info(STR => "Hello World", SRC => "logger_test.adb").Nl.EoL;
    Logger.Debug("Hello World").Nl.EoL;
-   Logger.Warn("Hello", "logger_test.adb", True, False).Log(" World").Nl.EoL;
-   Logger.Error("Hello World", "", False, True).EoL;
+   Logger.Warn("Hello", "logger_test.adb", True).Log(" World").Nl.EoL;
+   Logger.Error("Hello World", "").RmEoL;
 
    Logger.Info("Hello Again").Nl.EoL;
 

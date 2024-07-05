@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:23:00
+-- Last Modified: 2024-07-05 15:27:22
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -27,36 +27,36 @@ package body Logger_Type is
 
 
    -- Logs a message to stdout with 'INFO' prefix
-   function Info(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
+   function Info(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy is
    begin
-      Internal_Prefixed_Log("INFO", Colors.brfgcyan, STR, SRC, ND, RM);
+      Internal_Prefixed_Log("INFO", Colors.brfgcyan, STR, SRC, ND);
 
       return this;
    end Info;
 
 
    -- Logs a message to stdout with 'DEBUG' prefix
-   function Debug(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
+   function Debug(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy is
    begin
-      Internal_Prefixed_Log("DEBUG", Colors.brfgcyan & Colors.background, STR, SRC, ND, RM);
+      Internal_Prefixed_Log("DEBUG", Colors.brfgcyan & Colors.background, STR, SRC, ND);
 
       return this;
    end Debug;
 
 
    -- Logs a message to stdout with 'WARN' prefix
-   function Warn(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
+   function Warn(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy is
    begin
-      Internal_Prefixed_Log("WARN", Colors.fgred, STR, SRC, ND, RM);
+      Internal_Prefixed_Log("WARN", Colors.fgred, STR, SRC, ND);
 
       return this;
    end Warn;
 
 
    -- Logs a message to stdout with 'ERROR' prefix
-   function Error(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
+   function Error(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy is
    begin
-      Internal_Prefixed_Log("ERROR", Colors.fgred & Colors.background, STR, SRC, ND, RM);
+      Internal_Prefixed_Log("ERROR", Colors.fgred & Colors.background, STR, SRC, ND);
 
       return this;
    end Error;
@@ -72,6 +72,14 @@ package body Logger_Type is
    end Nl;
 
 
+   -- Marks this message to be overwritten by the next logger call and ends the message
+   procedure RmEoL(this : Logger_Dummy) is
+   begin
+      File_Output.Print_To_File("" & Ada.Characters.Latin_1.LF); -- Print a newline to the output file as nothing can be overwritten there
+      Internal_Log("" & Ada.Characters.Latin_1.CR);                   -- Print a carriage return to stdout (so the next msg overwrites this one)
+   end RmEoL;
+
+
 
 
    -- Internal: Logs a message to stdout without appending to output file (as this is already handled by the external functions)
@@ -82,18 +90,14 @@ package body Logger_Type is
 
 
    -- Internal: Constructs the actual message and logs it to file & stdout
-   procedure Internal_Prefixed_Log(Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) is
+   procedure Internal_Prefixed_Log(Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False) is
    begin
 
       -- Construct message without colors for output file
       File_Output.Print_To_File(Helpers.Get_Prefix("", Log_Lvl, SRC, ND) & str);
 
       -- Construct message with colors and let the internal plain logger function log it
-      Internal_Log(
-         Helpers.Get_Prefix(Color, Log_Lvl, SRC, ND)
-         & str
-         & Construct_Message_Suffix(RM)
-      );
+      Internal_Log(Helpers.Get_Prefix(Color, Log_Lvl, SRC, ND) & str);
 
    end Internal_Prefixed_Log;
 
