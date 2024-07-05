@@ -8,6 +8,9 @@ It simultaneously provides color-highlighting based on log level, attaches a tim
 
 ## Features
 - Colored log levels: Info, Warn, Error & Debug
+- Keep track of every log message with a output file
+- Display file name to keep track of log origins even in large projects
+- Overwrite a log message with the next one by enabling remove
 
 </br>
 
