@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:21:00
+-- Last Modified: 2024-07-05 15:23:00
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -18,6 +18,7 @@ with Colors;
 with Construct;
 with File_Output;
 with Helpers;
+with Ada.Characters.Latin_1; -- Used for escape character for newline
 
 use Ada.Text_IO;
 use Construct;

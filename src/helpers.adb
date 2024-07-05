@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:11:50
+-- Last Modified: 2024-07-05 15:23:00
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -18,10 +18,16 @@ package body Helpers is
    -- Internal: Expands Construct_Message_Prefix call to construct a log message prefix
    function Get_Prefix(Color : String := ""; Lvl : String; SRC : String := ""; ND : Boolean := False) return String is
    begin
+      -- This function call is way too overcomplicated
       return Construct_Message_Prefix(
          Color & Lvl & (if Color'Length > 0 then Colors.reset else ""),
-         (if SRC'Length > 0 then (Color & SRC & Colors.reset) else ""), -- Only add color to SRC param if SRC was provided as it is an optional param
-         ND
+         (if SRC'Length > 0 then                                              -- Only add color to SRC param if SRC was provided
+            (Color & SRC & (if Color'Length > 0 then Colors.reset else ""))
+         else
+            ""
+         ),
+         ND,
+         Color'Length = 0 -- Do not color date if log level is not colored (for example for file output)
       );
    end Get_Prefix;
 

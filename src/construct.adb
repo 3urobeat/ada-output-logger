@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 18:23:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:19:13
+-- Last Modified: 2024-07-05 15:23:00
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -23,7 +23,7 @@ package body Construct is
 
 
    -- Constructs prefix of the message to be logged and returns it
-   function Construct_Message_Prefix(Log_Lvl : String; Origin : String; No_Date : Boolean) return String is
+   function Construct_Message_Prefix(Log_Lvl : String; Origin : String; No_Date : Boolean := False; No_Color : Boolean := False) return String is
       Temp : Construct_Temp_String.Bounded_String;
    begin
 
@@ -33,9 +33,11 @@ package body Construct is
 
       -- Append date if enabled
       if No_Date = False then
-         Construct_Temp_String.Append(Temp, Colors.brfgcyan);
-         Construct_Temp_String.Append(Temp, Get_Timestamp);
-         Construct_Temp_String.Append(Temp, Colors.reset);
+         if No_Color = False then
+            Construct_Temp_String.Append(Temp, Colors.brfgcyan & Get_Timestamp & Colors.reset);
+         else
+            Construct_Temp_String.Append(Temp, Get_Timestamp);
+         end if;
       end if;
 
 
