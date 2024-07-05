@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 18:23:04
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-02 20:28:58
+-- Last Modified: 2024-07-05 15:19:13
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -13,7 +13,14 @@
 -- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
+with Colors;
+with Ada.Calendar;
+with Ada.Calendar.Formatting;
 with Ada.Strings.Bounded;
+with Ada.Characters.Latin_1; -- Used for escape character for carriage return
+
+use Ada.Calendar;
+use Ada.Calendar.Formatting;
 
 
 package Construct is
