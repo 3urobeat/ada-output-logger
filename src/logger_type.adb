@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:11:50
+-- Last Modified: 2024-07-05 15:21:00
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -19,8 +19,8 @@ package body Logger_Type is
    -- Logs a message to stdout without any formatting, use this for appending to an existing message
    function Log(this : Logger_Dummy; STR : String) return Logger_Dummy is
    begin
-      Put(str);
       File_Output.Print_To_File(STR);
+      Internal_Log(STR);
 
       return this;
    end Log;
@@ -29,68 +29,36 @@ package body Logger_Type is
    -- Logs a message to stdout with 'INFO' prefix
    function Info(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
-      -- Construct message without colors for output file
-      File_Output.Print_To_File(
-         Helpers.Get_Prefix("", "INFO", SRC, ND) & str
-      );
+      Internal_Prefixed_Log("INFO", Colors.brfgcyan, STR, SRC, ND, RM);
 
-      -- Construct message with colors, let the plain logger function log it and return Logger instance
-      return this.Log(
-         Helpers.Get_Prefix(Colors.brfgcyan, "INFO", SRC, ND)
-         & str
-         & Construct_Message_Suffix(RM)
-      );
+      return this;
    end Info;
 
 
    -- Logs a message to stdout with 'DEBUG' prefix
    function Debug(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
-      -- Construct message without colors for output file
-      File_Output.Print_To_File(
-         Helpers.Get_Prefix("", "DEBUG", SRC, ND) & str
-      );
+      Internal_Prefixed_Log("DEBUG", Colors.brfgcyan & Colors.background, STR, SRC, ND, RM);
 
-      -- Construct message with colors, let the plain logger function log it and return Logger instance
-      return this.Log(
-         Helpers.Get_Prefix(Colors.brfgcyan & Colors.background, "INFO", SRC, ND)
-         & str
-         & Construct_Message_Suffix(RM)
-      );
+      return this;
    end Debug;
 
 
    -- Logs a message to stdout with 'WARN' prefix
    function Warn(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
-      -- Construct message without colors for output file
-      File_Output.Print_To_File(
-         Helpers.Get_Prefix("", "WARN", SRC, ND) & str
-      );
+      Internal_Prefixed_Log("WARN", Colors.fgred, STR, SRC, ND, RM);
 
-      -- Construct message with colors, let the plain logger function log it and return Logger instance
-      return this.Log(
-         Helpers.Get_Prefix(Colors.fgred, "WARN", SRC, ND)
-         & str
-         & Construct_Message_Suffix(RM)
-      );
+      return this;
    end Warn;
 
 
    -- Logs a message to stdout with 'ERROR' prefix
    function Error(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
-      -- Construct message without colors for output file
-      File_Output.Print_To_File(
-         Helpers.Get_Prefix("", "ERROR", SRC, ND) & str
-      );
+      Internal_Prefixed_Log("ERROR", Colors.fgred & Colors.background, STR, SRC, ND, RM);
 
-      -- Construct message with colors, let the plain logger function log it and return Logger instance
-      return this.Log(
-         Helpers.Get_Prefix(Colors.fgred & Colors.background, "ERROR", SRC, ND)
-         & str
-         & Construct_Message_Suffix(RM)
-      );
+      return this;
    end Error;
 
 
@@ -101,5 +69,31 @@ package body Logger_Type is
 
       return this;
    end Nl;
+
+
+
+
+   -- Internal: Logs a message to stdout without appending to output file (as this is already handled by the external functions)
+   procedure Internal_Log(str : String) is
+   begin
+      Put(str);
+   end Internal_Log;
+
+
+   -- Internal: Constructs the actual message and logs it to file & stdout
+   procedure Internal_Prefixed_Log(Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) is
+   begin
+
+      -- Construct message without colors for output file
+      File_Output.Print_To_File(Helpers.Get_Prefix("", Log_Lvl, SRC, ND) & str);
+
+      -- Construct message with colors and let the internal plain logger function log it
+      Internal_Log(
+         Helpers.Get_Prefix(Color, Log_Lvl, SRC, ND)
+         & str
+         & Construct_Message_Suffix(RM)
+      );
+
+   end Internal_Prefixed_Log;
 
 end Logger_Type;
