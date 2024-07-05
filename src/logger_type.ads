@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-03 18:57:26
+-- Last Modified: 2024-07-05 15:21:00
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -87,5 +87,12 @@ package Logger_Type is
    Logger : Logger_Dummy;
 
 private
+
+   -- Internal: Logs a message to stdout without appending to output file (as this is already handled by the external functions)
+   -- @param str User provided message to log
+   procedure Internal_Log(str : String);
+
+   -- Internal: Constructs the actual message and logs it to file & stdout
+   procedure Internal_Prefixed_Log(Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False);
 
 end Logger_Type;
