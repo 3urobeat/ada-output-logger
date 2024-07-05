@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-03 18:57:26
+-- Last Modified: 2024-07-05 15:11:50
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -29,6 +29,12 @@ package body Logger_Type is
    -- Logs a message to stdout with 'INFO' prefix
    function Info(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
+      -- Construct message without colors for output file
+      File_Output.Print_To_File(
+         Helpers.Get_Prefix("", "INFO", SRC, ND) & str
+      );
+
+      -- Construct message with colors, let the plain logger function log it and return Logger instance
       return this.Log(
          Helpers.Get_Prefix(Colors.brfgcyan, "INFO", SRC, ND)
          & str
@@ -40,8 +46,14 @@ package body Logger_Type is
    -- Logs a message to stdout with 'DEBUG' prefix
    function Debug(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
+      -- Construct message without colors for output file
+      File_Output.Print_To_File(
+         Helpers.Get_Prefix("", "DEBUG", SRC, ND) & str
+      );
+
+      -- Construct message with colors, let the plain logger function log it and return Logger instance
       return this.Log(
-         Helpers.Get_Prefix(Colors.brfgcyan & Colors.background, "DEBUG", SRC, ND)
+         Helpers.Get_Prefix(Colors.brfgcyan & Colors.background, "INFO", SRC, ND)
          & str
          & Construct_Message_Suffix(RM)
       );
@@ -51,6 +63,12 @@ package body Logger_Type is
    -- Logs a message to stdout with 'WARN' prefix
    function Warn(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
+      -- Construct message without colors for output file
+      File_Output.Print_To_File(
+         Helpers.Get_Prefix("", "WARN", SRC, ND) & str
+      );
+
+      -- Construct message with colors, let the plain logger function log it and return Logger instance
       return this.Log(
          Helpers.Get_Prefix(Colors.fgred, "WARN", SRC, ND)
          & str
@@ -62,6 +80,12 @@ package body Logger_Type is
    -- Logs a message to stdout with 'ERROR' prefix
    function Error(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy is
    begin
+      -- Construct message without colors for output file
+      File_Output.Print_To_File(
+         Helpers.Get_Prefix("", "ERROR", SRC, ND) & str
+      );
+
+      -- Construct message with colors, let the plain logger function log it and return Logger instance
       return this.Log(
          Helpers.Get_Prefix(Colors.fgred & Colors.background, "ERROR", SRC, ND)
          & str
