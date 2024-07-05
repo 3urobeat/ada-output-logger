@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:21:00
+-- Last Modified: 2024-07-05 15:23:00
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -65,6 +65,7 @@ package body Logger_Type is
    -- Logs a newline to stdout
    function Nl(this : Logger_Dummy) return Logger_Dummy is
    begin
+      File_Output.Print_To_File("" & Ada.Characters.Latin_1.LF);
       New_Line;
 
       return this;

@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 18:23:04
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:19:13
+-- Last Modified: 2024-07-05 15:23:00
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -33,7 +33,7 @@ package Construct is
    function Get_Timestamp return String;
 
    -- Constructs prefix of the message to be logged and returns it
-   function Construct_Message_Prefix(Log_Lvl : String; Origin : String; No_Date : Boolean) return String;
+   function Construct_Message_Prefix(Log_Lvl : String; Origin : String; No_Date : Boolean := False; No_Color : Boolean := False) return String;
 
    -- Construct suffix of the message to be logged and returns it
    function Construct_Message_Suffix(Remove : Boolean) return String;

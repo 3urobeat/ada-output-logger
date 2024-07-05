@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:57:26
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:11:50
+-- Last Modified: 2024-07-05 15:23:00
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -31,7 +31,7 @@ package body File_Output is
          Open_File("./output.txt");
       end if;
 
-      Put_Line(Output_File, str);
+      Put(Output_File, str);
    end Print_To_File;
 
 end File_Output;
