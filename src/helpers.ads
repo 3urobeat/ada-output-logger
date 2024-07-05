@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-03 18:53:35
+-- Last Modified: 2024-07-05 15:11:50
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -21,8 +21,13 @@ use Construct;
 
 package Helpers is
 
-    -- Internal: Expands Construct_Message_Prefix call
-    function Get_Prefix(Color : String; Lvl : String; SRC : String; ND : Boolean) return String;
+    -- Internal: Expands Construct_Message_Prefix call to construct a log message prefix
+    -- @param Color Optional: Color code for log level parameter
+    -- @param Lvl Log level of this message
+    -- @param SRC Optional: User provided name of the file this log message originates from
+    -- @param ND Optional: No-Date - User provided setting if date should not include a timestamp
+    -- @return Returns the formatted message prefix string
+    function Get_Prefix(Color : String := ""; Lvl : String; SRC : String := ""; ND : Boolean := False) return String;
 
 private
 

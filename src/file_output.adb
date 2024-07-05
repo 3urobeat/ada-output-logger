@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:57:26
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-04 19:07:52
+-- Last Modified: 2024-07-05 15:11:50
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -15,23 +15,23 @@
 
 package body File_Output is
 
-    procedure Open_File(path : String) is
-    begin
-        if Ada.Directories.Exists(path) = False then
-            Create(Output_File, Append_File, path);
-        else
-            Open(Output_File, Append_File, path);
-        end if;
-    end Open_File;
+   procedure Open_File(path : String) is
+   begin
+      if Ada.Directories.Exists(path) = False then
+         Create(Output_File, Append_File, path);
+      else
+         Open(Output_File, Append_File, path);
+      end if;
+   end Open_File;
 
 
-    procedure Print_To_File(str : String) is
-    begin
-        if Is_Open(Output_File) = False then
-            Open_File("./output.txt");
-        end if;
+   procedure Print_To_File(str : String) is
+   begin
+      if Is_Open(Output_File) = False then
+         Open_File("./output.txt");
+      end if;
 
-        Put_Line(Output_File, str);
-    end Print_To_File;
+      Put_Line(Output_File, str);
+   end Print_To_File;
 
 end File_Output;
