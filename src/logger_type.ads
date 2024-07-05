@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:23:00
+-- Last Modified: 2024-07-05 15:27:22
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -43,41 +43,41 @@ package Logger_Type is
    -- @param STR The message to log
    -- @param SRC Optional: Name of the file this log message originates from
    -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
-   -- @param RM Optional: Remove - Set to true if the next message should overwrite this one. Make sure to not call Nl()!
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Info(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy;
+   function Info(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy;
 
    -- Logs a message to stdout with 'DEBUG' prefix
    -- @param this Instance of Logger, automatically provided when using dot notation
    -- @param STR The message to log
    -- @param SRC Optional: Name of the file this log message originates from
    -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
-   -- @param RM Optional: Remove - Set to true if the next message should overwrite this one. Make sure to not call Nl()!
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Debug(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy;
+   function Debug(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy;
 
    -- Logs a message to stdout with 'WARN' prefix
    -- @param this Instance of Logger, automatically provided when using dot notation
    -- @param STR The message to log
    -- @param SRC Optional: Name of the file this log message originates from
    -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
-   -- @param RM Optional: Remove - Set to true if the next message should overwrite this one. Make sure to not call Nl()!
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Warn(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy;
+   function Warn(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy;
 
    -- Logs a message to stdout with 'ERROR' prefix
    -- @param this Instance of Logger, automatically provided when using dot notation
    -- @param STR The message to log
    -- @param SRC Optional: Name of the file this log message originates from
    -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
-   -- @param RM Optional: Remove - Set to true if the next message should overwrite this one. Make sure to not call Nl()!
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Error(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False) return Logger_Dummy;
+   function Error(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy;
 
    -- Logs a newline to stdout
    -- @param this Instance of Logger, automatically provided when using dot notation
    -- @return Returns `this` instance of Logger to support chaining another function call
    function Nl(this : Logger_Dummy) return Logger_Dummy;
+
+   -- Marks this message to be overwritten by the next logger call and ends the message
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   procedure RmEoL(this : Logger_Dummy);
 
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    -- @param this Instance of Logger, automatically provided when using dot notation
@@ -94,6 +94,6 @@ private
    procedure Internal_Log(str : String);
 
    -- Internal: Constructs the actual message and logs it to file & stdout
-   procedure Internal_Prefixed_Log(Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False; RM : Boolean := False);
+   procedure Internal_Prefixed_Log(Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False);
 
 end Logger_Type;

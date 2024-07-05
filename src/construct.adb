@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 18:23:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:23:00
+-- Last Modified: 2024-07-05 15:27:22
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -70,19 +70,5 @@ package body Construct is
       return Construct_Temp_String.To_String(Temp) & " ";
 
    end Construct_Message_Prefix;
-
-
-   -- Construct suffix of the message to be logged and returns it
-   function Construct_Message_Suffix(Remove : Boolean) return String is
-   begin
-
-      -- Return carriage return if remove is enabled
-      if Remove = True then
-         return "" & Ada.Characters.Latin_1.CR;
-      else
-         return "";
-      end if;
-
-   end Construct_Message_Suffix;
 
 end Construct;
