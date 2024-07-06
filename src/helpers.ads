@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:11:50
+-- Last Modified: 2024-07-06 15:47:48
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -28,6 +28,12 @@ package Helpers is
     -- @param ND Optional: No-Date - User provided setting if date should not include a timestamp
     -- @return Returns the formatted message prefix string
     function Get_Prefix(Color : String := ""; Lvl : String; SRC : String := ""; ND : Boolean := False) return String;
+
+    -- Internal: Constructs a String of whitespaces to concat to a log message if the last message was longer than the current message is. This prevents ghost chars from messages marked as Rm.
+    -- @param Current_Message_Length Length of the current message
+    -- @param Last_Message_Length Length of the last message
+    -- @return Returns string to append to the current message
+    function Get_Trailing_Whitespaces(Current_Message_Length : Natural; Last_Message_Length : Natural) return String;
 
 private
 

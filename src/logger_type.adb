@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 15:27:19
+-- Last Modified: 2024-07-06 15:47:48
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -66,7 +66,9 @@ package body Logger_Type is
    -- Logs a newline to stdout
    function Nl(this : access Logger_Dummy) return access Logger_Dummy is
    begin
-      -- TODO: Check if whitespaces need to be added because previous message was marked as Rm
+      -- Append whitespaces if the previous message was longer and marked as Rm
+      Internal_Log(Helpers.Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
+      this.Last_Message_Length := 0; -- Reset because we have taken action
 
       File_Output.Print_To_File("" & Ada.Characters.Latin_1.LF);
       New_Line;
@@ -79,13 +81,16 @@ package body Logger_Type is
    procedure RmEoL(this : access Logger_Dummy) is
    begin
       -- TODO: Cut this message to terminal width to prevent message not being able to get cleared. This is a problem because the current message could already have overflown one line
-      -- TODO: Check if whitespaces need to be added because previous message was marked as Rm
+
+      -- Append whitespaces if the previous message was longer and marked as Rm
+      Internal_Log(Helpers.Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
+      this.Last_Message_Length := 0; -- Reset because we have taken action
 
       File_Output.Print_To_File("" & Ada.Characters.Latin_1.LF); -- Print a newline to the output file as nothing can be overwritten there
       Internal_Log("" & Ada.Characters.Latin_1.CR);              -- Print a carriage return to stdout (so the next msg overwrites this one)
 
       -- Save size so the next message can overwrite everything we've printed to avoid ghost chars
-      this.Overwrite_Chars_Amount := this.Current_Message_Length;
+      this.Last_Message_Length := this.Current_Message_Length;
       this.Current_Message_Length := 0;
    end RmEoL;
 
@@ -93,7 +98,9 @@ package body Logger_Type is
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    procedure EoL(this : access Logger_Dummy) is
    begin
-      -- TODO: Check if whitespaces need to be added because previous message was marked as Rm
+      -- Append whitespaces if the previous message was longer and marked as Rm
+      Internal_Log(Helpers.Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
+      this.Last_Message_Length := 0; -- Reset because we have taken action
 
       -- Reset size tracker. Since this message was not marked to be removed, we don't need to keep it
       this.Current_Message_Length := 0;
