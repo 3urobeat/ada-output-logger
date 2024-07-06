@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 15:29:50
+-- Last Modified: 2024-07-06 16:25:40
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -30,8 +30,12 @@ package Logger_Type is
    -- Dummy type to allow functions returning a reference to "itself"-ish
    type Logger_Dummy is new Ada.Finalization.Controlled with record
 
-      -- Set a string that shall be printed when the program exits/the Logger instance is deleted. Leave empty to exit silently.
+      -- Set a string that shall be printed when the program exits/the Logger instance is deleted. Set to empty to exit silently.
       Exit_Message : Construct_Bounded_128B.Bounded_String := Construct_Bounded_128B.To_Bounded_String("Goodbye!"); -- We are reusing 'Construct_Bounded_128B' from 'construct.ads' here
+
+      -- Relative path from binary location to a file where log messages should be written to. Set to empty to disable this feature.
+      Output_File_Path : Construct_Bounded_128B.Bounded_String := Construct_Bounded_128B.To_Bounded_String("./output.txt");
+
 
       -- Internal: Tracks length of the current message before EoL was called
       Current_Message_Length : Natural := 0;
@@ -107,6 +111,6 @@ private
    procedure Internal_Log(str : String);
 
    -- Internal: Constructs the actual message and logs it to file & stdout
-   procedure Internal_Prefixed_Log(Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False);
+   procedure Internal_Prefixed_Log(Output_File_Path : Construct_Bounded_128B.Bounded_String; Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False);
 
 end Logger_Type;
