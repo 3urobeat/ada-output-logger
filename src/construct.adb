@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 18:23:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 19:31:08
+-- Last Modified: 2024-07-06 13:11:20
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -15,7 +15,7 @@
 
 package body Construct is
 
-    -- Returns the current timestamp formatted as ISO 8601
+   -- Returns the current timestamp formatted as ISO 8601
    function Get_Timestamp return String is
    begin
       return Image(Clock); -- TODO: Returns UTC, local might be better I think
