@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 16:25:40
+-- Last Modified: 2024-07-06 18:05:27
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -17,7 +17,7 @@ package body Logger_Type is
 
    -- Internal: Overwrite Finalize to catch when Logger is deleted
    procedure Finalize(this : in out Logger_Dummy) is
-      Exit_Msg : String := Construct_Bounded_128B.To_String(this.Exit_Message);
+      Exit_Msg : String := Options_Bounded_128B.To_String(this.Exit_Message);
    begin
       this.Log(Exit_Msg).EoL;
    end Finalize;
@@ -26,7 +26,7 @@ package body Logger_Type is
    -- Logs a message to stdout without any formatting, use this for appending to an existing message
    function Log(this : access Logger_Dummy; STR : String) return access Logger_Dummy is
    begin
-      File_Output.Print_To_File(Construct_Bounded_128B.To_String(this.Output_File_Path), STR);
+      File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), STR);
       Internal_Log(STR);
       this.Current_Message_Length := this.Current_Message_Length + STR'Length;
 
@@ -77,7 +77,7 @@ package body Logger_Type is
       Internal_Log(Helpers.Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
-      File_Output.Print_To_File(Construct_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
+      File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
       New_Line;
 
       return this;
@@ -93,7 +93,7 @@ package body Logger_Type is
       Internal_Log(Helpers.Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
-      File_Output.Print_To_File(Construct_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF); -- Print a newline to the output file as nothing can be overwritten there
+      File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF); -- Print a newline to the output file as nothing can be overwritten there
       Internal_Log("" & Ada.Characters.Latin_1.CR);              -- Print a carriage return to stdout (so the next msg overwrites this one)
 
       -- Save size so the next message can overwrite everything we've printed to avoid ghost chars
@@ -123,12 +123,12 @@ package body Logger_Type is
 
 
    -- Internal: Constructs the actual message and logs it to file & stdout
-   procedure Internal_Prefixed_Log(Output_File_Path : Construct_Bounded_128B.Bounded_String; Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False) is
+   procedure Internal_Prefixed_Log(Output_File_Path : Options_Bounded_128B.Bounded_String; Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False) is
       Msg_No_Color : String := Helpers.Get_Prefix("", Log_Lvl, SRC, ND) & str;
    begin
 
       -- Construct message without colors for output file
-      File_Output.Print_To_File(Construct_Bounded_128B.To_String(Output_File_Path), Msg_No_Color);
+      File_Output.Print_To_File(Options_Bounded_128B.To_String(Output_File_Path), Msg_No_Color);
 
       -- Add size in case this message shall be overwritten later on
       Current_Message_Length := Current_Message_Length + Msg_No_Color'Length;
