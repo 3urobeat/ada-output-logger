@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 15:47:48
+-- Last Modified: 2024-07-06 15:29:50
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -14,6 +14,13 @@
 
 
 package body Logger_Type is
+
+   -- Internal: Overwrite Finalize to catch when Logger is deleted
+   procedure Finalize(this : in out Logger_Dummy) is
+      Exit_Msg : String := Construct_Bounded_128B.To_String(this.Exit_Message);
+   begin
+      this.Log(Exit_Msg).EoL;
+   end Finalize;
 
 
    -- Logs a message to stdout without any formatting, use this for appending to an existing message

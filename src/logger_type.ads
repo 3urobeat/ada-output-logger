@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 15:47:48
+-- Last Modified: 2024-07-06 15:29:50
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -13,12 +13,13 @@
 -- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
+with Ada.Finalization;
 with Ada.Text_IO;
+with Ada.Characters.Latin_1; -- Used for escape character for newline
 with Colors;
 with Construct;
 with File_Output;
 with Helpers;
-with Ada.Characters.Latin_1; -- Used for escape character for newline
 
 use Ada.Text_IO;
 use Construct;
@@ -27,15 +28,21 @@ use Construct;
 package Logger_Type is
 
    -- Dummy type to allow functions returning a reference to "itself"-ish
-   type Logger_Dummy is tagged record
+   type Logger_Dummy is new Ada.Finalization.Controlled with record
 
-      -- Tracks the length of the current message before EoL was called
+      -- Set a string that shall be printed when the program exits/the Logger instance is deleted. Leave empty to exit silently.
+      Exit_Message : Construct_Bounded_128B.Bounded_String := Construct_Bounded_128B.To_Bounded_String("Goodbye!"); -- We are reusing 'Construct_Bounded_128B' from 'construct.ads' here
+
+      -- Internal: Tracks length of the current message before EoL was called
       Current_Message_Length : Natural := 0;
 
-      -- If /= 0, the logger will add whitespaces to overwrite ghost chars left behind from a previous message marked as Rm
+      -- Internal: Tracks length of the previous message (if it was marked as Rm) to overwrite ghost chars
       Last_Message_Length : Natural := 0;
 
    end record;
+
+   -- Internal: Overwrite Finalize to catch when Logger is deleted
+   procedure Finalize(this : in out Logger_Dummy); -- TODO: I wish I could private this
 
 
    -- Logs a message to stdout without any formatting, use this for appending to an existing message
