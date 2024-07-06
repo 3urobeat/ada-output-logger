@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 13:11:20
+-- Last Modified: 2024-07-06 15:27:19
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -42,7 +42,7 @@ package Logger_Type is
    -- @param this Instance of Logger, automatically provided when using dot notation
    -- @param STR The message to log
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Log(this : Logger_Dummy; STR : String) return Logger_Dummy;
+   function Log(this : access Logger_Dummy; STR : String) return access Logger_Dummy;
 
    -- Logs a message to stdout with 'INFO' prefix
    -- @param this Instance of Logger, automatically provided when using dot notation
@@ -50,7 +50,7 @@ package Logger_Type is
    -- @param SRC Optional: Name of the file this log message originates from
    -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Info(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy;
+   function Info(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy;
 
    -- Logs a message to stdout with 'DEBUG' prefix
    -- @param this Instance of Logger, automatically provided when using dot notation
@@ -58,7 +58,7 @@ package Logger_Type is
    -- @param SRC Optional: Name of the file this log message originates from
    -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Debug(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy;
+   function Debug(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy;
 
    -- Logs a message to stdout with 'WARN' prefix
    -- @param this Instance of Logger, automatically provided when using dot notation
@@ -66,7 +66,7 @@ package Logger_Type is
    -- @param SRC Optional: Name of the file this log message originates from
    -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Warn(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy;
+   function Warn(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy;
 
    -- Logs a message to stdout with 'ERROR' prefix
    -- @param this Instance of Logger, automatically provided when using dot notation
@@ -74,24 +74,24 @@ package Logger_Type is
    -- @param SRC Optional: Name of the file this log message originates from
    -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Error(this : Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return Logger_Dummy;
+   function Error(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy;
 
    -- Logs a newline to stdout
    -- @param this Instance of Logger, automatically provided when using dot notation
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Nl(this : Logger_Dummy) return Logger_Dummy;
+   function Nl(this : access Logger_Dummy) return access Logger_Dummy;
 
    -- Marks this message to be overwritten by the next logger call and ends the message
    -- @param this Instance of Logger, automatically provided when using dot notation
-   procedure RmEoL(this : Logger_Dummy);
+   procedure RmEoL(this : access Logger_Dummy);
 
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    -- @param this Instance of Logger, automatically provided when using dot notation
-   procedure EoL(this : Logger_Dummy) is null;
+   procedure EoL(this : access Logger_Dummy);
 
 
    -- Create instance of Logger_Dummy for everyone to use
-   Logger : Logger_Dummy;
+   Logger : aliased Logger_Dummy; -- TODO: Does it have disadvantages marking this as aliased?
 
 private
 
@@ -100,6 +100,6 @@ private
    procedure Internal_Log(str : String);
 
    -- Internal: Constructs the actual message and logs it to file & stdout
-   procedure Internal_Prefixed_Log(Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False);
+   procedure Internal_Prefixed_Log(Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False);
 
 end Logger_Type;
