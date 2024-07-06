@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 18:23:04
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:27:22
+-- Last Modified: 2024-07-06 15:29:50
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -13,11 +13,11 @@
 -- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
-with Colors;
 with Ada.Calendar;
 with Ada.Calendar.Formatting;
 with Ada.Strings.Bounded;
 with Ada.Characters.Latin_1; -- Used for escape character for carriage return
+with Colors;
 
 use Ada.Calendar;
 use Ada.Calendar.Formatting;
@@ -26,7 +26,7 @@ use Ada.Calendar.Formatting;
 package Construct is
 
    -- Buffer for constructing message prefix
-   package Construct_Temp_String is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 128);
+   package Construct_Bounded_128B is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 128);
 
 
    -- Returns the current timestamp formatted as ISO 8601

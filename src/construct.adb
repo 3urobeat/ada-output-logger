@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 18:23:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 13:11:20
+-- Last Modified: 2024-07-06 15:29:50
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -24,19 +24,19 @@ package body Construct is
 
    -- Constructs prefix of the message to be logged and returns it
    function Construct_Message_Prefix(Log_Lvl : String; Origin : String; No_Date : Boolean := False; No_Color : Boolean := False) return String is
-      Temp : Construct_Temp_String.Bounded_String;
+      Temp : Construct_Bounded_128B.Bounded_String;
    begin
 
       -- Start with first bracket
-      Construct_Temp_String.Append(Temp, "[");
+      Construct_Bounded_128B.Set_Bounded_String(Temp, "[");
 
 
       -- Append date if enabled
       if No_Date = False then
          if No_Color = False then
-            Construct_Temp_String.Append(Temp, Colors.brfgcyan & Get_Timestamp & Colors.reset);
+            Construct_Bounded_128B.Append(Temp, Colors.brfgcyan & Get_Timestamp & Colors.reset);
          else
-            Construct_Temp_String.Append(Temp, Get_Timestamp);
+            Construct_Bounded_128B.Append(Temp, Get_Timestamp);
          end if;
       end if;
 
@@ -44,27 +44,27 @@ package body Construct is
       -- Close date bracket if Origin was specified and open another one, otherwise append log level directly
       if Origin'Length > 0 then
          if No_Date = False then
-            Construct_Temp_String.Append(Temp, "] [");
+            Construct_Bounded_128B.Append(Temp, "] [");
          end if;
 
-         Construct_Temp_String.Append(Temp, Log_Lvl);
-         Construct_Temp_String.Append(Temp, " | ");
-         Construct_Temp_String.Append(Temp, Origin);
-         Construct_Temp_String.Append(Temp, "]");
+         Construct_Bounded_128B.Append(Temp, Log_Lvl);
+         Construct_Bounded_128B.Append(Temp, " | ");
+         Construct_Bounded_128B.Append(Temp, Origin);
+         Construct_Bounded_128B.Append(Temp, "]");
 
       else
 
          if No_Date = False then
-            Construct_Temp_String.Append(Temp, " | ");
+            Construct_Bounded_128B.Append(Temp, " | ");
          end if;
 
-         Construct_Temp_String.Append(Temp, Log_Lvl);
-         Construct_Temp_String.Append(Temp, "]");
+         Construct_Bounded_128B.Append(Temp, Log_Lvl);
+         Construct_Bounded_128B.Append(Temp, "]");
       end if;
 
 
       -- Return constructed string
-      return Construct_Temp_String.To_String(Temp) & " ";
+      return Construct_Bounded_128B.To_String(Temp) & " ";
 
    end Construct_Message_Prefix;
 
