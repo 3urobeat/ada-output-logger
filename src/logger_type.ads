@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 15:27:19
+-- Last Modified: 2024-07-06 15:47:48
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -33,7 +33,7 @@ package Logger_Type is
       Current_Message_Length : Natural := 0;
 
       -- If /= 0, the logger will add whitespaces to overwrite ghost chars left behind from a previous message marked as Rm
-      Overwrite_Chars_Amount : Natural := 0;
+      Last_Message_Length : Natural := 0;
 
    end record;
 

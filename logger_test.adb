@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 13:11:20
+-- Last Modified: 2024-07-06 15:47:48
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -34,14 +34,19 @@ begin
    -- Get some space between us and the compile messages
    Logger.Nl.EoL;
 
+   -- Test log levels with different formats
    Logger.Info(STR => "Hello World", SRC => "logger_test.adb").Nl.EoL;
    Logger.Debug("Hello World").Nl.EoL;
    Logger.Warn("Hello", "logger_test.adb", True).Log(" World").Nl.EoL;
    Logger.Error("Hello World", "").Nl.EoL;
 
-   delay 0.25;
-
-   Logger.Info("Very long message that should be gone").RmEoL;
+   -- Test removing message
+   Logger.Info("Long message that should be gone in 500ms").RmEoL;
+   delay 0.5;
    Logger.Info("Hello Again").Nl.EoL;
+
+   Logger.Info("Short msg").RmEoL;
+   delay 0.5;
+   Logger.Info("Hello Again using a longer message").Nl.EoL;
 
 end Logger_Test;

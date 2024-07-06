@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:23:00
+-- Last Modified: 2024-07-06 15:47:48
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -30,5 +30,21 @@ package body Helpers is
          Color'Length = 0 -- Do not color date if log level is not colored (for example for file output)
       );
    end Get_Prefix;
+
+
+   -- Internal: Constructs a String of whitespaces to concat to a log message if the last message was longer than the current message is. This prevents ghost chars from messages marked as Rm.
+   function Get_Trailing_Whitespaces(Current_Message_Length : Natural; Last_Message_Length : Natural) return String is
+      Diff : Integer := Integer'(Last_Message_Length) - Integer'(Current_Message_Length); -- Cast to Integers because a negative result is possible
+   begin
+      if Diff > 0 then
+         declare
+            Diff_Str : String(1 .. Diff) := (others => ' '); -- Create string of whitespaces if new message is < previous message
+         begin
+            return Diff_Str;
+         end;
+      else
+         return ""; -- Return empty string if new message is >= previous message
+      end if;
+   end Get_Trailing_Whitespaces;
 
 end Helpers;
