@@ -24,6 +24,13 @@ This procedure only serves to consume the `Logger` parameter, does nothing and r
 
 For examples, see the [logger_test.adb](./logger_test.adb) file.
 
+<br>
+
+> [!IMPORTANT]
+> Make sure to \*only\* use this library for logging while it is active.  
+> Printing yourself while the logger is active will lead to weird behavior like messages clipping into another,  
+> as the library does clever cursor management which `Ada.Text_IO` does not do.
+
 &nbsp;
 
 ## Include
