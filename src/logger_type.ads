@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 15:27:22
+-- Last Modified: 2024-07-06 13:11:20
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -28,7 +28,13 @@ package Logger_Type is
 
    -- Dummy type to allow functions returning a reference to "itself"-ish
    type Logger_Dummy is tagged record
-      null;
+
+      -- Tracks the length of the current message before EoL was called
+      Current_Message_Length : Natural := 0;
+
+      -- If /= 0, the logger will add whitespaces to overwrite ghost chars left behind from a previous message marked as Rm
+      Overwrite_Chars_Amount : Natural := 0;
+
    end record;
 
 
