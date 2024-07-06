@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-05 19:31:08
+-- Last Modified: 2024-07-06 13:11:20
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -76,7 +76,7 @@ package body Logger_Type is
    procedure RmEoL(this : Logger_Dummy) is
    begin
       File_Output.Print_To_File("" & Ada.Characters.Latin_1.LF); -- Print a newline to the output file as nothing can be overwritten there
-      Internal_Log("" & Ada.Characters.Latin_1.CR);                   -- Print a carriage return to stdout (so the next msg overwrites this one)
+      Internal_Log("" & Ada.Characters.Latin_1.CR);              -- Print a carriage return to stdout (so the next msg overwrites this one)
    end RmEoL;
 
 
