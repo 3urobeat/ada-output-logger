@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-07 19:30:54
+-- Last Modified: 2024-07-07 19:38:42
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -39,6 +39,71 @@ package Animation is
 
    -- Collection of default animations
    type Default_Animations_Type is record
+
+      Loading : Animation_Type := (
+         Animation_Frames_Bounded.To_Bounded_String(" | "),
+         Animation_Frames_Bounded.To_Bounded_String(" / "),
+         Animation_Frames_Bounded.To_Bounded_String(" - "),
+         Animation_Frames_Bounded.To_Bounded_String(" \ "), -- You apparently do not need to escape this backslash
+         others => Animation_Frames_Bounded.Null_Bounded_String
+      );
+
+      Waiting : Animation_Type := (
+         Animation_Frames_Bounded.To_Bounded_String("     "),
+         Animation_Frames_Bounded.To_Bounded_String(".    "),
+         Animation_Frames_Bounded.To_Bounded_String("..   "),
+         Animation_Frames_Bounded.To_Bounded_String("...  "),
+         Animation_Frames_Bounded.To_Bounded_String(".... "),
+         Animation_Frames_Bounded.To_Bounded_String("....."),
+         others => Animation_Frames_Bounded.Null_Bounded_String
+      );
+
+      Bounce : Animation_Type := (
+         Animation_Frames_Bounded.To_Bounded_String("=     "),
+         Animation_Frames_Bounded.To_Bounded_String(" =    "),
+         Animation_Frames_Bounded.To_Bounded_String("  =   "),
+         Animation_Frames_Bounded.To_Bounded_String("   =  "),
+         Animation_Frames_Bounded.To_Bounded_String("    = "),
+         Animation_Frames_Bounded.To_Bounded_String("     ="),
+         Animation_Frames_Bounded.To_Bounded_String("    = "),
+         Animation_Frames_Bounded.To_Bounded_String("   =  "),
+         Animation_Frames_Bounded.To_Bounded_String("  =   "),
+         Animation_Frames_Bounded.To_Bounded_String(" =    "),
+         others => Animation_Frames_Bounded.Null_Bounded_String
+      );
+
+      Progress : Animation_Type := (
+         Animation_Frames_Bounded.To_Bounded_String("     "),
+         Animation_Frames_Bounded.To_Bounded_String("█    "), -- This chonker is 3 bytes big
+         Animation_Frames_Bounded.To_Bounded_String("██   "),
+         Animation_Frames_Bounded.To_Bounded_String("███  "),
+         Animation_Frames_Bounded.To_Bounded_String("████ "),
+         Animation_Frames_Bounded.To_Bounded_String("█████"),
+         others => Animation_Frames_Bounded.Null_Bounded_String
+      );
+
+      Arrows : Animation_Type := (
+         Animation_Frames_Bounded.To_Bounded_String(">    "),
+         Animation_Frames_Bounded.To_Bounded_String(">>   "),
+         Animation_Frames_Bounded.To_Bounded_String(">>>  "),
+         Animation_Frames_Bounded.To_Bounded_String(">>>> "),
+         Animation_Frames_Bounded.To_Bounded_String(">>>>>"),
+         others => Animation_Frames_Bounded.Null_Bounded_String
+      );
+
+      Bounce_Arrow : Animation_Type := (
+         Animation_Frames_Bounded.To_Bounded_String(">    "),
+         Animation_Frames_Bounded.To_Bounded_String(" >   "),
+         Animation_Frames_Bounded.To_Bounded_String("  >  "),
+         Animation_Frames_Bounded.To_Bounded_String("   > "),
+         Animation_Frames_Bounded.To_Bounded_String("    >"),
+         Animation_Frames_Bounded.To_Bounded_String("    <"),
+         Animation_Frames_Bounded.To_Bounded_String("   < "),
+         Animation_Frames_Bounded.To_Bounded_String("  <  "),
+         Animation_Frames_Bounded.To_Bounded_String(" <   "),
+         Animation_Frames_Bounded.To_Bounded_String("<    "),
+         others => Animation_Frames_Bounded.Null_Bounded_String
+      );
 
       -- Empty animation used to indicate that no animation is currently active
       None : Animation_Type := (others => Animation_Frames_Bounded.Null_Bounded_String);
