@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-07 13:22:43
+-- Last Modified: 2024-07-07 19:30:54
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -21,6 +21,33 @@ package body Logger_Type is
    begin
       this.Log(Exit_Msg).EoL;
    end Finalize;
+
+
+   -- Prepends the following message with an animation. The animation will be refreshed every  Call this before any
+   function Animate(this : access Logger_Dummy; ANIM : Animation_Type) return access Logger_Dummy is
+   begin
+      -- TODO: Handle case when this function was called with the same animation as already active (the current task should keep running to preserve the animation frame but we need a new spacer and it might overwrite the message to be constructed)
+      --       ...or cancel it and respawn it with a new optional index parameter
+
+      -- Register this fresh animation
+      this.Current_Animation := ANIM;
+
+      -- Add size of animation, plus bracket and whitespace, to Current_Message_Length
+      this.Current_Message_Length := this.Current_Message_Length + Animation_Frames_Bounded.Length(ANIM(Animation_Index'First)) + 3;
+
+      -- Print first frame so the message content will be offset
+      Internal_Log("[" & Animation_Frames_Bounded.To_String(ANIM(Animation_Index'First)) & "] ");
+
+      -- Note: The animation handler task will be started by RmEoL
+      return this;
+   end Animate;
+
+
+   -- Stops an active animation
+   procedure Stop_Animation(this : access Logger_Dummy) is
+   begin
+      this.Current_Animation := Default_Animations.None;
+   end Stop_Animation;
 
 
    -- Logs a message to stdout without any formatting, use this for appending to an existing message
@@ -105,6 +132,8 @@ package body Logger_Type is
    -- Logs a newline to stdout
    function Nl(this : access Logger_Dummy) return access Logger_Dummy is
    begin
+      -- TODO: Deny when animation is active
+
       -- Append whitespaces if the previous message was longer and marked as Rm
       Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action
@@ -126,7 +155,15 @@ package body Logger_Type is
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
       File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF); -- Print a newline to the output file as nothing can be overwritten there
-      Internal_Log("" & Ada.Characters.Latin_1.CR);              -- Print a carriage return to stdout (so the next msg overwrites this one)
+      Internal_Log("" & Ada.Characters.Latin_1.CR); -- Print a carriage return to stdout (so the next msg overwrites this one)
+
+      -- Start animation if one was set
+      if this.Current_Animation /= Default_Animations.None then
+         Animation.Animation_Updater_Task.Start(
+            Animation_Frames => this.Current_Animation,
+            Animation_Interval => this.Animate_Interval
+         );
+      end if;
 
       -- Save size so the next message can overwrite everything we've printed to avoid ghost chars
       this.Last_Message_Length := this.Current_Message_Length;
@@ -137,6 +174,9 @@ package body Logger_Type is
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    procedure EoL(this : access Logger_Dummy) is
    begin
+      -- TODO: Abort and call RmEoL() instead if animation is active
+      -- TODO: Cancel active animation (but only if this is not the EoL call of the message chain starting the animation (this could get tricky))
+
       -- Append whitespaces if the previous message was longer and marked as Rm
       Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action

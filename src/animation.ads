@@ -1,0 +1,52 @@
+-- File: animation.ads
+-- Project: ada-output-logger
+-- Created Date: 2024-07-06 16:49:08
+-- Author: 3urobeat
+--
+-- Last Modified: 2024-07-07 19:30:54
+-- Modified By: 3urobeat
+--
+-- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
+--
+-- This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+-- This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+-- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+
+with Ada.Strings.Bounded;
+with Ada.Characters.Latin_1; -- Used for escape char carriage return
+with Helpers;
+
+use Helpers;
+
+
+package Animation is
+
+   -- Please keep animation frames as short as possible (<8 chars). Up to 32 Bytes are allowed to display multiple UTF-8 characters which take up >1 Byte
+   package Animation_Frames_Bounded is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 32);
+
+   type Animation_Index is range 0 .. 15;
+
+   -- A full animation can have up to 16 frames. Fill unused frames with `others => Animation_Frames_Bounded.Null_Bounded_String`
+   type Animation_Type is array(Animation_Index) of Animation_Frames_Bounded.Bounded_String;
+
+
+   -- Handles periodically updating an active animation
+   task Animation_Updater_Task is
+      entry Start(Animation_Frames : aliased in out Animation_Type; Animation_Interval : Duration);
+   end Animation_Updater_Task;
+
+
+   -- Collection of default animations
+   type Default_Animations_Type is record
+
+      -- Empty animation used to indicate that no animation is currently active
+      None : Animation_Type := (others => Animation_Frames_Bounded.Null_Bounded_String);
+
+   end record;
+
+   Default_Animations : Default_Animations_Type;
+
+private
+
+end Animation;

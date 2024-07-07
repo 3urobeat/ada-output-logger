@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 15:29:50
+-- Last Modified: 2024-07-07 19:30:54
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -40,16 +40,28 @@ begin
    Logger.Warn("Hello", "logger_test.adb", True).Log(" World").Nl.EoL;
    Logger.Error("Hello World", "").Nl.EoL;
 
+
    -- Test removing message
-   Logger.Info("Long message that should be gone in 500ms").RmEoL;
-   delay 0.5;
-   Logger.Info("Hello Again").Nl.EoL;
+   --  Logger.Info("Long message that should be gone in 500ms").RmEoL;
+   --  delay 0.5;
+   --  Logger.Info("Hello Again").Nl.EoL;
 
-   Logger.Info("Short msg").RmEoL;
-   delay 0.5;
-   Logger.Info("Hello Again using a longer message").Nl.EoL;
+   --  Logger.Info("Short msg").RmEoL;
+   --  delay 0.5;
+   --  Logger.Info("Hello Again using a longer message").Nl.EoL;
 
-   Logger.Info("Long message that should get overwritten by Finalize when the process exits or Logger gets deleted").RmEoL;
-   delay 0.5;
+   --  Logger.Info("Long message that should get overwritten by Finalize when the process exits or Logger gets deleted").RmEoL;
+   --  delay 0.5;
+
+
+   -- Test animations
+   Logger.Animate(Default_Animations.Loading).Info("Hello there").RmEoL;
+   delay 2.5;
+   --Logger.Warn("Stopped animation").Nl.EoL; -- Stop by writing the next message
+   --Logger.Stop_Animation;                   -- ...or by explicitly stopping it
+   Logger.Animate(Default_Animations.Waiting).Warn("Next").RmEoL; -- ...or by starting another one
+
+   delay 2.5;
+   Logger.Stop_Animation;
 
 end Logger_Test;
