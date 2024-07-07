@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 15:47:48
+-- Last Modified: 2024-07-07 13:22:43
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -46,5 +46,29 @@ package body Helpers is
          return ""; -- Return empty string if new message is >= previous message
       end if;
    end Get_Trailing_Whitespaces;
+
+
+   -- Internal: Logs a message to stdout without appending to output file (as this is already handled by the external functions)
+   procedure Internal_Log(str : String) is
+   begin
+      Put(str);
+   end Internal_Log;
+
+
+   -- Internal: Constructs the actual message and logs it to file & stdout
+   procedure Internal_Prefixed_Log(Output_File_Path : String; Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False) is
+      Msg_No_Color : String := Get_Prefix("", Log_Lvl, SRC, ND) & str;
+   begin
+
+      -- Construct message without colors for output file
+      File_Output.Print_To_File(Output_File_Path, Msg_No_Color);
+
+      -- Add size in case this message shall be overwritten later on
+      Current_Message_Length := Current_Message_Length + Msg_No_Color'Length;
+
+      -- Construct message with colors and let the internal plain logger function log it
+      Internal_Log(Get_Prefix(Color, Log_Lvl, SRC, ND) & str);
+
+   end Internal_Prefixed_Log;
 
 end Helpers;
