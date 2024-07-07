@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 18:05:27
+-- Last Modified: 2024-07-07 13:22:43
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -37,7 +37,15 @@ package body Logger_Type is
    -- Logs a message to stdout with 'INFO' prefix
    function Info(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
-      Internal_Prefixed_Log(this.Output_File_Path, this.Current_Message_Length, "INFO", Colors.brfgcyan, STR, SRC, ND);
+      Internal_Prefixed_Log(
+         Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
+         Current_Message_Length  => this.Current_Message_Length,
+         Log_Lvl                 => "INFO",
+         Color                   => Colors.brfgcyan,
+         STR                     => STR,
+         SRC                     => SRC,
+         ND                      => ND
+      );
 
       return this;
    end Info;
@@ -46,7 +54,15 @@ package body Logger_Type is
    -- Logs a message to stdout with 'DEBUG' prefix
    function Debug(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
-      Internal_Prefixed_Log(this.Output_File_Path, this.Current_Message_Length, "DEBUG", Colors.brfgcyan & Colors.background, STR, SRC, ND);
+      Internal_Prefixed_Log(
+         Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
+         Current_Message_Length  => this.Current_Message_Length,
+         Log_Lvl                 => "DEBUG",
+         Color                   => Colors.brfgcyan & Colors.background,
+         STR                     => STR,
+         SRC                     => SRC,
+         ND                      => ND
+      );
 
       return this;
    end Debug;
@@ -55,7 +71,15 @@ package body Logger_Type is
    -- Logs a message to stdout with 'WARN' prefix
    function Warn(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
-      Internal_Prefixed_Log(this.Output_File_Path, this.Current_Message_Length, "WARN", Colors.fgred, STR, SRC, ND);
+      Internal_Prefixed_Log(
+         Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
+         Current_Message_Length  => this.Current_Message_Length,
+         Log_Lvl                 => "WARN",
+         Color                   => Colors.fgred,
+         STR                     => STR,
+         SRC                     => SRC,
+         ND                      => ND
+      );
 
       return this;
    end Warn;
@@ -64,7 +88,15 @@ package body Logger_Type is
    -- Logs a message to stdout with 'ERROR' prefix
    function Error(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
-      Internal_Prefixed_Log(this.Output_File_Path, this.Current_Message_Length, "ERROR", Colors.fgred & Colors.background, Colors.fgred & STR & Colors.reset, SRC, ND);
+      Internal_Prefixed_Log(
+         Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
+         Current_Message_Length  => this.Current_Message_Length,
+         Log_Lvl                 => "ERROR",
+         Color                   => Colors.fgred & Colors.background,
+         STR                     => Colors.fgred & STR & Colors.reset,
+         SRC                     => SRC,
+         ND                      => ND
+      );
 
       return this;
    end Error;
@@ -74,7 +106,7 @@ package body Logger_Type is
    function Nl(this : access Logger_Dummy) return access Logger_Dummy is
    begin
       -- Append whitespaces if the previous message was longer and marked as Rm
-      Internal_Log(Helpers.Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
+      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
       File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
@@ -90,7 +122,7 @@ package body Logger_Type is
       -- TODO: Cut this message to terminal width to prevent message not being able to get cleared. This is a problem because the current message could already have overflown one line
 
       -- Append whitespaces if the previous message was longer and marked as Rm
-      Internal_Log(Helpers.Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
+      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
       File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF); -- Print a newline to the output file as nothing can be overwritten there
@@ -106,36 +138,11 @@ package body Logger_Type is
    procedure EoL(this : access Logger_Dummy) is
    begin
       -- Append whitespaces if the previous message was longer and marked as Rm
-      Internal_Log(Helpers.Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
+      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
       -- Reset size tracker. Since this message was not marked to be removed, we don't need to keep it
       this.Current_Message_Length := 0;
    end EoL;
-
-
-
-   -- Internal: Logs a message to stdout without appending to output file (as this is already handled by the external functions)
-   procedure Internal_Log(str : String) is
-   begin
-      Put(str);
-   end Internal_Log;
-
-
-   -- Internal: Constructs the actual message and logs it to file & stdout
-   procedure Internal_Prefixed_Log(Output_File_Path : Options_Bounded_128B.Bounded_String; Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False) is
-      Msg_No_Color : String := Helpers.Get_Prefix("", Log_Lvl, SRC, ND) & str;
-   begin
-
-      -- Construct message without colors for output file
-      File_Output.Print_To_File(Options_Bounded_128B.To_String(Output_File_Path), Msg_No_Color);
-
-      -- Add size in case this message shall be overwritten later on
-      Current_Message_Length := Current_Message_Length + Msg_No_Color'Length;
-
-      -- Construct message with colors and let the internal plain logger function log it
-      Internal_Log(Helpers.Get_Prefix(Color, Log_Lvl, SRC, ND) & str);
-
-   end Internal_Prefixed_Log;
 
 end Logger_Type;

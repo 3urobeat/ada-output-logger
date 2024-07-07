@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 18:05:27
+-- Last Modified: 2024-07-07 13:22:43
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -16,7 +16,7 @@
 with Ada.Finalization;
 with Ada.Text_IO;
 with Ada.Strings.Bounded;
-with Ada.Characters.Latin_1; -- Used for escape character for newline
+with Ada.Characters.Latin_1; -- Used for escape character carriage return & newline
 with Colors;
 with Construct;
 with File_Output;
@@ -24,13 +24,15 @@ with Helpers;
 
 use Ada.Text_IO;
 use Construct;
+use Helpers;
 
 
 package Logger_Type is
 
+   -- Get a 128 Byte bounded string for options below
    package Options_Bounded_128B is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 128);
 
-   -- Dummy type to allow functions returning a reference to "itself"-ish
+   -- The default Logger instance, containing default settings
    type Logger_Dummy is new Ada.Finalization.Controlled with record
 
       -- Set a string that shall be printed when the program exits/the Logger instance is deleted. Set to empty to exit silently.
@@ -95,7 +97,6 @@ package Logger_Type is
    -- @return Returns `this` instance of Logger to support chaining another function call
    function Nl(this : access Logger_Dummy) return access Logger_Dummy;
 
-
    -- Marks this message to be overwritten by the next logger call and ends the message
    -- @param this Instance of Logger, automatically provided when using dot notation
    procedure RmEoL(this : access Logger_Dummy);
@@ -109,12 +110,5 @@ package Logger_Type is
    Logger : aliased Logger_Dummy; -- TODO: Does it have disadvantages marking this as aliased?
 
 private
-
-   -- Internal: Logs a message to stdout without appending to output file (as this is already handled by the external functions)
-   -- @param str User provided message to log
-   procedure Internal_Log(str : String);
-
-   -- Internal: Constructs the actual message and logs it to file & stdout
-   procedure Internal_Prefixed_Log(Output_File_Path : Options_Bounded_128B.Bounded_String; Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False);
 
 end Logger_Type;
