@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-07 13:22:43
+-- Last Modified: 2024-07-07 19:30:54
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -17,23 +17,32 @@ with Ada.Finalization;
 with Ada.Text_IO;
 with Ada.Strings.Bounded;
 with Ada.Characters.Latin_1; -- Used for escape character carriage return & newline
+with Animation;
 with Colors;
 with Construct;
 with File_Output;
 with Helpers;
 
 use Ada.Text_IO;
+use Animation;
 use Construct;
 use Helpers;
 
 
 package Logger_Type is
 
+   -- Expose set of default animations for easy access
+   Default_Animations : Default_Animations_Type := Animation.Default_Animations;
+
+
    -- Get a 128 Byte bounded string for options below
    package Options_Bounded_128B is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 128);
 
    -- The default Logger instance, containing default settings
    type Logger_Dummy is new Ada.Finalization.Controlled with record
+
+      -- Time in ms to wait between refreshing message with the next animation frame
+      Animate_Interval : Duration := 0.5;
 
       -- Set a string that shall be printed when the program exits/the Logger instance is deleted. Set to empty to exit silently.
       Exit_Message : Options_Bounded_128B.Bounded_String := Options_Bounded_128B.To_Bounded_String("Goodbye!");
@@ -48,11 +57,24 @@ package Logger_Type is
       -- Internal: Tracks length of the previous message (if it was marked as Rm) to overwrite ghost chars
       Last_Message_Length : Natural := 0;
 
+      -- Internal: Tracks the currently active animation
+      Current_Animation : aliased Animation_Type := Default_Animations.None; -- This is aliased to allow the animation task to get an access type to here
+
    end record;
 
    -- Internal: Overwrite Finalize to catch when Logger is deleted
    procedure Finalize(this : in out Logger_Dummy); -- TODO: I wish I could private this
 
+
+   -- Prepends the following message with an animation. The animation will be refreshed every Animate_Interval ms as long as it is not canceled by logging another message. Call this before any other logger function.
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   -- @param ANIM The animation to start displaying
+   -- @return Returns `this` instance of Logger to support chaining another function call
+   function Animate(this : access Logger_Dummy; ANIM : Animation_Type) return access Logger_Dummy;
+
+   -- Stops an active animation
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   procedure Stop_Animation(this : access Logger_Dummy);
 
    -- Logs a message to stdout without any formatting, use this for appending to an existing message
    -- @param this Instance of Logger, automatically provided when using dot notation
