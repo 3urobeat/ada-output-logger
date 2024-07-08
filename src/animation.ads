@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-08 17:13:45
+-- Last Modified: 2024-07-08 22:29:33
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -36,6 +36,7 @@ package Animation is
    -- Handles periodically updating an active animation
    task Animation_Updater_Task is
       entry Start(Animation_Frames : Animation_Type; Animation_Interval : Duration);
+      entry Log_Static; -- Logs one frame without Carriage Return and then holds the current animation
       entry Stop;
    end Animation_Updater_Task;
 
