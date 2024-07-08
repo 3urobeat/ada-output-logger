@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-07 19:38:42
+-- Last Modified: 2024-07-08 17:08:16
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -15,8 +15,10 @@
 
 with Ada.Strings.Bounded;
 with Ada.Characters.Latin_1; -- Used for escape char carriage return
+with Ada.Calendar;
 with Helpers;
 
+use Ada.Calendar;
 use Helpers;
 
 

@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-07 19:30:54
+-- Last Modified: 2024-07-08 17:08:16
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -56,7 +56,7 @@ package body Animation is
 
 
          -- Process animation when Start has been called
-         while (Animation_Storage /= null) and (Animation_Storage.all = Current_Animation) loop
+         while (Animation_Storage /= null) and then (Animation_Storage.all = Current_Animation) loop
 
             -- Print this animation frame and reset cursor so the next frame can overwrite this one
             Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)) & Ada.Characters.Latin_1.CR);
@@ -68,7 +68,7 @@ package body Animation is
                Index := Animation_Index'Succ(Index); -- ...otherwise get the next element
             end if;
 
-            delay Interval; -- TODO: Improve by using delay until
+            delay until (Clock + Interval);
 
          end loop;
 
