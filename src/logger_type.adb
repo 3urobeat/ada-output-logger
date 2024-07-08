@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-08 17:13:45
+-- Last Modified: 2024-07-08 22:29:33
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -26,17 +26,19 @@ package body Logger_Type is
    -- Prepends the following message with an animation. The animation will be refreshed every  Call this before any
    function Animate(this : access Logger_Dummy; ANIM : Animation_Type) return access Logger_Dummy is
    begin
-      -- TODO: Handle case when this function was called with the same animation as already active (the current task should keep running to preserve the animation frame but we need a new spacer and it might overwrite the message to be constructed)
-      --       ...or cancel it and respawn it with a new optional index parameter
 
-      -- Register this fresh animation
+      -- Check if there is a running animation. If it is the same, get it printed and hold
+      if this.Current_Animation = ANIM then
+         Animation.Animation_Updater_Task.Log_Static; -- This prints the current animation frame once to offset the following message content
+      else
+         Internal_Log("[" & Animation_Frames_Bounded.To_String(ANIM(Animation_Index'First)) & "] ");
+      end if;
+
+      -- Register this fresh animation and pause any running animation
       this.Current_Animation := ANIM;
 
       -- Add size of animation, plus bracket and whitespace, to Current_Message_Length
       this.Current_Message_Length := this.Current_Message_Length + Animation_Frames_Bounded.Length(ANIM(Animation_Index'First)) + 3;
-
-      -- Print first frame so the message content will be offset
-      Internal_Log("[" & Animation_Frames_Bounded.To_String(ANIM(Animation_Index'First)) & "] ");
 
       -- Note: The animation handler task will be started by RmEoL
       return this;
@@ -46,6 +48,7 @@ package body Logger_Type is
    -- Stops an active animation
    procedure Stop_Animation(this : access Logger_Dummy) is
    begin
+      this.Current_Animation := Default_Animations.None;
       Animation.Animation_Updater_Task.Stop;
    end Stop_Animation;
 

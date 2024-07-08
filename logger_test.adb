@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-08 17:13:45
+-- Last Modified: 2024-07-08 22:29:33
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -29,6 +29,7 @@ use Logger_Type;
 
 
 procedure Logger_Test is
+   test : access Logger_Dummy;
 begin
 
    -- Get some space between us and the compile messages
@@ -60,7 +61,11 @@ begin
    --Logger.Warn("Stopped animation").Nl.EoL; -- Stop by writing the next message
    --Logger.Stop_Animation;                   -- ...or by explicitly stopping it
    --Logger.Animate(Default_Animations.Waiting).Warn("Next").RmEoL; -- ...or by starting another one
-   Logger.Animate(Default_Animations.Loading).Warn("Next").RmEoL; -- ...or continue with a different message to showcase the frame index retention
+   --Logger.Animate(Default_Animations.Loading).Warn("Next").RmEoL; -- ...or continue with a different message to showcase the frame index retention
+
+   --test := Logger.Animate(Default_Animations.Loading); -- Simulate that it takes time to change the message. The animation task should not write into our new message but reuse the last frame when being started again
+   delay 0.9;
+   --test.Warn("Next").RmEoL;
 
    delay 2.0;
    Logger.Stop_Animation;
