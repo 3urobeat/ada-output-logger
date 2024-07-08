@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-07 19:30:54
+-- Last Modified: 2024-07-08 17:13:45
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -56,12 +56,13 @@ begin
 
    -- Test animations
    Logger.Animate(Default_Animations.Loading).Info("Hello there").RmEoL;
-   delay 2.5;
+   delay 2.25;
    --Logger.Warn("Stopped animation").Nl.EoL; -- Stop by writing the next message
    --Logger.Stop_Animation;                   -- ...or by explicitly stopping it
-   Logger.Animate(Default_Animations.Waiting).Warn("Next").RmEoL; -- ...or by starting another one
+   --Logger.Animate(Default_Animations.Waiting).Warn("Next").RmEoL; -- ...or by starting another one
+   Logger.Animate(Default_Animations.Loading).Warn("Next").RmEoL; -- ...or continue with a different message to showcase the frame index retention
 
-   delay 2.5;
+   delay 2.0;
    Logger.Stop_Animation;
 
 end Logger_Test;
