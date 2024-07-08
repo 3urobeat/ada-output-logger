@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-07 19:30:54
+-- Last Modified: 2024-07-08 17:13:45
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -46,7 +46,7 @@ package body Logger_Type is
    -- Stops an active animation
    procedure Stop_Animation(this : access Logger_Dummy) is
    begin
-      this.Current_Animation := Default_Animations.None;
+      Animation.Animation_Updater_Task.Stop;
    end Stop_Animation;
 
 
