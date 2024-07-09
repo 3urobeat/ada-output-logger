@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-08 22:29:33
+-- Last Modified: 2024-07-09 22:33:56
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -19,25 +19,25 @@ package body Animation is
    task body Animation_Updater_Task is
       use Animation_Frames_Bounded;
 
-      -- Store data about the animation which this task should currently handle
-      Hold_Animation : Boolean;
-      Index : Animation_Index;
-      Interval : Duration;
-      Current_Animation : Animation_Type;
+      -- Init data storage with default values to prevent TASKING_ERROR
+      Hold_Animation    : Boolean         := False;
+      Index             : Animation_Index := Animation_Index'First;
+      Interval          : Duration        := 0.5;
+      Current_Animation : Animation_Type  := Default_Animations.None;
    begin
       loop
 
          -- Use select to not block the main thread
          select
             accept Start(Animation_Frames : Animation_Type; Animation_Interval : Duration) do
-               Interval          := Animation_Interval;
-               Current_Animation := Animation_Frames;
-               Hold_Animation    := False;
-
                -- Only reset animation index if a different animation was provided to provide seamless transitions between different messages with the same animation
                if Current_Animation /= Animation_Frames then
                   Index := Animation_Index'First;
                end if;
+
+               Current_Animation := Animation_Frames;
+               Interval          := Animation_Interval;
+               Hold_Animation    := False;
             end Start;
          or
             accept Log_Static;
