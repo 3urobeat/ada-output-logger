@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-08 17:13:45
+-- Last Modified: 2024-07-09 22:38:37
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -29,7 +29,7 @@ use Construct;
 use Helpers;
 
 
-package Logger_Type is
+package Logger_Type with Elaborate_Body is
 
    -- Expose set of default animations for easy access
    Default_Animations : Default_Animations_Type := Animation.Default_Animations;
@@ -62,8 +62,9 @@ package Logger_Type is
 
    end record;
 
-   -- Internal: Overwrite Finalize to catch when Logger is deleted
-   procedure Finalize(this : in out Logger_Dummy); -- TODO: I wish I could private this
+
+   -- This Logger instance
+   function Logger return access Logger_Dummy; -- TODO: Rethink this implementation, I'm not sure if it can cause multiple Logger instances in certain projects
 
 
    -- Prepends the following message with an animation. The animation will be refreshed every Animate_Interval ms as long as it is not canceled by logging another message. Call this before any other logger function.
@@ -127,10 +128,12 @@ package Logger_Type is
    -- @param this Instance of Logger, automatically provided when using dot notation
    procedure EoL(this : access Logger_Dummy);
 
-
-   -- Create instance of Logger_Dummy for everyone to use
-   Logger : aliased Logger_Dummy; -- TODO: Does it have disadvantages marking this as aliased?
-
 private
+
+   -- Internal: Overwrite Initialize to catch when Logger is instantiated
+   procedure Initialize(this : in out Logger_Dummy);
+
+   -- Internal: Overwrite Finalize to catch when Logger is deleted
+   procedure Finalize(this : in out Logger_Dummy); -- TODO: I wish I could private this
 
 end Logger_Type;

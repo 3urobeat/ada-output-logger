@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-09 22:33:56
+-- Last Modified: 2024-07-09 22:38:37
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -58,16 +58,15 @@ begin
    -- Test animations
    Logger.Animate(Default_Animations.Loading).Info("Hello there").RmEoL;
    delay 2.25;
-   --Logger.Warn("Stopped animation").Nl.EoL; -- Stop by writing the next message
-   --Logger.Stop_Animation;                   -- ...or by explicitly stopping it
-   --Logger.Animate(Default_Animations.Waiting).Warn("Next").RmEoL; -- ...or by starting another one
-   --Logger.Animate(Default_Animations.Loading).Warn("Next").RmEoL; -- ...or continue with a different message to showcase the frame index retention
+   --Logger.Animate(Default_Animations.Waiting).Warn("Next").RmEoL; -- Start another animation to stop the previous one
+   --Logger.Animate(Default_Animations.Loading).Warn("Next").RmEoL; -- ...or continue with the same animation using a different message to showcase the frame retention
 
-   test := Logger.Animate(Default_Animations.Loading); -- Simulate that it takes time to change the message. The animation task should not write into our new message but reuse the last frame when being started again
+   test := Logger.Animate(Default_Animations.Loading); -- Simulate that it takes time to change the message. The animation should retain the last frame and hold
    delay 0.9;
    test.Warn("Next").RmEoL;
 
    delay 2.0;
-   Logger.Stop_Animation;
+   Logger.Stop_Animation; -- Exit
+   --Logger.Info("Please exit").Nl.EoL; -- ...or exit by printing a message without animation
 
 end Logger_Test;
