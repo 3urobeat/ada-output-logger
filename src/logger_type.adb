@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-08 22:29:33
+-- Last Modified: 2024-07-09 22:38:37
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -15,12 +15,27 @@
 
 package body Logger_Type is
 
+   -- Internal: Overwrite Initialize to catch when Logger is instantiated
+   procedure Initialize(this : in out Logger_Dummy) is
+   begin
+      Internal_Log(Colors.Hide_Cursor);
+   end Initialize;
+
+
    -- Internal: Overwrite Finalize to catch when Logger is deleted
    procedure Finalize(this : in out Logger_Dummy) is
       Exit_Msg : String := Options_Bounded_128B.To_String(this.Exit_Message);
    begin
+      Internal_Log(Colors.Show_Cursor);
       this.Log(Exit_Msg).EoL;
    end Finalize;
+
+
+   -- Create Logger instance for everyone to use after Initialize has been processed in the elaboration phase
+   Logger_Instance : aliased Logger_Dummy;
+
+   function Logger return access Logger_Dummy is (Logger_Instance'Access);
+
 
 
    -- Prepends the following message with an animation. The animation will be refreshed every  Call this before any

@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 15:27:41
 -- Author: 3urobeat
 --
--- Last Modified: 2024-06-30 15:27:41
+-- Last Modified: 2024-07-09 22:38:37
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -19,6 +19,9 @@ use Ada.Characters.Latin_1;
 
 
 package Colors is
+
+   Hide_Cursor : String := ESC & "[?25l";
+   Show_Cursor : String := ESC & "[?25h";
 
    reset       : String := ESC & "[0m";
    bold        : String := ESC & "[1m";
