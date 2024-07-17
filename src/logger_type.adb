@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-09 22:38:37
+-- Last Modified: 2024-07-17 18:44:51
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -192,8 +192,13 @@ package body Logger_Type is
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    procedure EoL(this : access Logger_Dummy) is
    begin
-      -- TODO: Abort and call RmEoL() instead if animation is active
       -- TODO: Cancel active animation (but only if this is not the EoL call of the message chain starting the animation (this could get tricky))
+
+      -- Call RmEoL() if an active animation was registered
+      if this.Current_Animation /= Default_Animations.None then
+         this.RmEoL;
+         return;
+      end if;
 
       -- Append whitespaces if the previous message was longer and marked as Rm
       Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
