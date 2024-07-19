@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-09 22:38:37
+-- Last Modified: 2024-07-19 15:13:49
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -50,6 +50,9 @@ package Logger_Type with Elaborate_Body is
       -- Relative path from binary location to a file where log messages should be written to. Set to empty to disable this feature.
       Output_File_Path : Options_Bounded_128B.Bounded_String := Options_Bounded_128B.To_Bounded_String("./output.txt");
 
+
+      -- Internal: If an animation was registered in this call chain
+      Submit_Animation : Boolean := False;
 
       -- Internal: Tracks length of the current message before EoL was called
       Current_Message_Length : Natural := 0;

@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-17 18:44:51
+-- Last Modified: 2024-07-19 15:13:49
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -34,13 +34,21 @@ package body Logger_Type is
    -- Create Logger instance for everyone to use after Initialize has been processed in the elaboration phase
    Logger_Instance : aliased Logger_Dummy;
 
-   function Logger return access Logger_Dummy is (Logger_Instance'Access);
+   function Logger return access Logger_Dummy is
+      this : access Logger_Dummy := Logger_Instance'Access;
+   begin
+      -- Reset animation submit
+      this.Submit_Animation := False;
+
+      return this;
+   end Logger;
 
 
 
    -- Prepends the following message with an animation. The animation will be refreshed every  Call this before any
    function Animate(this : access Logger_Dummy; ANIM : Animation_Type) return access Logger_Dummy is
    begin
+      this.Submit_Animation := True;
 
       -- Check if there is a running animation. If it is the same, get it printed and hold
       if this.Current_Animation = ANIM then
@@ -176,11 +184,14 @@ package body Logger_Type is
       Internal_Log("" & Ada.Characters.Latin_1.CR); -- Print a carriage return to stdout (so the next msg overwrites this one)
 
       -- Start animation if one was set
-      if this.Current_Animation /= Default_Animations.None then
+      if this.Submit_Animation and then this.Current_Animation /= Default_Animations.None then
          Animation.Animation_Updater_Task.Start(
             Animation_Frames => this.Current_Animation,
             Animation_Interval => this.Animate_Interval
          );
+      else
+         Animation.Animation_Updater_Task.Stop;
+         this.Current_Animation := Default_Animations.None;
       end if;
 
       -- Save size so the next message can overwrite everything we've printed to avoid ghost chars
