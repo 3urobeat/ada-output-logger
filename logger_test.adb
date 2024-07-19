@@ -61,12 +61,15 @@ begin
    --Logger.Animate(Default_Animations.Waiting).Warn("Next").RmEoL; -- Start another animation to stop the previous one
    --Logger.Animate(Default_Animations.Loading).Warn("Next").RmEoL; -- ...or continue with the same animation using a different message to showcase the frame retention
 
-   test := Logger.Animate(Default_Animations.Loading); -- Simulate that it takes time to change the message. The animation should retain the last frame and hold
-   delay 0.9;
-   test.Warn("Next").RmEoL;
+   --test := Logger.Animate(Default_Animations.Loading); -- Simulate that it takes time to change the message. The animation should retain the last frame and hold
+   --delay 0.9;
+   --test.Warn("Next").RmEoL;
 
-   delay 2.0;
-   Logger.Stop_Animation; -- Exit
-   --Logger.Info("Please exit").Nl.EoL; -- ...or exit by printing a message without animation
+   --delay 2.0;
+   --Logger.Stop_Animation; -- Exit
+   Logger.Info("Please exit").Nl.EoL; -- ...or exit by printing a message without animation
+
+   --Logger.Animate(Default_Animations.Waiting).Error("Test message").RmEoL; -- Test EoL() detecting active animation and calling RmEoL() instead
+   --Logger.Stop_Animation;
 
 end Logger_Test;
