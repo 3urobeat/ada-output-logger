@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-21 20:59:36
+-- Last Modified: 2024-07-21 22:25:49
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -48,6 +48,7 @@ package body Animation is
             accept Stop;
 
             Current_Animation := Default_Animations.None;
+            Hold_Animation := True;
             exit; -- Prevent delay from keeping task alive a little longer
          or
             delay until (Clock + Interval);

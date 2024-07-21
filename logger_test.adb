@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-09 22:38:37
+-- Last Modified: 2024-07-21 22:25:49
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -66,10 +66,11 @@ begin
    --test.Warn("Next").RmEoL;
 
    --delay 2.0;
+   Logger.Animate(Default_Animations.Waiting).Error("Test message").EoL; -- Test EoL() detecting active animation and calling RmEoL() instead
+
    --Logger.Stop_Animation; -- Exit
    Logger.Info("Please exit").Nl.EoL; -- ...or exit by printing a message without animation
 
-   --Logger.Animate(Default_Animations.Waiting).Error("Test message").RmEoL; -- Test EoL() detecting active animation and calling RmEoL() instead
-   --Logger.Stop_Animation;
+   --Logger.Animate(Default_Animations.Arrows).Warn("This is illegal").Nl.RmEoL; -- This should throw an Illegal_Newline exception
 
 end Logger_Test;
