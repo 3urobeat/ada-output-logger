@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-19 15:13:49
+-- Last Modified: 2024-07-21 22:25:49
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -54,10 +54,11 @@ package body Logger_Type is
       if this.Current_Animation = ANIM then
          Animation.Animation_Updater_Task.Log_Static; -- This prints the current animation frame once to offset the following message content
       else
+         Animation.Animation_Updater_Task.Stop;
          Internal_Log("[" & Animation_Frames_Bounded.To_String(ANIM(Animation_Index'First)) & "] ");
       end if;
 
-      -- Register this fresh animation and pause any running animation
+      -- Register this animation
       this.Current_Animation := ANIM;
 
       -- Add size of animation, plus bracket and whitespace, to Current_Message_Length
@@ -79,6 +80,11 @@ package body Logger_Type is
    -- Logs a message to stdout without any formatting, use this for appending to an existing message
    function Log(this : access Logger_Dummy; STR : String) return access Logger_Dummy is
    begin
+      if this.Submit_Animation = False then
+         Animation.Animation_Updater_Task.Stop;
+         this.Current_Animation := Default_Animations.None;
+      end if;
+
       File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), STR);
       Internal_Log(STR);
       this.Current_Message_Length := this.Current_Message_Length + STR'Length;
@@ -90,6 +96,11 @@ package body Logger_Type is
    -- Logs a message to stdout with 'INFO' prefix
    function Info(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
+      if this.Submit_Animation = False then
+         Animation.Animation_Updater_Task.Stop;
+         this.Current_Animation := Default_Animations.None;
+      end if;
+
       Internal_Prefixed_Log(
          Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
          Current_Message_Length  => this.Current_Message_Length,
@@ -107,6 +118,11 @@ package body Logger_Type is
    -- Logs a message to stdout with 'DEBUG' prefix
    function Debug(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
+      if this.Submit_Animation = False then
+         Animation.Animation_Updater_Task.Stop;
+         this.Current_Animation := Default_Animations.None;
+      end if;
+
       Internal_Prefixed_Log(
          Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
          Current_Message_Length  => this.Current_Message_Length,
@@ -124,6 +140,11 @@ package body Logger_Type is
    -- Logs a message to stdout with 'WARN' prefix
    function Warn(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
+      if this.Submit_Animation = False then
+         Animation.Animation_Updater_Task.Stop;
+         this.Current_Animation := Default_Animations.None;
+      end if;
+
       Internal_Prefixed_Log(
          Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
          Current_Message_Length  => this.Current_Message_Length,
@@ -141,6 +162,11 @@ package body Logger_Type is
    -- Logs a message to stdout with 'ERROR' prefix
    function Error(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
+      if this.Submit_Animation = False then
+         Animation.Animation_Updater_Task.Stop;
+         this.Current_Animation := Default_Animations.None;
+      end if;
+
       Internal_Prefixed_Log(
          Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
          Current_Message_Length  => this.Current_Message_Length,
@@ -158,7 +184,16 @@ package body Logger_Type is
    -- Logs a newline to stdout
    function Nl(this : access Logger_Dummy) return access Logger_Dummy is
    begin
-      -- TODO: Deny when animation is active
+      if this.Submit_Animation = False then
+         Animation.Animation_Updater_Task.Stop;
+         this.Current_Animation := Default_Animations.None;
+      else
+         declare
+            Illegal_Newline : exception;
+         begin
+            raise Illegal_Newline with "Cannot submit newline in callchain with animation";
+         end;
+      end if;
 
       -- Append whitespaces if the previous message was longer and marked as Rm
       Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
@@ -184,14 +219,11 @@ package body Logger_Type is
       Internal_Log("" & Ada.Characters.Latin_1.CR); -- Print a carriage return to stdout (so the next msg overwrites this one)
 
       -- Start animation if one was set
-      if this.Submit_Animation and then this.Current_Animation /= Default_Animations.None then
+      if this.Submit_Animation then
          Animation.Animation_Updater_Task.Start(
             Animation_Frames => this.Current_Animation,
             Animation_Interval => this.Animate_Interval
          );
-      else
-         Animation.Animation_Updater_Task.Stop;
-         this.Current_Animation := Default_Animations.None;
       end if;
 
       -- Save size so the next message can overwrite everything we've printed to avoid ghost chars
@@ -203,10 +235,8 @@ package body Logger_Type is
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    procedure EoL(this : access Logger_Dummy) is
    begin
-      -- TODO: Cancel active animation (but only if this is not the EoL call of the message chain starting the animation (this could get tricky))
-
       -- Call RmEoL() if an active animation was registered
-      if this.Current_Animation /= Default_Animations.None then
+      if this.Submit_Animation then
          this.RmEoL;
          return;
       end if;
