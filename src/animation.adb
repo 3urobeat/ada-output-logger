@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-09 22:33:56
+-- Last Modified: 2024-07-21 20:59:36
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -20,7 +20,7 @@ package body Animation is
       use Animation_Frames_Bounded;
 
       -- Init data storage with default values to prevent TASKING_ERROR
-      Hold_Animation    : Boolean         := False;
+      Hold_Animation    : Boolean         := True; -- Init with True to prevent any unwanted iterations
       Index             : Animation_Index := Animation_Index'First;
       Interval          : Duration        := 0.5;
       Current_Animation : Animation_Type  := Default_Animations.None;
