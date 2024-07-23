@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-21 22:25:49
+-- Last Modified: 2024-07-23 22:39:35
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -19,8 +19,8 @@
 -- Clean and create build folder once:
 -- rm -rf ./build && mkdir ./build
 
--- Compile and run using:
--- $(cd build && gnatmake -I../src ../logger_test.adb -o logger-test) && ./build/logger-test
+-- Compile and run using: (The echo appendage makes sure your cursor reappears when the binary crashes)
+-- ( $(cd build && gnatmake -g -I../src ../logger_test.adb -o logger-test) && ./build/logger-test ) ; echo -e "\033[?25h"
 
 
 with Logger_Type;
