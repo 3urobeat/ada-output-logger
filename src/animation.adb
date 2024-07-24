@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-24 17:16:44
+-- Last Modified: 2024-07-24 18:44:16
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -48,7 +48,12 @@ package body Animation is
 
       Next_Run : Time := Clock;
    begin
-      accept Start;
+      -- This select prevents the task from keeping the process alive when no animations have been started during the application's lifetime
+      select
+         accept Start;
+      or
+         terminate;
+      end select;
 
       while not Hold_Animation loop
          if Clock >= Next_Run then
