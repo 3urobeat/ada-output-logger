@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-24 17:15:21
+-- Last Modified: 2024-07-24 17:16:44
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -45,28 +45,31 @@ package body Animation is
    -- Handles periodically updating an active animation
    task body Animation_Updater_Task is
       use Animation_Frames_Bounded;
+
+      Next_Run : Time := Clock;
    begin
       accept Start;
 
       while not Hold_Animation loop
+         if Clock >= Next_Run then
 
-         -- Print this animation frame and reset cursor so the next frame can overwrite this one
-         Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)));
-         Internal_Log("] " & Ada.Characters.Latin_1.CR);
+            -- Print this animation frame and reset cursor so the next frame can overwrite this one
+            Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)));
+            Internal_Log("] " & Ada.Characters.Latin_1.CR);
 
-         -- Reset index if we reached the end or the animation does not contain any more frames
-         if (Index = Animation_Index'Last) or (Current_Animation(Animation_Index'Succ(Index)) = Animation_Frames_Bounded.Null_Bounded_String) then
-            Index := Animation_Index'First;
-         else
-            Index := Animation_Index'Succ(Index); -- ...otherwise get the next element
+            -- Reset index if we reached the end or the animation does not contain any more frames
+            if (Index = Animation_Index'Last) or (Current_Animation(Animation_Index'Succ(Index)) = Animation_Frames_Bounded.Null_Bounded_String) then
+               Index := Animation_Index'First;
+            else
+               Index := Animation_Index'Succ(Index); -- ...otherwise get the next element
+            end if;
+
+            Next_Run := Clock + Interval;
+
          end if;
-
-         delay until (Clock + Interval);
-
       end loop;
 
       -- TODO: Remove animation frame from log on exit
-
    end Animation_Updater_Task;
 
 end Animation;
