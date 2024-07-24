@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-08 22:29:33
+-- Last Modified: 2024-07-24 17:15:21
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -33,12 +33,9 @@ package Animation is
    type Animation_Type is array(Animation_Index) of Animation_Frames_Bounded.Bounded_String;
 
 
-   -- Handles periodically updating an active animation
-   task Animation_Updater_Task is
-      entry Start(Animation_Frames : Animation_Type; Animation_Interval : Duration);
-      entry Log_Static; -- Logs one frame without Carriage Return and then holds the current animation
-      entry Stop;
-   end Animation_Updater_Task;
+   procedure Start(Animation_Frames : Animation_Type; Animation_Interval : Duration);
+   procedure Log_Static;
+   procedure Stop;
 
 
    -- Collection of default animations
@@ -117,5 +114,16 @@ package Animation is
    Default_Animations : Default_Animations_Type;
 
 private
+
+   -- Init data storage with default values to prevent TASKING_ERROR
+   Hold_Animation    : Boolean         := True; -- Init with True to prevent any unwanted iterations
+   Index             : Animation_Index := Animation_Index'First;
+   Interval          : Duration        := 0.5;
+   Current_Animation : Animation_Type  := Default_Animations.None;
+
+   -- Handles periodically updating an active animation
+   task Animation_Updater_Task is
+      entry Start;
+   end Animation_Updater_Task;
 
 end Animation;

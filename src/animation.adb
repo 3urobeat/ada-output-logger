@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-21 22:25:49
+-- Last Modified: 2024-07-24 17:15:21
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -15,66 +15,57 @@
 
 package body Animation is
 
+   procedure Start(Animation_Frames : Animation_Type; Animation_Interval : Duration) is
+   begin
+      -- Only reset animation index if a different animation was provided to provide seamless transitions between different messages with the same animation
+      if Current_Animation /= Animation_Frames then
+         Index := Animation_Index'First;
+      end if;
+
+      Current_Animation := Animation_Frames;
+      Interval          := Animation_Interval;
+      Hold_Animation    := False;
+
+      Animation_Updater_Task.Start;
+   end Start;
+
+   procedure Log_Static is
+   begin
+      Hold_Animation := True; -- Causes the task to stop updating without resetting index
+      Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)) & "] ");
+   end Log_Static;
+
+   procedure Stop is
+   begin
+      Hold_Animation := True;
+      Current_Animation := Default_Animations.None;
+   end Stop;
+
+
    -- Handles periodically updating an active animation
    task body Animation_Updater_Task is
       use Animation_Frames_Bounded;
-
-      -- Init data storage with default values to prevent TASKING_ERROR
-      Hold_Animation    : Boolean         := True; -- Init with True to prevent any unwanted iterations
-      Index             : Animation_Index := Animation_Index'First;
-      Interval          : Duration        := 0.5;
-      Current_Animation : Animation_Type  := Default_Animations.None;
    begin
-      loop
+      accept Start;
 
-         -- Use select to not block the main thread
-         select
-            accept Start(Animation_Frames : Animation_Type; Animation_Interval : Duration) do
-               -- Only reset animation index if a different animation was provided to provide seamless transitions between different messages with the same animation
-               if Current_Animation /= Animation_Frames then
-                  Index := Animation_Index'First;
-               end if;
+      while not Hold_Animation loop
 
-               Current_Animation := Animation_Frames;
-               Interval          := Animation_Interval;
-               Hold_Animation    := False;
-            end Start;
-         or
-            accept Log_Static;
+         -- Print this animation frame and reset cursor so the next frame can overwrite this one
+         Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)));
+         Internal_Log("] " & Ada.Characters.Latin_1.CR);
 
-            Hold_Animation := True; -- Causes the task to stop updating without resetting index
-            Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)) & "] ");
-         or
-            accept Stop;
-
-            Current_Animation := Default_Animations.None;
-            Hold_Animation := True;
-            exit; -- Prevent delay from keeping task alive a little longer
-         or
-            delay until (Clock + Interval);
-
-            if Current_Animation = Default_Animations.None then
-               exit; -- Exit task when no animation is supposed to be running to avoid keeping the process alive
-            end if;
-
-            -- TODO: Remove animation frame from log on exit
-         end select;
-
-
-         if not Hold_Animation then
-            -- Print this animation frame and reset cursor so the next frame can overwrite this one
-            Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)));
-            Internal_Log("] " & Ada.Characters.Latin_1.CR);
-
-            -- Reset index if we reached the end or the animation does not contain any more frames
-            if (Index = Animation_Index'Last) or (Current_Animation(Animation_Index'Succ(Index)) = Animation_Frames_Bounded.Null_Bounded_String) then
-               Index := Animation_Index'First;
-            else
-               Index := Animation_Index'Succ(Index); -- ...otherwise get the next element
-            end if;
+         -- Reset index if we reached the end or the animation does not contain any more frames
+         if (Index = Animation_Index'Last) or (Current_Animation(Animation_Index'Succ(Index)) = Animation_Frames_Bounded.Null_Bounded_String) then
+            Index := Animation_Index'First;
+         else
+            Index := Animation_Index'Succ(Index); -- ...otherwise get the next element
          end if;
 
+         delay until (Clock + Interval);
+
       end loop;
+
+      -- TODO: Remove animation frame from log on exit
 
    end Animation_Updater_Task;
 
