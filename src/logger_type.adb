@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-24 17:13:31
+-- Last Modified: 2024-07-24 17:15:21
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -60,9 +60,9 @@ package body Logger_Type is
 
       -- Check if there is a running animation. If it is the same, get it printed and hold
       if this.Current_Animation = ANIM then
-         Animation.Animation_Updater_Task.Log_Static; -- This prints the current animation frame once to offset the following message content
+         Animation.Log_Static; -- This prints the current animation frame once to offset the following message content
       else
-         Animation.Animation_Updater_Task.Stop;
+         Animation.Stop;
          Internal_Log("[" & Animation_Frames_Bounded.To_String(ANIM(Animation_Index'First)) & "] ");
       end if;
 
@@ -81,7 +81,7 @@ package body Logger_Type is
    procedure Stop_Animation(this : access Logger_Dummy) is
    begin
       this.Current_Animation := Default_Animations.None;
-      Animation.Animation_Updater_Task.Stop;
+      Animation.Stop;
    end Stop_Animation;
 
 
@@ -89,7 +89,7 @@ package body Logger_Type is
    function Log(this : access Logger_Dummy; STR : String) return access Logger_Dummy is
    begin
       if this.Submit_Animation = False then
-         Animation.Animation_Updater_Task.Stop;
+         Animation.Stop;
          this.Current_Animation := Default_Animations.None;
       end if;
 
@@ -105,7 +105,7 @@ package body Logger_Type is
    function Info(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
       if this.Submit_Animation = False then
-         Animation.Animation_Updater_Task.Stop;
+         Animation.Stop;
          this.Current_Animation := Default_Animations.None;
       end if;
 
@@ -127,7 +127,7 @@ package body Logger_Type is
    function Debug(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
       if this.Submit_Animation = False then
-         Animation.Animation_Updater_Task.Stop;
+         Animation.Stop;
          this.Current_Animation := Default_Animations.None;
       end if;
 
@@ -149,7 +149,7 @@ package body Logger_Type is
    function Warn(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
       if this.Submit_Animation = False then
-         Animation.Animation_Updater_Task.Stop;
+         Animation.Stop;
          this.Current_Animation := Default_Animations.None;
       end if;
 
@@ -171,7 +171,7 @@ package body Logger_Type is
    function Error(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
       if this.Submit_Animation = False then
-         Animation.Animation_Updater_Task.Stop;
+         Animation.Stop;
          this.Current_Animation := Default_Animations.None;
       end if;
 
@@ -193,7 +193,7 @@ package body Logger_Type is
    function Nl(this : access Logger_Dummy) return access Logger_Dummy is
    begin
       if this.Submit_Animation = False then
-         Animation.Animation_Updater_Task.Stop;
+         Animation.Stop;
          this.Current_Animation := Default_Animations.None;
       else
          declare
@@ -228,7 +228,7 @@ package body Logger_Type is
 
       -- Start animation if one was set
       if this.Submit_Animation then
-         Animation.Animation_Updater_Task.Start(
+         Animation.Start(
             Animation_Frames => this.Current_Animation,
             Animation_Interval => this.Animate_Interval
          );
