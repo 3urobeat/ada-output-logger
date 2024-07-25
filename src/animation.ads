@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-24 17:15:21
+-- Last Modified: 2024-07-25 19:26:23
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -33,8 +33,13 @@ package Animation is
    type Animation_Type is array(Animation_Index) of Animation_Frames_Bounded.Bounded_String;
 
 
+   -- Starts an animation
    procedure Start(Animation_Frames : Animation_Type; Animation_Interval : Duration);
+
+   -- Stops a current animation and prints the current frame, without a carriage return
    procedure Log_Static;
+
+   -- Stops a current animation
    procedure Stop;
 
 
