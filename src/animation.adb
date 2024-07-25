@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-24 18:44:16
+-- Last Modified: 2024-07-25 19:26:23
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -15,6 +15,7 @@
 
 package body Animation is
 
+   -- Starts an animation
    procedure Start(Animation_Frames : Animation_Type; Animation_Interval : Duration) is
    begin
       -- Only reset animation index if a different animation was provided to provide seamless transitions between different messages with the same animation
@@ -29,12 +30,16 @@ package body Animation is
       Animation_Updater_Task.Start;
    end Start;
 
+
+   -- Stops a current animation and prints the current frame, without a carriage return
    procedure Log_Static is
    begin
       Hold_Animation := True; -- Causes the task to stop updating without resetting index
       Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)) & "] ");
    end Log_Static;
 
+
+   -- Stops a current animation
    procedure Stop is
    begin
       Hold_Animation := True;
@@ -72,6 +77,8 @@ package body Animation is
             Next_Run := Clock + Interval;
 
          end if;
+
+         delay 0.01; -- Delay next check a little to reduce CPU usage
       end loop;
 
       -- TODO: Remove animation frame from log on exit
