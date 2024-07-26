@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-07 13:22:43
+-- Last Modified: 2024-07-26 22:43:37
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -37,6 +37,11 @@ package Helpers is
    -- @param Last_Message_Length Length of the last message
    -- @return Returns string to append to the current message
    function Get_Trailing_Whitespaces(Current_Message_Length : Natural; Last_Message_Length : Natural) return String;
+
+   -- Internal: Cuts a String to the width of the current terminal and returns it
+   -- @param str String to cut
+   -- @return Returns the cut string
+   function Cut_To_Terminal_Width(str : String) return String;
 
    -- Internal: Logs a message to stdout without appending to output file (as this is already handled by the external functions)
    -- @param str User provided message to log

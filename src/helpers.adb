@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-07 13:22:43
+-- Last Modified: 2024-07-26 22:43:37
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -11,6 +11,9 @@
 -- This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 -- This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 -- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+
+with Terminal;
 
 
 package body Helpers is
@@ -46,6 +49,18 @@ package body Helpers is
          return ""; -- Return empty string if new message is >= previous message
       end if;
    end Get_Trailing_Whitespaces;
+
+
+   -- Internal: Cuts a String to the width of the current terminal and returns it
+   function Cut_To_Terminal_Width(str : String) return String is
+      Width : Positive := Terminal.Get_Terminal_Width; -- TODO: Exception handling
+   begin
+      if str'Length > Width then                         -- Make sure width is < length to avoid a constraint_error
+         return str(str'First .. str'First + Width - 2);
+      else
+         return str;
+      end if;
+   end Cut_To_Terminal_Width;
 
 
    -- Internal: Logs a message to stdout without appending to output file (as this is already handled by the external functions)
