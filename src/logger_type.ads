@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-19 15:13:49
+-- Last Modified: 2024-07-27 00:09:45
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -51,6 +51,9 @@ package Logger_Type with Elaborate_Body is
       Output_File_Path : Options_Bounded_128B.Bounded_String := Options_Bounded_128B.To_Bounded_String("./output.txt");
 
 
+      -- Internal: Whether this message was marked as remove
+      Marked_As_Rm : Boolean := False;
+
       -- Internal: If an animation was registered in this call chain
       Submit_Animation : Boolean := False;
 
@@ -69,6 +72,11 @@ package Logger_Type with Elaborate_Body is
    -- This Logger instance
    function Logger return access Logger_Dummy; -- TODO: Rethink this implementation, I'm not sure if it can cause multiple Logger instances in certain projects
 
+
+   -- Marks this message to be overwritten by the next logger call
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   -- @return Returns `this` instance of Logger to support chaining another function call
+   function Rm(this : access Logger_Dummy) return access Logger_Dummy;
 
    -- Prepends the following message with an animation. The animation will be refreshed every Animate_Interval ms as long as it is not canceled by logging another message. Call this before any other logger function.
    -- @param this Instance of Logger, automatically provided when using dot notation
@@ -122,10 +130,6 @@ package Logger_Type with Elaborate_Body is
    -- @param this Instance of Logger, automatically provided when using dot notation
    -- @return Returns `this` instance of Logger to support chaining another function call
    function Nl(this : access Logger_Dummy) return access Logger_Dummy;
-
-   -- Marks this message to be overwritten by the next logger call and ends the message
-   -- @param this Instance of Logger, automatically provided when using dot notation
-   procedure RmEoL(this : access Logger_Dummy);
 
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    -- @param this Instance of Logger, automatically provided when using dot notation
