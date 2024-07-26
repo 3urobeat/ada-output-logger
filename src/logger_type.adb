@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-24 17:15:21
+-- Last Modified: 2024-07-27 00:09:45
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -45,12 +45,22 @@ package body Logger_Type is
    function Logger return access Logger_Dummy is
       this : access Logger_Dummy := Logger_Instance'Access;
    begin
-      -- Reset animation submit
+      -- Reset rm & animation submit
+      this.Marked_As_Rm     := False;
       this.Submit_Animation := False;
 
       return this;
    end Logger;
 
+
+
+   -- Marks this message to be overwritten by the next logger call
+   function Rm(this : access Logger_Dummy) return access Logger_Dummy is
+   begin
+      this.Marked_As_Rm := True;
+
+      return this;
+   end Rm;
 
 
    -- Prepends the following message with an animation. The animation will be refreshed every  Call this before any
@@ -214,46 +224,38 @@ package body Logger_Type is
    end Nl;
 
 
-   -- Marks this message to be overwritten by the next logger call and ends the message
-   procedure RmEoL(this : access Logger_Dummy) is
-   begin
-      -- TODO: Cut this message to terminal width to prevent message not being able to get cleared. This is a problem because the current message could already have overflown one line
-
-      -- Append whitespaces if the previous message was longer and marked as Rm
-      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
-      this.Last_Message_Length := 0; -- Reset because we have taken action
-
-      File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF); -- Print a newline to the output file as nothing can be overwritten there
-      Internal_Log("" & Ada.Characters.Latin_1.CR); -- Print a carriage return to stdout (so the next msg overwrites this one)
-
-      -- Start animation if one was set
-      if this.Submit_Animation then
-         Animation.Start(
-            Animation_Frames => this.Current_Animation,
-            Animation_Interval => this.Animate_Interval
-         );
-      end if;
-
-      -- Save size so the next message can overwrite everything we've printed to avoid ghost chars
-      this.Last_Message_Length := this.Current_Message_Length;
-      this.Current_Message_Length := 0;
-   end RmEoL;
-
-
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    procedure EoL(this : access Logger_Dummy) is
    begin
-      -- Call RmEoL() if an active animation was registered
-      if this.Submit_Animation then
-         this.RmEoL;
-         return;
-      end if;
-
       -- Append whitespaces if the previous message was longer and marked as Rm
       Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
-      -- Reset size tracker. Since this message was not marked to be removed, we don't need to keep it
+
+      -- Check if the message was marked to be removed or contains an animation
+      if this.Marked_As_Rm or this.Submit_Animation then
+
+         -- Print a newline to the output file (nothing can be overwritten there) and a carriage return to stdout (so the next msg overwrites this one)
+         File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
+         Internal_Log("" & Ada.Characters.Latin_1.CR);
+
+         -- Start animation if one was set
+         if this.Submit_Animation then
+            Animation.Start(
+               Animation_Frames => this.Current_Animation,
+               Animation_Interval => this.Animate_Interval
+            );
+         end if;
+
+         -- Save size so the next message can overwrite everything we've printed to avoid ghost chars
+         this.Last_Message_Length := this.Current_Message_Length;
+
+      else
+         this.Last_Message_Length := 0; -- Reset because we have taken action
+      end if;
+
+
+      -- Reset size tracker of this message
       this.Current_Message_Length := 0;
    end EoL;
 

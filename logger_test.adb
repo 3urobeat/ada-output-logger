@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-23 22:39:35
+-- Last Modified: 2024-07-27 00:09:45
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -43,34 +43,37 @@ begin
 
 
    -- Test removing message
-   --  Logger.Info("Long message that should be gone in 500ms").RmEoL;
+   --  Logger.Rm.Info("Long message that should be gone in 500ms").EoL;
    --  delay 0.5;
    --  Logger.Info("Hello Again").Nl.EoL;
 
-   --  Logger.Info("Short msg").RmEoL;
+   --  Logger.Rm.Info("Short msg").EoL;
    --  delay 0.5;
    --  Logger.Info("Hello Again using a longer message").Nl.EoL;
 
-   --  Logger.Info("Long message that should get overwritten by Finalize when the process exits or Logger gets deleted").RmEoL;
+   --  Logger.Rm.Info("Long message that should get overwritten by Finalize when the process exits or Logger gets deleted").EoL;
    --  delay 0.5;
 
 
    -- Test animations
-   Logger.Animate(Default_Animations.Loading).Info("Hello there").RmEoL;
-   delay 2.25;
-   --Logger.Animate(Default_Animations.Waiting).Warn("Next").RmEoL; -- Start another animation to stop the previous one
-   --Logger.Animate(Default_Animations.Loading).Warn("Next").RmEoL; -- ...or continue with the same animation using a different message to showcase the frame retention
+   --Logger.Animate(Default_Animations.Loading).Info("Hello there").EoL;
+   --delay 2.4;
+   --Logger.Animate(Default_Animations.Waiting).Warn("Next").EoL; -- Start another animation to stop the previous one
+   --Logger.Animate(Default_Animations.Loading).Warn("Next").EoL; -- ...or continue with the same animation using a different message to showcase the frame retention
 
    --test := Logger.Animate(Default_Animations.Loading); -- Simulate that it takes time to change the message. The animation should retain the last frame and hold
    --delay 0.9;
-   --test.Warn("Next").RmEoL;
+   --test.Rm.Warn("Next").EoL;
 
    --delay 2.0;
-   Logger.Animate(Default_Animations.Waiting).Error("Test message").EoL; -- Test EoL() detecting active animation and calling RmEoL() instead
+   Logger.Animate(Default_Animations.Waiting).Error("Test message").EoL; -- Test keeping message without animation frame in stdout
 
    --Logger.Stop_Animation; -- Exit
-   Logger.Info("Please exit").Nl.EoL; -- ...or exit by printing a message without animation
+   --Logger.Info("Please exit").Nl.EoL; -- ...or exit by printing a message without animation
 
-   --Logger.Animate(Default_Animations.Arrows).Warn("This is illegal").Nl.RmEoL; -- This should throw an Illegal_Newline exception
+   --  Ada.Text_IO.Put_Line(Terminal.Get_Terminal_Width'Image);
+   --  Ada.Text_IO.Put_Line(Helpers.Cut_To_Terminal_Width("abcdefghijklmnopqrstuvwxyz"));
+
+   --Logger.Animate(Default_Animations.Arrows).Warn("This is illegal").Nl.EoL; -- This should throw an Illegal_Newline exception
 
 end Logger_Test;
