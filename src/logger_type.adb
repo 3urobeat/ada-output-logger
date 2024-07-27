@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-27 00:09:45
+-- Last Modified: 2024-07-27 11:42:45
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -202,15 +202,19 @@ package body Logger_Type is
    -- Logs a newline to stdout
    function Nl(this : access Logger_Dummy) return access Logger_Dummy is
    begin
-      if this.Submit_Animation = False then
-         Animation.Stop;
-         this.Current_Animation := Default_Animations.None;
-      else
+      -- Deny newline call for messages awaiting carriage return as this would break overwriting it
+      if this.Marked_As_Rm or this.Submit_Animation then
          declare
             Illegal_Newline : exception;
          begin
-            raise Illegal_Newline with "Cannot submit newline in callchain with animation";
+            raise Illegal_Newline with "Cannot submit newline for messages containing animation or marked as rm";
          end;
+      end if;
+
+      -- Stop animation if one is active
+      if not this.Submit_Animation then
+         Animation.Stop;
+         this.Current_Animation := Default_Animations.None;
       end if;
 
       -- Append whitespaces if the previous message was longer and marked as Rm
