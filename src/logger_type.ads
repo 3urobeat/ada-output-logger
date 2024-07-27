@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-27 00:09:45
+-- Last Modified: 2024-07-27 17:00:01
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -18,18 +18,22 @@ with Ada.Text_IO;
 with Ada.Strings.Bounded;
 with Ada.Characters.Latin_1; -- Used for escape character carriage return & newline
 with Animation;
-with Colors;
+with Colors_Collection;
 with Construct;
 with File_Output;
 with Helpers;
 
 use Ada.Text_IO;
 use Animation;
+use Colors_Collection;
 use Construct;
 use Helpers;
 
 
 package Logger_Type with Elaborate_Body is
+
+   -- Expose colors collection for easy access
+   Colors : Colors_Type := Colors_Collection.Colors;
 
    -- Expose set of default animations for easy access
    Default_Animations : Default_Animations_Type := Animation.Default_Animations;
