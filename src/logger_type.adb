@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-27 11:42:45
+-- Last Modified: 2024-07-27 17:00:01
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -231,8 +231,8 @@ package body Logger_Type is
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    procedure EoL(this : access Logger_Dummy) is
    begin
-      -- Append whitespaces if the previous message was longer and marked as Rm
-      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
+      -- Append whitespaces if the previous message was longer and marked as Rm. Always print Color Reset to avoid colors bleeding into the next message
+      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length) & Colors.reset);
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
 
