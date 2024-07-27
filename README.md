@@ -10,11 +10,12 @@ It simultaneously provides color-highlighting based on log level, attaches a tim
 - Colored log levels: Info, Warn, Error & Debug
 - Keep track of every log message with a output file
 - Display file name to keep track of log origins even in large projects
-- Overwrite a log message with the next one by enabling remove
+- Overwrite a log message with the next one by marking it as *remove*
+- Animations: 6 are shipped by default
 
 </br>
 
-The fundamental idea of the library is to easily construct log messages by being able to chain calls to all functions `Logger_Type` exposes.
+The fundamental idea of the library is to easily construct log messages by chaining calls to public functions of `Logger_Type`.
 
 It facilitates this concept by creating an instance `Logger` of the *tagged record* `Logger_Dummy` which every function takes as the first parameter, making them accessible through `Logger` by using the *dot notation*.  
 Every function then returns the `Logger` instance again so that you can easily chain another function call.  

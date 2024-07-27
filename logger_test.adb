@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-27 00:09:45
+-- Last Modified: 2024-07-27 11:44:02
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -23,7 +23,10 @@
 -- ( $(cd build && gnatmake -g -I../src ../logger_test.adb -o logger-test) && ./build/logger-test ) ; echo -e "\033[?25h"
 
 
+with Ada.Text_IO;
 with Logger_Type;
+with Terminal;
+with Helpers;
 
 use Logger_Type;
 
@@ -56,24 +59,33 @@ begin
 
 
    -- Test animations
-   --Logger.Animate(Default_Animations.Loading).Info("Hello there").EoL;
-   --delay 2.4;
-   --Logger.Animate(Default_Animations.Waiting).Warn("Next").EoL; -- Start another animation to stop the previous one
-   --Logger.Animate(Default_Animations.Loading).Warn("Next").EoL; -- ...or continue with the same animation using a different message to showcase the frame retention
+   --  Logger.Animate(Default_Animations.Loading).Info("Hello there").EoL;
+   --  delay 2.4;
+   --  Logger.Animate(Default_Animations.Waiting).Warn("Next").EoL; -- Start another animation to stop the previous one
+   --  Logger.Animate(Default_Animations.Loading).Warn("Next").EoL; -- ...or continue with the same animation using a different message to showcase the frame retention
 
-   --test := Logger.Animate(Default_Animations.Loading); -- Simulate that it takes time to change the message. The animation should retain the last frame and hold
-   --delay 0.9;
-   --test.Rm.Warn("Next").EoL;
+   --  test := Logger.Animate(Default_Animations.Loading); -- Simulate that it takes time to change the message. The animation should retain the last frame and hold
+   --  delay 0.9;
+   --  test.Rm.Warn("Next").EoL;
 
-   --delay 2.0;
+   --  delay 2.0;
    Logger.Animate(Default_Animations.Waiting).Error("Test message").EoL; -- Test keeping message without animation frame in stdout
 
+
+   -- Test illegal newline detection
+   --  Logger.Animate(Default_Animations.Arrows).Warn("This is illegal").Nl.EoL;
+   --  Logger.Rm.Warn("This is also illegal").Nl.EoL;
+
+
+   -- Test cutting long messages to terminal width
+   --  Ada.Text_IO.Put_Line(Terminal.Get_Terminal_Width'Image);                           -- Check width readout of this terminal
+   --  Ada.Text_IO.Put_Line(Helpers.Cut_To_Terminal_Width("abcdefghijklmnopqrstuvwxyz"));
+   Logger.Rm.Debug("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").EoL;
+   delay 2.0;
+
+
+   -- Exit when animation is active
    --Logger.Stop_Animation; -- Exit
    --Logger.Info("Please exit").Nl.EoL; -- ...or exit by printing a message without animation
-
-   --  Ada.Text_IO.Put_Line(Terminal.Get_Terminal_Width'Image);
-   --  Ada.Text_IO.Put_Line(Helpers.Cut_To_Terminal_Width("abcdefghijklmnopqrstuvwxyz"));
-
-   --Logger.Animate(Default_Animations.Arrows).Warn("This is illegal").Nl.EoL; -- This should throw an Illegal_Newline exception
 
 end Logger_Test;
