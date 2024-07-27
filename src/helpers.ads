@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-26 22:43:37
+-- Last Modified: 2024-07-27 17:00:01
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -14,11 +14,12 @@
 
 
 with Ada.Text_IO;
-with Colors;
+with Colors_Collection;
 with Construct;
 with File_Output;
 
 use Ada.Text_IO;
+use Colors_Collection;
 use Construct;
 
 

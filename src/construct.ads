@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 18:23:04
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 15:29:50
+-- Last Modified: 2024-07-27 17:00:01
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -17,10 +17,11 @@ with Ada.Calendar;
 with Ada.Calendar.Formatting;
 with Ada.Strings.Bounded;
 with Ada.Characters.Latin_1; -- Used for escape character for carriage return
-with Colors;
+with Colors_Collection;
 
 use Ada.Calendar;
 use Ada.Calendar.Formatting;
+use Colors_Collection;
 
 
 package Construct is
