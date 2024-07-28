@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-28 15:11:52
+-- Last Modified: 2024-07-28 21:14:06
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -37,8 +37,8 @@ package Animation is
    -- Starts an animation
    procedure Start(Animation_Frames : Animation_Type; Animation_Interval : Duration);
 
-   -- Stops a current animation and prints the current frame, without a carriage return
-   procedure Log_Static(Current_Message_Length : in out Natural);
+   -- Stops a current animation without resetting animation storage and returns the current frame
+   function Log_Static return String;
 
    -- Stops a current animation
    procedure Stop;

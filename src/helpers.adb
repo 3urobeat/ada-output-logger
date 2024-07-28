@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-28 15:11:52
+-- Last Modified: 2024-07-28 21:14:06
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -66,44 +66,5 @@ package body Helpers is
          return str;
       end if;
    end Cut_To_Terminal_Width;
-
-
-   -- Internal: Logs a message to stdout without appending to output file (as this is already handled by the external functions)
-   procedure Internal_Log(Str : String; Current_Message_Length : in out Natural; Cut : Boolean := False) is
-   begin
-      -- Check if message needs to be cut
-      if Cut then
-         declare
-            Cut_Str : String := Cut_To_Terminal_Width(Str, Current_Message_Length);
-         begin
-            Put(Cut_Str);
-            Current_Message_Length := Current_Message_Length + Cut_Str'Length; -- TODO: This is not entirely accurate because it counts color codes
-         end;
-      else
-         Put(Str);
-         Current_Message_Length := Current_Message_Length + Str'Length; -- TODO: This is not entirely accurate because it counts color codes
-      end if;
-
-      -- Always append Color Reset to avoid colors bleeding into the next element
-      Put(Colors.reset);
-   end Internal_Log;
-
-
-   -- Internal: Constructs the actual message and logs it to file & stdout
-   procedure Internal_Prefixed_Log(Output_File_Path : String; Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False; Cut : Boolean := False) is
-      Msg_No_Color : String := Get_Prefix("", Log_Lvl, SRC, ND) & str;
-   begin
-
-      -- Construct message without colors for output file
-      File_Output.Print_To_File(Output_File_Path, Msg_No_Color);
-
-      -- Construct message with colors and let the internal plain logger function log it
-      Internal_Log(
-         str => Get_Prefix(Color, Log_Lvl, SRC, ND) & str,
-         Current_Message_Length => Current_Message_Length,
-         Cut => Cut
-      );
-
-   end Internal_Prefixed_Log;
 
 end Helpers;

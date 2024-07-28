@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-28 15:11:52
+-- Last Modified: 2024-07-28 21:14:06
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -32,10 +32,10 @@ package body Animation is
 
 
    -- Stops a current animation and prints the current frame, without a carriage return
-   procedure Log_Static(Current_Message_Length : in out Natural) is
+   function Log_Static return String is
    begin
       Hold_Animation := True; -- Causes the task to stop updating without resetting index
-      Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)) & "] ", Current_Message_Length);
+      return "[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)) & "] ";
    end Log_Static;
 
 

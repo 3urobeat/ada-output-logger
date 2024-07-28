@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-28 15:11:52
+-- Last Modified: 2024-07-28 21:14:06
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -70,10 +70,10 @@ package body Logger_Type is
 
       -- Check if there is a running animation. If it is the same, get it printed and hold
       if this.Current_Animation = ANIM then
-         Animation.Log_Static(this.Current_Message_Length); -- This prints the current animation frame once to offset the following message content
+         this.Internal_Log(Animation.Log_Static); -- This prints the current animation frame once to offset the following message content
       else
          Animation.Stop;
-         Internal_Log("[" & Animation_Frames_Bounded.To_String(ANIM(Animation_Index'First)) & "] ", this.Current_Message_Length);
+         this.Internal_Log("[" & Animation_Frames_Bounded.To_String(ANIM(Animation_Index'First)) & "] ");
       end if;
 
       -- Register this animation
@@ -101,7 +101,7 @@ package body Logger_Type is
       end if;
 
       File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), STR);
-      Internal_Log(STR, this.Current_Message_Length, this.Marked_As_Rm or this.Submit_Animation);
+      this.Internal_Log(STR);
 
       return this;
    end Log;
@@ -115,15 +115,12 @@ package body Logger_Type is
          this.Current_Animation := Default_Animations.None;
       end if;
 
-      Internal_Prefixed_Log(
-         Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
-         Current_Message_Length  => this.Current_Message_Length,
-         Log_Lvl                 => "INFO",
-         Color                   => Colors.brfgcyan,
-         STR                     => STR,
-         SRC                     => SRC,
-         ND                      => ND,
-         Cut                     => this.Marked_As_Rm or this.Submit_Animation
+      this.Internal_Prefixed_Log(
+         Log_Lvl  => "INFO",
+         Color    => Colors.brfgcyan,
+         STR      => STR,
+         SRC      => SRC,
+         ND       => ND
       );
 
       return this;
@@ -138,15 +135,12 @@ package body Logger_Type is
          this.Current_Animation := Default_Animations.None;
       end if;
 
-      Internal_Prefixed_Log(
-         Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
-         Current_Message_Length  => this.Current_Message_Length,
-         Log_Lvl                 => "DEBUG",
-         Color                   => Colors.brfgcyan & Colors.background,
-         STR                     => STR,
-         SRC                     => SRC,
-         ND                      => ND,
-         Cut                     => this.Marked_As_Rm or this.Submit_Animation
+      this.Internal_Prefixed_Log(
+         Log_Lvl  => "DEBUG",
+         Color    => Colors.brfgcyan & Colors.background,
+         STR      => STR,
+         SRC      => SRC,
+         ND       => ND
       );
 
       return this;
@@ -161,15 +155,12 @@ package body Logger_Type is
          this.Current_Animation := Default_Animations.None;
       end if;
 
-      Internal_Prefixed_Log(
-         Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
-         Current_Message_Length  => this.Current_Message_Length,
-         Log_Lvl                 => "WARN",
-         Color                   => Colors.fgred,
-         STR                     => STR,
-         SRC                     => SRC,
-         ND                      => ND,
-         Cut                     => this.Marked_As_Rm or this.Submit_Animation
+      this.Internal_Prefixed_Log(
+         Log_Lvl  => "WARN",
+         Color    => Colors.fgred,
+         STR      => STR,
+         SRC      => SRC,
+         ND       => ND
       );
 
       return this;
@@ -184,15 +175,12 @@ package body Logger_Type is
          this.Current_Animation := Default_Animations.None;
       end if;
 
-      Internal_Prefixed_Log(
-         Output_File_Path        => Options_Bounded_128B.To_String(this.Output_File_Path),
-         Current_Message_Length  => this.Current_Message_Length,
-         Log_Lvl                 => "ERROR",
-         Color                   => Colors.fgred & Colors.background,
-         STR                     => Colors.fgred & STR,
-         SRC                     => SRC,
-         ND                      => ND,
-         Cut                     => this.Marked_As_Rm or this.Submit_Animation
+      this.Internal_Prefixed_Log(
+         Log_Lvl  => "ERROR",
+         Color    => Colors.fgred & Colors.background,
+         STR      => Colors.fgred & STR,
+         SRC      => SRC,
+         ND       => ND
       );
 
       return this;
@@ -218,7 +206,7 @@ package body Logger_Type is
       end if;
 
       -- Append whitespaces if the previous message was longer and marked as Rm
-      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length), this.Current_Message_Length);
+      this.Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
       File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
@@ -235,7 +223,7 @@ package body Logger_Type is
    procedure EoL(this : access Logger_Dummy) is
    begin
       -- Append whitespaces if the previous message was longer and marked as Rm
-      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length), this.Current_Message_Length);
+      this.Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
 
@@ -265,5 +253,39 @@ package body Logger_Type is
       -- Reset size tracker of this message
       this.Current_Message_Length := 0;
    end EoL;
+
+
+
+   -- Internal: Logs a message as is to stdout
+   procedure Internal_Log(this : in out Logger_Dummy; Str : String) is
+   begin
+      -- Check if message needs to be cut to terminal width
+      if this.Marked_As_Rm or this.Submit_Animation then
+         declare
+            Cut_Str : String := Cut_To_Terminal_Width(Str, this.Current_Message_Length);
+         begin
+            Put(Cut_Str);
+            this.Current_Message_Length := this.Current_Message_Length + Cut_Str'Length;  -- TODO: This is not entirely accurate because it counts color codes
+         end;
+      else
+         Put(Str);
+         this.Current_Message_Length := this.Current_Message_Length + Str'Length;              -- TODO: This is not entirely accurate because it counts color codes
+      end if;
+
+      -- Always append Color Reset to avoid colors bleeding into the next element
+      Put(Colors.reset);
+   end Internal_Log;
+
+
+   -- Internal: Constructs the actual message and logs it to file & stdout
+   procedure Internal_Prefixed_Log(this : in out Logger_Dummy; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False) is
+      Msg_No_Color : String := Get_Prefix("", Log_Lvl, SRC, ND) & str;
+   begin
+      -- Construct message without colors for output file
+      File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), Msg_No_Color);
+
+      -- Construct message with colors and let the internal plain logger function log it
+      this.Internal_Log(str => Get_Prefix(Color, Log_Lvl, SRC, ND) & str);
+   end Internal_Prefixed_Log;
 
 end Logger_Type;

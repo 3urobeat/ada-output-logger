@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-28 15:11:52
+-- Last Modified: 2024-07-28 21:14:06
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -44,15 +44,6 @@ package Helpers is
    -- @param Subtract Optional: Length to subtract from terminal width (for example an already printed string)
    -- @return Returns the cut string
    function Cut_To_Terminal_Width(str : String; Subtract : Natural := 0) return String;
-
-   -- Internal: Logs a message to stdout without appending to output file (as this is already handled by the external functions)
-   -- @param Str User provided message to log
-   -- @param Current_Message_Length Size of the message currently being constructed. This function overwrites it with the length of the message that was printed
-   -- @param Cut Optional: Whether this string must be cut to the width of the terminal
-   procedure Internal_Log(Str : String; Current_Message_Length : in out Natural; Cut : Boolean := False);
-
-   -- Internal: Constructs the actual message and logs it to file & stdout
-   procedure Internal_Prefixed_Log(Output_File_Path : String; Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False; Cut : Boolean := False);
 
 private
 
