@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-25 19:26:23
+-- Last Modified: 2024-07-28 15:11:52
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -32,10 +32,10 @@ package body Animation is
 
 
    -- Stops a current animation and prints the current frame, without a carriage return
-   procedure Log_Static is
+   procedure Log_Static(Current_Message_Length : in out Natural) is
    begin
       Hold_Animation := True; -- Causes the task to stop updating without resetting index
-      Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)) & "] ");
+      Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)) & "] ", Current_Message_Length);
    end Log_Static;
 
 
@@ -64,8 +64,8 @@ package body Animation is
          if Clock >= Next_Run then
 
             -- Print this animation frame and reset cursor so the next frame can overwrite this one
-            Internal_Log("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)));
-            Internal_Log("] " & Ada.Characters.Latin_1.CR);
+            Ada.Text_IO.Put("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)));         -- TODO: Use Internal_Log again, these messages should however not be counted in Current_Message_Length as we append a carriage return
+            Ada.Text_IO.Put("] " & Ada.Characters.Latin_1.CR);
 
             -- Reset index if we reached the end or the animation does not contain any more frames
             if (Index = Animation_Index'Last) or (Current_Animation(Animation_Index'Succ(Index)) = Animation_Frames_Bounded.Null_Bounded_String) then
