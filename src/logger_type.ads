@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-27 17:00:01
+-- Last Modified: 2024-07-28 21:14:06
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -73,8 +73,8 @@ package Logger_Type with Elaborate_Body is
    end record;
 
 
-   -- This Logger instance
-   function Logger return access Logger_Dummy; -- TODO: Rethink this implementation, I'm not sure if it can cause multiple Logger instances in certain projects
+   -- Starts a new log message
+   function Logger return access Logger_Dummy;
 
 
    -- Marks this message to be overwritten by the next logger call
@@ -146,5 +146,19 @@ private
 
    -- Internal: Overwrite Finalize to catch when Logger is deleted
    procedure Finalize(this : in out Logger_Dummy); -- TODO: I wish I could private this
+
+   -- Internal: Logs a message as is to stdout
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   -- @param Str User provided message to log
+   procedure Internal_Log(this : in out Logger_Dummy; Str : String);
+
+   -- Internal: Constructs the actual message and logs it to file & stdout
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   -- @param Log_Lvl Log Level of this message
+   -- @param Color Color Code to use for Log_Lvl
+   -- @param STR The message to log
+   -- @param SRC Optional: Name of the file this log message originates from
+   -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
+   procedure Internal_Prefixed_Log(this : in out Logger_Dummy; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False);
 
 end Logger_Type;
