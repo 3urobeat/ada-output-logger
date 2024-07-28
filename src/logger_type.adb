@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-27 17:00:01
+-- Last Modified: 2024-07-28 15:11:52
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -23,7 +23,7 @@ package body Logger_Type is
    -- Internal: Overwrite Initialize to catch when Logger is instantiated
    procedure Initialize(this : in out Logger_Dummy) is
    begin
-      Internal_Log(Colors.Hide_Cursor);
+      Put(Colors.Hide_Cursor);
    end Initialize;
 
 
@@ -31,7 +31,7 @@ package body Logger_Type is
    procedure Finalize(this : in out Logger_Dummy) is
       Exit_Msg : String := Options_Bounded_128B.To_String(this.Exit_Message);
    begin
-      Internal_Log(Colors.Show_Cursor);
+      Put(Colors.Show_Cursor);
       this.Log(Exit_Msg).EoL;
    exception                              -- TODO: Should be removed in release build for less overhead
       when E : others =>
@@ -70,17 +70,14 @@ package body Logger_Type is
 
       -- Check if there is a running animation. If it is the same, get it printed and hold
       if this.Current_Animation = ANIM then
-         Animation.Log_Static; -- This prints the current animation frame once to offset the following message content
+         Animation.Log_Static(this.Current_Message_Length); -- This prints the current animation frame once to offset the following message content
       else
          Animation.Stop;
-         Internal_Log("[" & Animation_Frames_Bounded.To_String(ANIM(Animation_Index'First)) & "] ");
+         Internal_Log("[" & Animation_Frames_Bounded.To_String(ANIM(Animation_Index'First)) & "] ", this.Current_Message_Length);
       end if;
 
       -- Register this animation
       this.Current_Animation := ANIM;
-
-      -- Add size of animation, plus bracket and whitespace, to Current_Message_Length
-      this.Current_Message_Length := this.Current_Message_Length + Animation_Frames_Bounded.Length(ANIM(Animation_Index'First)) + 3;
 
       -- Note: The animation handler task will be started by RmEoL
       return this;
@@ -104,8 +101,7 @@ package body Logger_Type is
       end if;
 
       File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), STR);
-      Internal_Log(STR);
-      this.Current_Message_Length := this.Current_Message_Length + STR'Length;
+      Internal_Log(STR, this.Current_Message_Length, this.Marked_As_Rm or this.Submit_Animation);
 
       return this;
    end Log;
@@ -126,7 +122,8 @@ package body Logger_Type is
          Color                   => Colors.brfgcyan,
          STR                     => STR,
          SRC                     => SRC,
-         ND                      => ND
+         ND                      => ND,
+         Cut                     => this.Marked_As_Rm or this.Submit_Animation
       );
 
       return this;
@@ -148,7 +145,8 @@ package body Logger_Type is
          Color                   => Colors.brfgcyan & Colors.background,
          STR                     => STR,
          SRC                     => SRC,
-         ND                      => ND
+         ND                      => ND,
+         Cut                     => this.Marked_As_Rm or this.Submit_Animation
       );
 
       return this;
@@ -170,7 +168,8 @@ package body Logger_Type is
          Color                   => Colors.fgred,
          STR                     => STR,
          SRC                     => SRC,
-         ND                      => ND
+         ND                      => ND,
+         Cut                     => this.Marked_As_Rm or this.Submit_Animation
       );
 
       return this;
@@ -190,9 +189,10 @@ package body Logger_Type is
          Current_Message_Length  => this.Current_Message_Length,
          Log_Lvl                 => "ERROR",
          Color                   => Colors.fgred & Colors.background,
-         STR                     => Colors.fgred & STR & Colors.reset,
+         STR                     => Colors.fgred & STR,
          SRC                     => SRC,
-         ND                      => ND
+         ND                      => ND,
+         Cut                     => this.Marked_As_Rm or this.Submit_Animation
       );
 
       return this;
@@ -218,11 +218,14 @@ package body Logger_Type is
       end if;
 
       -- Append whitespaces if the previous message was longer and marked as Rm
-      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
+      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length), this.Current_Message_Length);
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
       File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
       New_Line;
+
+      -- Reset message length counter because we are now on a new line
+      this.Current_Message_Length := 0; -- TODO: Test if this is correct
 
       return this;
    end Nl;
@@ -231,8 +234,8 @@ package body Logger_Type is
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    procedure EoL(this : access Logger_Dummy) is
    begin
-      -- Append whitespaces if the previous message was longer and marked as Rm. Always print Color Reset to avoid colors bleeding into the next message
-      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length) & Colors.reset);
+      -- Append whitespaces if the previous message was longer and marked as Rm
+      Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length), this.Current_Message_Length);
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
 
@@ -241,7 +244,7 @@ package body Logger_Type is
 
          -- Print a newline to the output file (nothing can be overwritten there) and a carriage return to stdout (so the next msg overwrites this one)
          File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
-         Internal_Log("" & Ada.Characters.Latin_1.CR);
+         Put("" & Ada.Characters.Latin_1.CR);
 
          -- Start animation if one was set
          if this.Submit_Animation then

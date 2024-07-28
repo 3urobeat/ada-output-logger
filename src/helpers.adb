@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-26 22:43:37
+-- Last Modified: 2024-07-28 15:11:52
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -13,7 +13,10 @@
 -- You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
+with Colors_Collection;
 with Terminal;
+
+use Colors_Collection;
 
 
 package body Helpers is
@@ -52,11 +55,13 @@ package body Helpers is
 
 
    -- Internal: Cuts a String to the width of the current terminal and returns it
-   function Cut_To_Terminal_Width(str : String) return String is
-      Width : Positive := Terminal.Get_Terminal_Width; -- TODO: Exception handling
+   function Cut_To_Terminal_Width(str : String; Subtract : Natural := 0) return String is
+      Width : Natural := Terminal.Get_Terminal_Width; -- TODO: Exception handling
    begin
-      if str'Length > Width then                         -- Make sure width is < length to avoid a constraint_error
-         return str(str'First .. str'First + Width - 2);
+      Width := Natural'Max(Width - Subtract, 0); -- Subtract what is already printed from how much we can print, however make sure we aren't going negative
+
+      if str'Length > Width then                 -- Make sure width is < length to avoid a constraint_error
+         return str(str'First .. str'First + Width - 1);
       else
          return str;
       end if;
@@ -64,25 +69,40 @@ package body Helpers is
 
 
    -- Internal: Logs a message to stdout without appending to output file (as this is already handled by the external functions)
-   procedure Internal_Log(str : String) is
+   procedure Internal_Log(Str : String; Current_Message_Length : in out Natural; Cut : Boolean := False) is
    begin
-      Put(str);
+      -- Check if message needs to be cut
+      if Cut then
+         declare
+            Cut_Str : String := Cut_To_Terminal_Width(Str, Current_Message_Length);
+         begin
+            Put(Cut_Str);
+            Current_Message_Length := Current_Message_Length + Cut_Str'Length; -- TODO: This is not entirely accurate because it counts color codes
+         end;
+      else
+         Put(Str);
+         Current_Message_Length := Current_Message_Length + Str'Length; -- TODO: This is not entirely accurate because it counts color codes
+      end if;
+
+      -- Always append Color Reset to avoid colors bleeding into the next element
+      Put(Colors.reset);
    end Internal_Log;
 
 
    -- Internal: Constructs the actual message and logs it to file & stdout
-   procedure Internal_Prefixed_Log(Output_File_Path : String; Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False) is
+   procedure Internal_Prefixed_Log(Output_File_Path : String; Current_Message_Length : in out Natural; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False; Cut : Boolean := False) is
       Msg_No_Color : String := Get_Prefix("", Log_Lvl, SRC, ND) & str;
    begin
 
       -- Construct message without colors for output file
       File_Output.Print_To_File(Output_File_Path, Msg_No_Color);
 
-      -- Add size in case this message shall be overwritten later on
-      Current_Message_Length := Current_Message_Length + Msg_No_Color'Length;
-
       -- Construct message with colors and let the internal plain logger function log it
-      Internal_Log(Get_Prefix(Color, Log_Lvl, SRC, ND) & str);
+      Internal_Log(
+         str => Get_Prefix(Color, Log_Lvl, SRC, ND) & str,
+         Current_Message_Length => Current_Message_Length,
+         Cut => Cut
+      );
 
    end Internal_Prefixed_Log;
 

@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-27 17:00:01
+-- Last Modified: 2024-07-28 15:11:52
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -36,13 +36,13 @@ procedure Logger_Test is
 begin
 
    -- Get some space between us and the compile messages
-   Logger.Nl.EoL;
+   -- Logger.Nl.EoL;
 
    -- Test log levels with different formats
-   Logger.Info(STR => "Hello " & Colors.fgmagenta & "World", SRC => "logger_test.adb").Nl.EoL; -- Test if colors can bleed into the next message
-   Logger.Debug("Hello World").Nl.EoL;
-   Logger.Warn("Hello", "logger_test.adb", True).Log(" World").Nl.EoL;
-   Logger.Error("Hello World", "").Nl.EoL;
+   --  Logger.Info(STR => "Hello " & Colors.fgmagenta & "World", SRC => "logger_test.adb").Nl.EoL; -- Test if colors can bleed into the next message
+   --  Logger.Debug("Hello World").Nl.EoL;
+   --  Logger.Warn("Hello", "logger_test.adb", True).Log(" World").Nl.EoL;
+   --  Logger.Error("Hello World", "").Nl.EoL;
 
 
    -- Test removing message
@@ -69,7 +69,7 @@ begin
    --  test.Rm.Warn("Next").EoL;
 
    --  delay 2.0;
-   Logger.Animate(Default_Animations.Waiting).Error("Test message").EoL; -- Test keeping message without animation frame in stdout
+   --  Logger.Animate(Default_Animations.Waiting).Error("Test message").EoL; -- Test keeping message without animation frame in stdout
 
 
    -- Test illegal newline detection
@@ -80,12 +80,18 @@ begin
    -- Test cutting long messages to terminal width
    --  Ada.Text_IO.Put_Line(Terminal.Get_Terminal_Width'Image);                           -- Check width readout of this terminal
    --  Ada.Text_IO.Put_Line(Helpers.Cut_To_Terminal_Width("abcdefghijklmnopqrstuvwxyz"));
-   Logger.Rm.Debug("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").EoL;
-   delay 2.0;
+   --  Logger.Rm.Debug("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").Log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb").EoL; -- Simple test
+
+   --  test := Logger.Rm.Debug("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+   --  delay 5.0;                                                                                                        -- Resize terminal during print
+   --  test.Log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb").EoL;
+   --  delay 2.0;
 
 
    -- Exit when animation is active
    --Logger.Stop_Animation; -- Exit
    --Logger.Info("Please exit").Nl.EoL; -- ...or exit by printing a message without animation
+
+   null;
 
 end Logger_Test;

@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-25 19:26:23
+-- Last Modified: 2024-07-28 15:11:52
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -16,6 +16,7 @@
 with Ada.Strings.Bounded;
 with Ada.Characters.Latin_1; -- Used for escape char carriage return
 with Ada.Calendar;
+with Ada.Text_IO;
 with Helpers;
 
 use Ada.Calendar;
@@ -37,7 +38,7 @@ package Animation is
    procedure Start(Animation_Frames : Animation_Type; Animation_Interval : Duration);
 
    -- Stops a current animation and prints the current frame, without a carriage return
-   procedure Log_Static;
+   procedure Log_Static(Current_Message_Length : in out Natural);
 
    -- Stops a current animation
    procedure Stop;
