@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-28 21:14:06
+-- Last Modified: 2024-07-29 19:42:12
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -39,8 +39,8 @@ package Logger_Type with Elaborate_Body is
    Default_Animations : Default_Animations_Type := Animation.Default_Animations;
 
 
-   -- Get a 128 Byte bounded string for options below
-   package Options_Bounded_128B is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 128);
+   package Options_Bounded_128B is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 128); -- Used for configuration options below
+   package Reprint_Bounded_512B is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 512); -- Used for storing message that should be reprinted, for example a message not marked as Rm containing an animation.
 
    -- The default Logger instance, containing default settings
    type Logger_Dummy is new Ada.Finalization.Controlled with record
@@ -61,7 +61,10 @@ package Logger_Type with Elaborate_Body is
       -- Internal: If an animation was registered in this call chain
       Submit_Animation : Boolean := False;
 
-      -- Internal: Tracks length of the current message before EoL was called
+      -- Internal: Store message not marked as Rm, allowing Logger to reprint it
+      Animation_Reprint_Buffer : Reprint_Bounded_512B.Bounded_String;
+
+      -- Internal: Tracks length of the current message before EoL was called. Resets on Newline
       Current_Message_Length : Natural := 0;
 
       -- Internal: Tracks length of the previous message (if it was marked as Rm) to overwrite ghost chars
