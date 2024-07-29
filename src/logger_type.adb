@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-28 21:14:06
+-- Last Modified: 2024-07-29 19:42:12
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -42,12 +42,20 @@ package body Logger_Type is
    -- Create Logger instance for everyone to use after Initialize has been processed in the elaboration phase
    Logger_Instance : aliased Logger_Dummy;
 
+   -- Starts a new log message
    function Logger return access Logger_Dummy is
       this : access Logger_Dummy := Logger_Instance'Access;
    begin
-      -- Reset rm & animation submit
+      -- Check if the last message should be reprinted
+      if this.Submit_Animation and then not this.Marked_As_Rm then
+         this.Submit_Animation := False;
+         this.Log(Reprint_Bounded_512B.To_String(this.Animation_Reprint_Buffer)).EoL; -- Dilemma: Either force newline to fix next message containing animation clipping into this one, or give the user more freedom
+      end if;
+
+      -- Reset stuff
       this.Marked_As_Rm     := False;
       this.Submit_Animation := False;
+      this.Animation_Reprint_Buffer := Reprint_Bounded_512B.Null_Bounded_String;
 
       return this;
    end Logger;
@@ -66,8 +74,6 @@ package body Logger_Type is
    -- Prepends the following message with an animation. The animation will be refreshed every  Call this before any
    function Animate(this : access Logger_Dummy; ANIM : Animation_Type) return access Logger_Dummy is
    begin
-      this.Submit_Animation := True;
-
       -- Check if there is a running animation. If it is the same, get it printed and hold
       if this.Current_Animation = ANIM then
          this.Internal_Log(Animation.Log_Static); -- This prints the current animation frame once to offset the following message content
@@ -78,6 +84,7 @@ package body Logger_Type is
 
       -- Register this animation
       this.Current_Animation := ANIM;
+      this.Submit_Animation := True;   -- Make sure this is set after the initial frame was printed, so that Internal_Log() does not append the animation frame to the Reprint_Buffer
 
       -- Note: The animation handler task will be started by RmEoL
       return this;
@@ -213,7 +220,7 @@ package body Logger_Type is
       New_Line;
 
       -- Reset message length counter because we are now on a new line
-      this.Current_Message_Length := 0; -- TODO: Test if this is correct
+      this.Current_Message_Length := 0;
 
       return this;
    end Nl;
@@ -264,12 +271,21 @@ package body Logger_Type is
          declare
             Cut_Str : String := Cut_To_Terminal_Width(Str, this.Current_Message_Length);
          begin
-            Put(Cut_Str);
-            this.Current_Message_Length := this.Current_Message_Length + Cut_Str'Length;  -- TODO: This is not entirely accurate because it counts color codes
+            If Cut_Str'Length > 0 then
+
+               Put(Cut_Str);
+               this.Current_Message_Length := this.Current_Message_Length + Cut_Str'Length;  -- TODO: This is not entirely accurate because it counts color codes
+
+               -- Append to Reprint Buffer if we are in this block because an animation is contained
+               if (not this.Marked_As_Rm) and then (Reprint_Bounded_512B.Length(this.Animation_Reprint_Buffer) + Cut_Str'Length <= Reprint_Bounded_512B.Max_Length) then
+                  Reprint_Bounded_512B.Append(this.Animation_Reprint_Buffer, Cut_Str);
+               end if;
+
+            end if;
          end;
       else
          Put(Str);
-         this.Current_Message_Length := this.Current_Message_Length + Str'Length;              -- TODO: This is not entirely accurate because it counts color codes
+         this.Current_Message_Length := this.Current_Message_Length + Str'Length;            -- TODO: This is not entirely accurate because it counts color codes
       end if;
 
       -- Always append Color Reset to avoid colors bleeding into the next element
