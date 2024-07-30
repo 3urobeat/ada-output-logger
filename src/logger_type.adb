@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-29 19:42:12
+-- Last Modified: 2024-07-30 16:39:17
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -49,7 +49,7 @@ package body Logger_Type is
       -- Check if the last message should be reprinted
       if this.Submit_Animation and then not this.Marked_As_Rm then
          this.Submit_Animation := False;
-         this.Log(Reprint_Bounded_512B.To_String(this.Animation_Reprint_Buffer)).EoL; -- Dilemma: Either force newline to fix next message containing animation clipping into this one, or give the user more freedom
+         this.Internal_Log(Reprint_Bounded_512B.To_String(this.Animation_Reprint_Buffer)); -- Do not force New_Line, let user decide. If they call Nl(), it should handle overwriting ghost chars
       end if;
 
       -- Reset stuff
@@ -212,7 +212,7 @@ package body Logger_Type is
          this.Current_Animation := Default_Animations.None;
       end if;
 
-      -- Append whitespaces if the previous message was longer and marked as Rm
+      -- Append whitespaces if the previous message was longer
       this.Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
