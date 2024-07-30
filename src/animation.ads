@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-28 21:14:06
+-- Last Modified: 2024-07-30 16:40:43
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -90,6 +90,7 @@ package Animation is
       );
 
       Arrows : Animation_Type := (
+         Animation_Frames_Bounded.To_Bounded_String("     "),
          Animation_Frames_Bounded.To_Bounded_String(">    "),
          Animation_Frames_Bounded.To_Bounded_String(">>   "),
          Animation_Frames_Bounded.To_Bounded_String(">>>  "),

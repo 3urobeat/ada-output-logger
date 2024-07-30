@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-29 19:42:12
+-- Last Modified: 2024-07-30 16:40:43
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -51,34 +51,37 @@ package body Animation is
    task body Animation_Updater_Task is
       use Animation_Frames_Bounded;
 
-      Next_Run : Time := Clock;
+      Next_Run : Time;
    begin
-      -- This select prevents the task from keeping the process alive when no animations have been started during the application's lifetime
-      select
-         accept Start;
-      or
-         terminate;
-      end select;
+      loop        -- This loop ensures the task can be started multiple times during the application's lifetime
+         select   -- This select prevents the task from keeping the process alive when no animations have been started during the application's lifetime
+            accept Start;
+            Next_Run := Clock;
+         or
+            terminate;
+         end select;
 
-      while not Hold_Animation loop
-         if Clock >= Next_Run then
+         while not Hold_Animation loop
+            if Clock >= Next_Run then
 
-            -- Print this animation frame and reset cursor so the next frame can overwrite this one
-            Ada.Text_IO.Put("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)));      -- Note: Should you want to use Internal_Log again, these messages must not be counted in message length and not appended to the reprint buffer!
-            Ada.Text_IO.Put("] " & Ada.Characters.Latin_1.CR);
+               -- Print this animation frame and reset cursor so the next frame can overwrite this one
+               Ada.Text_IO.Put("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)));      -- Note: Should you want to use Internal_Log again, these messages must not be counted in message length and not appended to the reprint buffer!
+               Ada.Text_IO.Put("] " & Ada.Characters.Latin_1.CR);
 
-            -- Reset index if we reached the end or the animation does not contain any more frames
-            if (Index = Animation_Index'Last) or (Current_Animation(Animation_Index'Succ(Index)) = Animation_Frames_Bounded.Null_Bounded_String) then
-               Index := Animation_Index'First;
-            else
-               Index := Animation_Index'Succ(Index); -- ...otherwise get the next element
+               -- Reset index if we reached the end or the animation does not contain any more frames
+               if (Index = Animation_Index'Last) or (Current_Animation(Animation_Index'Succ(Index)) = Animation_Frames_Bounded.Null_Bounded_String) then
+                  Index := Animation_Index'First;
+               else
+                  Index := Animation_Index'Succ(Index); -- ...otherwise get the next element
+               end if;
+
+               Next_Run := Clock + Interval;
+
             end if;
 
-            Next_Run := Clock + Interval;
-
-         end if;
-
-         delay 0.01; -- Delay next check a little to reduce CPU usage
+            -- Delay next check a little to reduce CPU usage
+            --delay 0.01; -- TODO: This somehow causes the main thread to hold on the second animation?
+         end loop;
       end loop;
 
       -- TODO: Remove animation frame from log on exit
