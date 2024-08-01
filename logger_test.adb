@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 16:52:12
+-- Last Modified: 2024-08-01 16:54:01
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -86,15 +86,18 @@ begin
    --  test.Rm.Warn("Next").EoL;
 
    --  delay 2.0;
-   --  Logger.Animate(Default_Animations.Waiting).Error("Test message").EoL;  -- Test keeping message without animation frame in stdout
+   --  Logger.Animate(Default_Animations.Waiting).Error("Test message").Nl.EoL;  -- Test keeping message without animation frame in stdout
    --  delay 2.1;
    --  Logger.Rm.Animate(Default_Animations.Arrows).Debug("This should be gone however").EoL;
    --  delay 0.4;
 
 
    -- Test newline printing after animation is stopped
-   --  Logger.Animate(Default_Animations.Arrows).Warn("This is not illegal anymore").Nl.EoL;
-   --  Logger.Rm.Warn("This is illegal I think").Nl.EoL;
+   --  Logger.Animate(Default_Animations.Arrows).Info("This is not illegal anymore").Nl.EoL;
+   --  delay 0.7;
+   --  Logger.Info("Boop").Nl.EoL;
+   --  Logger.Rm.Warn("This is illegal").Nl.EoL;
+   --  Logger.Rm.Animate(Default_Animations.Waiting).Warn("This is illegal as well").Nl.EoL;
 
 
    -- Test cutting long messages to terminal width

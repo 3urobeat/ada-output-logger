@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-30 16:39:17
+-- Last Modified: 2024-08-01 16:54:01
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -198,16 +198,25 @@ package body Logger_Type is
    function Nl(this : access Logger_Dummy) return access Logger_Dummy is
    begin
       -- Deny newline call for messages awaiting carriage return as this would break overwriting it
-      if this.Marked_As_Rm or this.Submit_Animation then
+      if this.Marked_As_Rm then
          declare
             Illegal_Newline : exception;
          begin
-            raise Illegal_Newline with "Cannot submit newline for messages containing animation or marked as rm";
+            raise Illegal_Newline with "Cannot submit newline for messages marked as rm";
          end;
       end if;
 
-      -- Stop animation if one is active
-      if not this.Submit_Animation then
+      -- Append newline (and trailing whitespaces) to reprint buffer if animation is active, otherwise stop any previously started animation
+      if this.Submit_Animation then
+         Reprint_Bounded_512B.Append(
+            this.Animation_Reprint_Buffer,
+            Get_Trailing_Whitespaces(
+               Reprint_Bounded_512B.Length(this.Animation_Reprint_Buffer), -- Use content of reprint buffer as current length
+               this.Current_Message_Length                                 -- ...and the current message length (containing the animation) as the last message length
+            ) & Ada.Characters.Latin_1.LF       -- Append newline character to buffer
+         );
+         return this;
+      else
          Animation.Stop;
          this.Current_Animation := Default_Animations.None;
       end if;
