@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-29 19:51:34
+-- Last Modified: 2024-08-01 16:52:12
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -23,16 +23,29 @@
 -- ( $(cd build && gnatmake -g -I../src ../logger_test.adb -o logger-test) && ./build/logger-test ) ; echo -e "\033[?25h"
 
 
-with Ada.Text_IO;
+with Ada.Calendar;            -- Used for benchmarking
+with Ada.Calendar.Formatting; -- Used for benchmarking
+with Ada.Real_Time;           -- Used for benchmarking
+with Ada.Text_IO;             -- Used for benchmarking
+with Ada.Characters.Latin_1;  -- Used for benchmarking
+with Ada.Directories;
 with Logger_Type;
-with Terminal;
-with Helpers;
 
+use Ada.Real_Time;
+use Ada.Text_IO;
+use Ada.Characters.Latin_1;
 use Logger_Type;
 
 
 procedure Logger_Test is
    test : access Logger_Dummy;
+
+   -- Used for benchmarking
+   Benchmark_Start    : Time;
+   Benchmark_Duration : Duration;
+   Color_Blue         : String := ESC & "[36m";
+   Color_Reset        : String := ESC & "[0m";
+   Output_File        : File_Type;
 begin
 
    -- Get some space between us and the compile messages
@@ -85,14 +98,42 @@ begin
 
 
    -- Test cutting long messages to terminal width
-   --  Ada.Text_IO.Put_Line(Terminal.Get_Terminal_Width'Image);                           -- Check width readout of this terminal
-   --  Ada.Text_IO.Put_Line(Helpers.Cut_To_Terminal_Width("abcdefghijklmnopqrstuvwxyz"));
    --  Logger.Rm.Debug("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").Log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb").EoL; -- Simple test
 
    --  test := Logger.Rm.Debug("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
    --  delay 5.0;                                                                                                        -- Resize terminal during print
    --  test.Log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb").EoL;
    --  delay 2.0;
+
+
+   -- Bechmark
+   --  Benchmark_Duration := 0.0;    -- Reset;
+
+   --  for i in 0 .. 19 loop         -- Use Put_Line 20 times and calculate average
+   --     Benchmark_Start := Clock;
+   --     Logger.Info("Hello World", "logger_test.adb").Nl.EoL;
+   --     Benchmark_Duration := Benchmark_Duration + (To_Duration(Clock - Benchmark_Start) * 1000000.0); -- Seconds -> Microseconds
+   --  end loop;
+
+   --  Logger.Log("Logger took an average of " & Duration'Image(Benchmark_Duration / 20) & "μs over 20 attempts").Nl.EoL;
+
+   --  Benchmark_Duration := 0.0;    -- Reset;
+
+   --  if Ada.Directories.Exists("./output2.txt") = False then
+   --     Create(Output_File, Append_File, "./output2.txt");
+   --  else
+   --     Open(Output_File, Append_File, "./output2.txt");
+   --  end if;
+
+   --  for i in 0 .. 19 loop         -- Use Put_Line 20 times and calculate average
+   --     Benchmark_Start := Clock;
+   --     Put_Line("[" & Color_Blue & Ada.Calendar.Formatting.Image(Ada.Calendar.Clock) & Color_Reset & "] [" & Color_Blue & "INFO" & Color_Reset & " | " & Color_Blue & "logger_test.adb" & Color_Reset & "] Hello World");
+   --     Put_Line(Output_File, "[" & Ada.Calendar.Formatting.Image(Ada.Calendar.Clock) & "] [INFO | logger_test.adb] Hello World");
+   --     Benchmark_Duration := Benchmark_Duration + (To_Duration(Clock - Benchmark_Start) * 1000000.0); -- Seconds -> Microseconds
+   --  end loop;
+
+   --  Logger.Log("Put_Line took an average of " & Duration'Image(Benchmark_Duration / 20) & "μs over 20 attempts").Nl.EoL;
+
 
 
    -- Exit when animation is active
