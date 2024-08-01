@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 18:23:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 15:29:50
+-- Last Modified: 2024-08-01 19:37:35
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -34,7 +34,7 @@ package body Construct is
       -- Append date if enabled
       if No_Date = False then
          if No_Color = False then
-            Construct_Bounded_128B.Append(Temp, Colors.brfgcyan & Get_Timestamp & Colors.reset);
+            Construct_Bounded_128B.Append(Temp, Colors.Br_Fg_Cyan & Get_Timestamp & Colors.Reset);
          else
             Construct_Bounded_128B.Append(Temp, Get_Timestamp);
          end if;

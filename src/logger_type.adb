@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 19:13:07
+-- Last Modified: 2024-08-01 19:37:35
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -120,7 +120,7 @@ package body Logger_Type is
    begin
       this.Internal_Prefixed_Log(
          Log_Lvl  => "INFO",
-         Color    => Colors.brfgcyan,
+         Color    => Colors.Br_Fg_Cyan,
          STR      => STR,
          SRC      => SRC,
          ND       => ND
@@ -135,7 +135,7 @@ package body Logger_Type is
    begin
       this.Internal_Prefixed_Log(
          Log_Lvl  => "DEBUG",
-         Color    => Colors.brfgcyan & Colors.background,
+         Color    => Colors.Br_Fg_Cyan & Colors.Background,
          STR      => STR,
          SRC      => SRC,
          ND       => ND
@@ -150,7 +150,7 @@ package body Logger_Type is
    begin
       this.Internal_Prefixed_Log(
          Log_Lvl  => "WARN",
-         Color    => Colors.fgred,
+         Color    => Colors.Fg_Red,
          STR      => STR,
          SRC      => SRC,
          ND       => ND
@@ -165,8 +165,8 @@ package body Logger_Type is
    begin
       this.Internal_Prefixed_Log(
          Log_Lvl  => "ERROR",
-         Color    => Colors.fgred & Colors.background,
-         STR      => Colors.fgred & STR,
+         Color    => Colors.Fg_Red & Colors.Background,
+         STR      => Colors.Fg_Red & STR,
          SRC      => SRC,
          ND       => ND
       );
@@ -281,7 +281,7 @@ package body Logger_Type is
       end if;
 
       -- Always append Color Reset to avoid colors bleeding into the next element
-      Put(Colors.reset);
+      Put(Colors.Reset);
    end Internal_Log;
 
 
