@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 16:54:01
+-- Last Modified: 2024-08-01 16:55:08
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -117,11 +117,6 @@ package body Logger_Type is
    -- Logs a message to stdout with 'INFO' prefix
    function Info(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
-      if this.Submit_Animation = False then
-         Animation.Stop;
-         this.Current_Animation := Default_Animations.None;
-      end if;
-
       this.Internal_Prefixed_Log(
          Log_Lvl  => "INFO",
          Color    => Colors.brfgcyan,
@@ -137,11 +132,6 @@ package body Logger_Type is
    -- Logs a message to stdout with 'DEBUG' prefix
    function Debug(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
-      if this.Submit_Animation = False then
-         Animation.Stop;
-         this.Current_Animation := Default_Animations.None;
-      end if;
-
       this.Internal_Prefixed_Log(
          Log_Lvl  => "DEBUG",
          Color    => Colors.brfgcyan & Colors.background,
@@ -157,11 +147,6 @@ package body Logger_Type is
    -- Logs a message to stdout with 'WARN' prefix
    function Warn(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
-      if this.Submit_Animation = False then
-         Animation.Stop;
-         this.Current_Animation := Default_Animations.None;
-      end if;
-
       this.Internal_Prefixed_Log(
          Log_Lvl  => "WARN",
          Color    => Colors.fgred,
@@ -177,11 +162,6 @@ package body Logger_Type is
    -- Logs a message to stdout with 'ERROR' prefix
    function Error(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
    begin
-      if this.Submit_Animation = False then
-         Animation.Stop;
-         this.Current_Animation := Default_Animations.None;
-      end if;
-
       this.Internal_Prefixed_Log(
          Log_Lvl  => "ERROR",
          Color    => Colors.fgred & Colors.background,
@@ -306,6 +286,12 @@ package body Logger_Type is
    procedure Internal_Prefixed_Log(this : in out Logger_Dummy; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False) is
       Msg_No_Color : String := Get_Prefix("", Log_Lvl, SRC, ND) & str;
    begin
+      -- Stop animation from previous message
+      if this.Submit_Animation = False then
+         Animation.Stop;
+         this.Current_Animation := Default_Animations.None;
+      end if;
+
       -- Construct message without colors for output file
       File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), Msg_No_Color);
 
