@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:57:26
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 16:25:40
+-- Last Modified: 2024-08-01 19:13:07
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -37,7 +37,35 @@ package body File_Output is
          Open_File(path);
       end if;
 
-      Put(Output_File, str);
+      -- Remove colors from str
+      Put(Output_File, Remove_Escape_Chars(str));
    end Print_To_File;
+
+
+   -- Internal: Removes escape chars (e.g. color codes) from a String
+   function Remove_Escape_Chars(Input : String) return String is
+      Output : String (1 .. Input'Length) := (others => ' ');
+      Output_Len : Natural := 0;
+      Skip : Boolean := False;
+   begin
+      for I in Input'Range loop
+
+         if Skip then
+            if Input(I) in 'A' .. 'Z' or else Input(I) in 'a' .. 'z' then
+               Skip := False;
+            end if;
+         else
+            if Input(I) = ASCII.ESC then
+               Skip := True;
+            else
+               Output_Len         := Output_Len + 1;
+               Output(Output_Len) := Input(I);
+            end if;
+         end if;
+
+      end loop;
+
+      return Output(1 .. Output_Len);
+   end Remove_Escape_Chars;
 
 end File_Output;

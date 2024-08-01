@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 16:56:24
+-- Last Modified: 2024-08-01 19:13:07
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -43,7 +43,7 @@ procedure Logger_Test is
    -- Used for benchmarking
    Benchmark_Start    : Time;
    Benchmark_Duration : Duration;
-   Color_Blue         : String := ESC & "[36m";
+   Color_Blue         : String := ESC & "[96m";
    Color_Reset        : String := ESC & "[0m";
    Output_File        : File_Type;
 begin

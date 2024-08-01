@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-28 21:14:06
+-- Last Modified: 2024-08-01 19:13:07
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -33,7 +33,7 @@ package body Helpers is
             ""
          ),
          ND,
-         Color'Length = 0 -- Do not color date if log level is not colored (for example for file output)
+         Color'Length = 0 -- Do not color date if log level is not colored
       );
    end Get_Prefix;
 
