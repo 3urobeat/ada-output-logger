@@ -2,7 +2,7 @@
 An Ada logging library offspring of my [JS output-logger library](https://github.com/3urobeat/output-logger).  
 
 It allows you to painlessly log values of different data types with different log levels to stdout without having to join strings together manually.  
-It simultaneously provides color-highlighting based on log level, attaches a timestamp to your message and much more.
+It simultaneously provides color-highlighting based on log level, attaches a timestamp to your message, logs to an output file and much more.
 
 &nbsp;
 
