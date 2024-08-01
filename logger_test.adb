@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 16:54:01
+-- Last Modified: 2024-08-01 16:56:24
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -86,9 +86,10 @@ begin
    --  test.Rm.Warn("Next").EoL;
 
    --  delay 2.0;
-   --  Logger.Animate(Default_Animations.Waiting).Error("Test message").Nl.EoL;  -- Test keeping message without animation frame in stdout
+   --  Logger.Animate(Default_Animations.Waiting).Error("Test message").EoL;  -- Test "boop" appearing behind reprinted animation in output.txt
    --  delay 2.1;
-   --  Logger.Rm.Animate(Default_Animations.Arrows).Debug("This should be gone however").EoL;
+   --  Logger.Log("boop").EoL;
+   --  Logger.Rm.Animate(Default_Animations.Arrows).Debug("This should be gone").EoL;
    --  delay 0.4;
 
 

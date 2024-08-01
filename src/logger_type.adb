@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 16:55:08
+-- Last Modified: 2024-08-01 16:56:24
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -50,6 +50,7 @@ package body Logger_Type is
       if this.Submit_Animation and then not this.Marked_As_Rm then
          this.Submit_Animation := False;
          this.Internal_Log(Reprint_Bounded_512B.To_String(this.Animation_Reprint_Buffer)); -- Do not force New_Line, let user decide. If they call Nl(), it should handle overwriting ghost chars
+         File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), Reprint_Bounded_512B.To_String(this.Animation_Reprint_Buffer));
       end if;
 
       -- Reset stuff
@@ -225,10 +226,13 @@ package body Logger_Type is
 
       -- Check if the message was marked to be removed or contains an animation
       if this.Marked_As_Rm or this.Submit_Animation then
-
-         -- Print a newline to the output file (nothing can be overwritten there) and a carriage return to stdout (so the next msg overwrites this one)
-         File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
+         -- Print carriage return to stdout so the next msg overwrites this one
          Put("" & Ada.Characters.Latin_1.CR);
+
+         -- Always print newline to output file for messages marked as Rm because nothing can & should be overwritten there
+         if this.Marked_As_Rm then
+            File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
+         end if;
 
          -- Start animation if one was set
          if this.Submit_Animation then
@@ -240,7 +244,6 @@ package body Logger_Type is
 
          -- Save size so the next message can overwrite everything we've printed to avoid ghost chars
          this.Last_Message_Length := this.Current_Message_Length;
-
       else
          this.Last_Message_Length := 0; -- Reset because we have taken action
       end if;
@@ -292,8 +295,10 @@ package body Logger_Type is
          this.Current_Animation := Default_Animations.None;
       end if;
 
-      -- Construct message without colors for output file
-      File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), Msg_No_Color);
+      -- Construct message without colors for output file. Only log it when message does not contain animation or is marked as Rm. Animation messages without Rm are reprinted in Logger() and will appear in output file
+      if not this.Submit_Animation or this.Marked_As_Rm then
+         File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), Msg_No_Color);
+      end if;
 
       -- Construct message with colors and let the internal plain logger function log it
       this.Internal_Log(str => Get_Prefix(Color, Log_Lvl, SRC, ND) & str);
