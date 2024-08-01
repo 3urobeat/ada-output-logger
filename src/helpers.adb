@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:53:35
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 19:13:07
+-- Last Modified: 2024-08-01 19:37:35
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -26,9 +26,9 @@ package body Helpers is
    begin
       -- This function call is way too overcomplicated
       return Construct_Message_Prefix(
-         Color & Lvl & (if Color'Length > 0 then Colors.reset else ""),
+         Color & Lvl & (if Color'Length > 0 then Colors.Reset else ""),
          (if SRC'Length > 0 then                                              -- Only add color to SRC param if SRC was provided
-            (Color & SRC & (if Color'Length > 0 then Colors.reset else ""))
+            (Color & SRC & (if Color'Length > 0 then Colors.Reset else ""))
          else
             ""
          ),

@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 19:13:07
+-- Last Modified: 2024-08-01 19:37:35
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -52,7 +52,7 @@ begin
    -- Logger.Nl.EoL;
 
    -- Test log levels with different formats
-   --  Logger.Info(STR => "Hello " & Colors.fgmagenta & "World", SRC => "logger_test.adb").Nl.EoL; -- Test if colors can bleed into the next message. This color should also not appear in the output file
+   --  Logger.Info(STR => "Hello " & Colors.Fg_Magenta & "World", SRC => "logger_test.adb").Nl.EoL; -- Test if colors can bleed into the next message. This color should also not appear in the output file
    --  Logger.Debug("Hello World").Nl.EoL;
    --  Logger.Warn("Hello", "logger_test.adb", True).Log(" World").Nl.EoL;
    --  Logger.Error("Hello World", "").Nl.EoL;

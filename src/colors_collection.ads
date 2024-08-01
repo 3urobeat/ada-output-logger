@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 15:27:41
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-27 17:00:01
+-- Last Modified: 2024-08-01 19:37:35
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -21,54 +21,60 @@ use Ada.Characters.Latin_1;
 package Colors_Collection is
 
    type Colors_Type is record
-      Hide_Cursor : String(1 .. 6) := ESC & "[?25l";
-      Show_Cursor : String(1 .. 6) := ESC & "[?25h";
+      -- Cursor Control codes
+      Hide_Cursor    : String(1 .. 6) := ESC & "[?25l";
+      Show_Cursor    : String(1 .. 6) := ESC & "[?25h";
 
-      reset       : String(1 .. 4) := ESC & "[0m";
-      bold        : String(1 .. 4) := ESC & "[1m";
-      dim         : String(1 .. 4) := ESC & "[2m";
-      italic      : String(1 .. 4) := ESC & "[3m";
-      underscore  : String(1 .. 4) := ESC & "[4m";
-      blink       : String(1 .. 4) := ESC & "[5m";
-      background  : String(1 .. 4) := ESC & "[7m";
-      hidden      : String(1 .. 4) := ESC & "[8m";
-      crossed     : String(1 .. 4) := ESC & "[9m";
+      -- General Control codes
+      Reset          : String(1 .. 4) := ESC & "[0m";
+      Bold           : String(1 .. 4) := ESC & "[1m";
+      Dim            : String(1 .. 4) := ESC & "[2m";
+      Italic         : String(1 .. 4) := ESC & "[3m";
+      Underscore     : String(1 .. 4) := ESC & "[4m";
+      Blink          : String(1 .. 4) := ESC & "[5m";
+      Background     : String(1 .. 4) := ESC & "[7m";
+      Hidden         : String(1 .. 4) := ESC & "[8m";
+      Crossed        : String(1 .. 4) := ESC & "[9m";
 
-      fgblack     : String(1 .. 5) := ESC & "[30m";
-      fgred       : String(1 .. 5) := ESC & "[31m";
-      fggreen     : String(1 .. 5) := ESC & "[32m";
-      fgyellow    : String(1 .. 5) := ESC & "[33m";
-      fgblue      : String(1 .. 5) := ESC & "[34m";
-      fgmagenta   : String(1 .. 5) := ESC & "[35m";
-      fgcyan      : String(1 .. 5) := ESC & "[36m";
-      fgwhite     : String(1 .. 5) := ESC & "[37m";
+      -- Foreground colors
+      Fg_Black       : String(1 .. 5) := ESC & "[30m";
+      Fg_Red         : String(1 .. 5) := ESC & "[31m";
+      Fg_Green       : String(1 .. 5) := ESC & "[32m";
+      Fg_Yellow      : String(1 .. 5) := ESC & "[33m";
+      Fg_Blue        : String(1 .. 5) := ESC & "[34m";
+      Fg_Magenta     : String(1 .. 5) := ESC & "[35m";
+      Fg_Cyan        : String(1 .. 5) := ESC & "[36m";
+      Fg_White       : String(1 .. 5) := ESC & "[37m";
 
-      bgblack     : String(1 .. 5) := ESC & "[40m";
-      bgred       : String(1 .. 5) := ESC & "[41m";
-      bggreen     : String(1 .. 5) := ESC & "[42m";
-      bgyellow    : String(1 .. 5) := ESC & "[43m";
-      bgblue      : String(1 .. 5) := ESC & "[44m";
-      bgmagenta   : String(1 .. 5) := ESC & "[45m";
-      bgcyan      : String(1 .. 5) := ESC & "[46m";
-      bgwhite     : String(1 .. 5) := ESC & "[47m";
+      -- Background colors
+      Bg_Black       : String(1 .. 5) := ESC & "[40m";
+      Bg_Red         : String(1 .. 5) := ESC & "[41m";
+      Bg_Green       : String(1 .. 5) := ESC & "[42m";
+      Bg_Yellow      : String(1 .. 5) := ESC & "[43m";
+      Bg_Blue        : String(1 .. 5) := ESC & "[44m";
+      Bg_Magenta     : String(1 .. 5) := ESC & "[45m";
+      Bg_Cyan        : String(1 .. 5) := ESC & "[46m";
+      Bg_White       : String(1 .. 5) := ESC & "[47m";
 
-      brfgblack   : String(1 .. 5) := ESC & "[90m";
-      brfgred     : String(1 .. 5) := ESC & "[91m";
-      brfggreen   : String(1 .. 5) := ESC & "[92m";
-      brfgyellow  : String(1 .. 5) := ESC & "[93m";
-      brfgblue    : String(1 .. 5) := ESC & "[94m";
-      brfgmagenta : String(1 .. 5) := ESC & "[95m";
-      brfgcyan    : String(1 .. 5) := ESC & "[96m";
-      brfgwhite   : String(1 .. 5) := ESC & "[97m";
+      -- Bright Foreground colors
+      Br_Fg_Black    : String(1 .. 5) := ESC & "[90m";
+      Br_Fg_Red      : String(1 .. 5) := ESC & "[91m";
+      Br_Fg_Green    : String(1 .. 5) := ESC & "[92m";
+      Br_Fg_Yellow   : String(1 .. 5) := ESC & "[93m";
+      Br_Fg_Blue     : String(1 .. 5) := ESC & "[94m";
+      Br_Fg_Magenta  : String(1 .. 5) := ESC & "[95m";
+      Br_Fg_Cyan     : String(1 .. 5) := ESC & "[96m";
+      Br_Fg_White    : String(1 .. 5) := ESC & "[97m";
 
-      brbgblack   : String(1 .. 6) := ESC & "[100m";
-      brbgred     : String(1 .. 6) := ESC & "[101m";
-      brbggreen   : String(1 .. 6) := ESC & "[102m";
-      brbgyellow  : String(1 .. 6) := ESC & "[103m";
-      brbgblue    : String(1 .. 6) := ESC & "[104m";
-      brbgmagenta : String(1 .. 6) := ESC & "[105m";
-      brbgcyan    : String(1 .. 6) := ESC & "[106m";
-      brbgwhite   : String(1 .. 6) := ESC & "[107m";
+      -- Bright Background colors
+      Br_Bg_Black    : String(1 .. 6) := ESC & "[100m";
+      Br_Bg_Red      : String(1 .. 6) := ESC & "[101m";
+      Br_Bg_Green    : String(1 .. 6) := ESC & "[102m";
+      Br_Bg_Yellow   : String(1 .. 6) := ESC & "[103m";
+      Br_Bg_Blue     : String(1 .. 6) := ESC & "[104m";
+      Br_Bg_Magenta  : String(1 .. 6) := ESC & "[105m";
+      Br_Bg_Cyan     : String(1 .. 6) := ESC & "[106m";
+      Br_Bg_White    : String(1 .. 6) := ESC & "[107m";
    end record;
 
    Colors : Colors_Type;
