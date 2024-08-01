@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 16:56:24
+-- Last Modified: 2024-08-01 19:13:07
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -287,7 +287,8 @@ package body Logger_Type is
 
    -- Internal: Constructs the actual message and logs it to file & stdout
    procedure Internal_Prefixed_Log(this : in out Logger_Dummy; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False) is
-      Msg_No_Color : String := Get_Prefix("", Log_Lvl, SRC, ND) & str;
+      -- Construct string with prefix
+      String_To_Log : String := Get_Prefix(Color, Log_Lvl, SRC, ND) & str;
    begin
       -- Stop animation from previous message
       if this.Submit_Animation = False then
@@ -295,13 +296,13 @@ package body Logger_Type is
          this.Current_Animation := Default_Animations.None;
       end if;
 
-      -- Construct message without colors for output file. Only log it when message does not contain animation or is marked as Rm. Animation messages without Rm are reprinted in Logger() and will appear in output file
+      -- Only log to output file when message does not contain animation or is marked as Rm. Animation messages without Rm are reprinted in Logger() and will appear in output file
       if not this.Submit_Animation or this.Marked_As_Rm then
-         File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), Msg_No_Color);
+         File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), String_To_Log);
       end if;
 
-      -- Construct message with colors and let the internal plain logger function log it
-      this.Internal_Log(str => Get_Prefix(Color, Log_Lvl, SRC, ND) & str);
+      -- Let Internal_Log handle printing to stdout
+      this.Internal_Log(String_To_Log);
    end Internal_Prefixed_Log;
 
 end Logger_Type;

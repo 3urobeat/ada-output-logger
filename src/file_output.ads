@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:57:26
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-06 16:25:40
+-- Last Modified: 2024-08-01 19:13:07
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -21,9 +21,6 @@ use Ada.Text_IO;
 
 package File_Output is
 
-   -- Internal: Creates (if not already done), opens file at path and populates Output_File
-   procedure Open_File(path : String);
-
    -- Internal: Calls Open_File if necessary and writes str to Output_File. If path is empty, the call will be ignored.
    procedure Print_To_File(path : String; str : String);
 
@@ -31,5 +28,11 @@ private
 
    -- Reference to output file opened by Open_File
    Output_File : File_Type;
+
+   -- Internal: Creates (if not already done), opens file at path and populates Output_File
+   procedure Open_File(path : String);
+
+   -- Internal: Removes escape chars (e.g. color codes) from a String
+   function Remove_Escape_Chars(Input : String) return String;
 
 end File_Output;
