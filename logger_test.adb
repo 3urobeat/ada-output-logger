@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 19:37:35
+-- Last Modified: 2024-08-02 22:36:13
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -108,6 +108,14 @@ begin
    --  delay 5.0;                                                                                                        -- Resize terminal during print
    --  test.Log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb").EoL;
    --  delay 2.0;
+
+
+   -- Test reading input
+   declare
+      User_Input : String := Logger.Read_Input("Please submit your name: ", 5.0);
+   begin
+      Logger.Info("User is called " & User_Input).Nl.EoL;
+   end;
 
 
    -- Bechmark
