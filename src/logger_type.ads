@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-29 19:42:12
+-- Last Modified: 2024-08-02 22:36:13
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -16,7 +16,7 @@
 with Ada.Finalization;
 with Ada.Text_IO;
 with Ada.Strings.Bounded;
-with Ada.Characters.Latin_1; -- Used for escape character carriage return & newline
+with Ada.Characters.Latin_1;  -- Used for escape character carriage return & newline
 with Animation;
 with Colors_Collection;
 with Construct;
@@ -141,6 +141,13 @@ package Logger_Type with Elaborate_Body is
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    -- @param this Instance of Logger, automatically provided when using dot notation
    procedure EoL(this : access Logger_Dummy);
+
+   -- Reads user input from stdin and returns it
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   -- @param Question Optional: String printed before waiting for user input
+   -- @param Timeout Optional: Time in seconds after which the function will stop waiting if the user did not submit an input. Disabled by default (softlock warning!)
+   -- @return Returns user input or `null` on timeout
+   function Read_Input(this : access Logger_Dummy; Question : String := ""; Timeout : Duration := 0.0) return String;
 
 private
 

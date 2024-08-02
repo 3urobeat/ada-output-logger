@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 19:37:35
+-- Last Modified: 2024-08-02 22:36:13
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -252,6 +252,37 @@ package body Logger_Type is
       -- Reset size tracker of this message
       this.Current_Message_Length := 0;
    end EoL;
+
+
+   -- Reads user input from stdin and returns it
+   function Read_Input(this : access Logger_Dummy; Question : String := ""; Timeout : Duration := 0.0) return String is
+      Input_String : String(1 .. 512); -- TODO: Kinda uncool
+      Last : Integer := 0;
+   begin
+      -- TODO: Pause animations, cache new log calls, ...
+
+      -- Print question if one was set
+      this.Internal_Log(Question);
+
+      -- Show cursor
+      Put(Colors.Show_Cursor);
+
+      -- Get input, abort if Timeout ran out (as long as a timeout was provided)
+      if Timeout > 0.0 then
+         select
+            delay Timeout; -- TODO: Causes runtime exception?
+         then abort
+            Get_Line(Input_String, Last);
+         end select;
+      else
+         Get_Line(Input_String, Last);
+      end if;
+
+      -- Hide cursor again and return result
+      Put(Colors.Hide_Cursor);
+
+      return Input_String(1 .. Last);
+   end Read_Input;
 
 
 
