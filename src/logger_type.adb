@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-02 22:36:13
+-- Last Modified: 2024-08-03 13:22:46
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -256,15 +256,20 @@ package body Logger_Type is
 
    -- Reads user input from stdin and returns it
    function Read_Input(this : access Logger_Dummy; Question : String := ""; Timeout : Duration := 0.0) return String is
-      Input_String : String(1 .. 512); -- TODO: Kinda uncool
-      Last : Integer := 0;
-   begin
-      -- TODO: Pause animations, cache new log calls, ...
 
-      -- Print question if one was set
-      this.Internal_Log(Question);
+      -- This function frees me from declaring a constrained User_Input String
+      function Get_User_Input return String is
+         User_Input : String := Get_Line;
+      begin
+         -- Hide cursor again and return result
+         Put(Colors.Hide_Cursor);
+         return User_Input;
+      end Get_User_Input;
 
-      -- Show cursor
+   begin    -- TODO: Pause animations, cache new log calls, ...
+
+      -- Print question if one was set and show cursor
+      this.Internal_Log(Question); -- TODO: Should this use Internal_Log?
       Put(Colors.Show_Cursor);
 
       -- Get input, abort if Timeout ran out (as long as a timeout was provided)
@@ -272,16 +277,14 @@ package body Logger_Type is
          select
             delay Timeout; -- TODO: Causes runtime exception?
          then abort
-            Get_Line(Input_String, Last);
+            return Get_User_Input;
          end select;
+
+         return "";
       else
-         Get_Line(Input_String, Last);
+         return Get_User_Input;
       end if;
 
-      -- Hide cursor again and return result
-      Put(Colors.Hide_Cursor);
-
-      return Input_String(1 .. Last);
    end Read_Input;
 
 

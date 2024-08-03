@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-02 22:36:13
+-- Last Modified: 2024-08-03 13:22:46
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -112,9 +112,11 @@ begin
 
    -- Test reading input
    declare
-      User_Input : String := Logger.Read_Input("Please submit your name: ", 5.0);
+      User_Input_No_Timeout   : String := Logger.Read_Input("Please submit your name: ");
+      User_Input_With_Timeout : String := Logger.Read_Input("Please submit your name: ", 5.0);
    begin
-      Logger.Info("User is called " & User_Input).Nl.EoL;
+      Logger.Info("User is called " & User_Input_No_Timeout).Nl.EoL;
+      Logger.Info("User is called " & User_Input_With_Timeout).Nl.EoL;
    end;
 
 
