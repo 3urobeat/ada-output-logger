@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-02 22:36:13
+-- Last Modified: 2024-08-03 15:31:40
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -145,9 +145,9 @@ package Logger_Type with Elaborate_Body is
    -- Reads user input from stdin and returns it
    -- @param this Instance of Logger, automatically provided when using dot notation
    -- @param Question Optional: String printed before waiting for user input
-   -- @param Timeout Optional: Time in seconds after which the function will stop waiting if the user did not submit an input. Disabled by default (softlock warning!)
-   -- @return Returns user input or `null` on timeout
-   function Read_Input(this : access Logger_Dummy; Question : String := ""; Timeout : Duration := 0.0) return String;
+   -- @param Timeout Optional: Duration in seconds after which the function will stop waiting for the user to submit an input. Disabled by default (softlock warning!)
+   -- @return Returns access to user input or `null` on timeout. Make sure to check for `null` before dereferencing to prevent CONSTRAINT_ERROR.
+   function Read_Input(this : access Logger_Dummy; Question : String := ""; Timeout : Duration := 0.0) return access String;
 
 private
 
