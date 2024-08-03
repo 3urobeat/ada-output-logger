@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-03 13:22:46
+-- Last Modified: 2024-08-03 15:31:40
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -23,24 +23,30 @@
 -- ( $(cd build && gnatmake -g -I../src ../logger_test.adb -o logger-test) && ./build/logger-test ) ; echo -e "\033[?25h"
 
 
-with Ada.Calendar;            -- Used for benchmarking
-with Ada.Calendar.Formatting; -- Used for benchmarking
-with Ada.Real_Time;           -- Used for benchmarking
-with Ada.Text_IO;             -- Used for benchmarking
-with Ada.Characters.Latin_1;  -- Used for benchmarking
-with Ada.Directories;
+-- Import the library
 with Logger_Type;
+
+use Logger_Type;
+
+
+-- Stuff only needed for benchmarking
+with Ada.Calendar;
+with Ada.Calendar.Formatting;
+with Ada.Real_Time;
+with Ada.Text_IO;
+with Ada.Characters.Latin_1;
+with Ada.Directories;
 
 use Ada.Real_Time;
 use Ada.Text_IO;
 use Ada.Characters.Latin_1;
-use Logger_Type;
 
 
 procedure Logger_Test is
+   -- Only needed for testing animation hold
    test : access Logger_Dummy;
 
-   -- Used for benchmarking
+   -- Stuff only needed for benchmarking
    Benchmark_Start    : Time;
    Benchmark_Duration : Duration;
    Color_Blue         : String := ESC & "[96m";
@@ -112,11 +118,19 @@ begin
 
    -- Test reading input
    declare
-      User_Input_No_Timeout   : String := Logger.Read_Input("Please submit your name: ");
-      User_Input_With_Timeout : String := Logger.Read_Input("Please submit your name: ", 5.0);
+      User_Input_No_Timeout   : access String := Logger.Read_Input("Please submit your name: ");
+      User_Input_With_Timeout : access String := Logger.Read_Input("Please submit your name: ", 2.5);
    begin
       Logger.Info("User is called " & User_Input_No_Timeout).Nl.EoL;
-      Logger.Info("User is called " & User_Input_With_Timeout).Nl.EoL;
+
+      -- Differentiate between input-less submit and timeout
+      if User_Input_With_Timeout = null then
+         Logger.Warn("Input timeout detected!").Nl.EoL;
+      elsif User_Input_With_Timeout.all = "" then
+         Logger.Warn("User did not provide an input!").Nl.EoL;
+      else
+         Logger.Info("User is called " & User_Input_With_Timeout.all).Nl.EoL;
+      end if;
    end;
 
 

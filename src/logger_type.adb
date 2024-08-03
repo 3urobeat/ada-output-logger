@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-03 13:22:46
+-- Last Modified: 2024-08-03 15:31:40
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -14,6 +14,7 @@
 
 
 with Ada.Exceptions;
+with Ada.IO_Exceptions;
 
 use Ada.Exceptions;
 
@@ -255,15 +256,15 @@ package body Logger_Type is
 
 
    -- Reads user input from stdin and returns it
-   function Read_Input(this : access Logger_Dummy; Question : String := ""; Timeout : Duration := 0.0) return String is
+   function Read_Input(this : access Logger_Dummy; Question : String := ""; Timeout : Duration := 0.0) return access String is
 
       -- This function frees me from declaring a constrained User_Input String
-      function Get_User_Input return String is
-         User_Input : String := Get_Line;
+      function Get_User_Input return access String is
+         User_Input : aliased String := Get_Line;
       begin
          -- Hide cursor again and return result
          Put(Colors.Hide_Cursor);
-         return User_Input;
+         return User_Input'Access;
       end Get_User_Input;
 
    begin    -- TODO: Pause animations, cache new log calls, ...
@@ -275,16 +276,20 @@ package body Logger_Type is
       -- Get input, abort if Timeout ran out (as long as a timeout was provided)
       if Timeout > 0.0 then
          select
-            delay Timeout; -- TODO: Causes runtime exception?
+            delay Timeout;
          then abort
             return Get_User_Input;
          end select;
 
-         return "";
+         return null;
       else
          return Get_User_Input;
       end if;
 
+   exception
+      when ADA.IO_EXCEPTIONS.DEVICE_ERROR => -- Ignore Error caused by aborting Get_Line
+         New_Line;                           -- Print New_Line because ENTER press by user is missing on abort
+         return null;
    end Read_Input;
 
 
