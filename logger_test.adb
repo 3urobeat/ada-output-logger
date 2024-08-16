@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-03 15:31:40
+-- Last Modified: 2024-08-16 15:01:12
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -121,7 +121,7 @@ begin
       User_Input_No_Timeout   : access String := Logger.Read_Input("Please submit your name: ");
       User_Input_With_Timeout : access String := Logger.Read_Input("Please submit your name: ", 2.5);
    begin
-      Logger.Info("User is called " & User_Input_No_Timeout).Nl.EoL;
+      Logger.Info("User is called " & User_Input_No_Timeout.all).Nl.EoL;
 
       -- Differentiate between input-less submit and timeout
       if User_Input_With_Timeout = null then
