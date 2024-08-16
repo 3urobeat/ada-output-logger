@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-03 15:31:40
+-- Last Modified: 2024-08-16 15:01:32
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -259,12 +259,12 @@ package body Logger_Type is
    function Read_Input(this : access Logger_Dummy; Question : String := ""; Timeout : Duration := 0.0) return access String is
 
       -- This function frees me from declaring a constrained User_Input String
-      function Get_User_Input return access String is
+      function Get_User_Input return String is
          User_Input : aliased String := Get_Line;
       begin
          -- Hide cursor again and return result
          Put(Colors.Hide_Cursor);
-         return User_Input'Access;
+         return User_Input;
       end Get_User_Input;
 
    begin    -- TODO: Pause animations, cache new log calls, ...
@@ -278,12 +278,12 @@ package body Logger_Type is
          select
             delay Timeout;
          then abort
-            return Get_User_Input;
+            return new String'(Get_User_Input);
          end select;
 
          return null;
       else
-         return Get_User_Input;
+         return new String'(Get_User_Input);
       end if;
 
    exception
