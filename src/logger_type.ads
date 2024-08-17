@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-03 15:31:40
+-- Last Modified: 2024-08-17 10:44:16
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -22,12 +22,14 @@ with Colors_Collection;
 with Construct;
 with File_Output;
 with Helpers;
+with Print_Manager;
 
 use Ada.Text_IO;
 use Animation;
 use Colors_Collection;
 use Construct;
 use Helpers;
+use Print_Manager;
 
 
 package Logger_Type with Elaborate_Body is
