@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-16 15:01:32
+-- Last Modified: 2024-08-17 10:44:16
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -228,7 +228,7 @@ package body Logger_Type is
       -- Check if the message was marked to be removed or contains an animation
       if this.Marked_As_Rm or this.Submit_Animation then
          -- Print carriage return to stdout so the next msg overwrites this one
-         Put("" & Ada.Characters.Latin_1.CR);
+         Print(Print_Event_Type(Message), "" & Ada.Characters.Latin_1.CR);
 
          -- Always print newline to output file for messages marked as Rm because nothing can & should be overwritten there
          if this.Marked_As_Rm then
@@ -267,10 +267,13 @@ package body Logger_Type is
          return User_Input;
       end Get_User_Input;
 
-   begin    -- TODO: Pause animations, cache new log calls, ...
+   begin    -- TODO: Pause animations, cache new log calls (if even necessary), ...
+
+      -- Lock Print_Manager
+      Lock_Stdout;
 
       -- Print question if one was set and show cursor
-      this.Internal_Log(Question); -- TODO: Should this use Internal_Log?
+      this.Internal_Log(Question); -- TODO: Should this use Internal_Log?  -- TODO: This does not appear in output file, is this intended?
       Put(Colors.Show_Cursor);
 
       -- Get input, abort if Timeout ran out (as long as a timeout was provided)
@@ -281,15 +284,20 @@ package body Logger_Type is
             return new String'(Get_User_Input);
          end select;
 
+         -- Unlock Print_Manager again and return null
+         Unlock_Stdout;
          return null;
       else
+         -- Unlock Print_Manager and return user input
+         Unlock_Stdout;
          return new String'(Get_User_Input);
       end if;
 
    exception
       when ADA.IO_EXCEPTIONS.DEVICE_ERROR => -- Ignore Error caused by aborting Get_Line
          New_Line;                           -- Print New_Line because ENTER press by user is missing on abort
-         return null;
+         Unlock_Stdout;                      -- Unlock Print_Manager
+         return null;                        -- ...aaand return null
    end Read_Input;
 
 
@@ -304,7 +312,7 @@ package body Logger_Type is
          begin
             If Cut_Str'Length > 0 then
 
-               Put(Cut_Str);
+               Print(Print_Event_Type(Message), Cut_Str);
                this.Current_Message_Length := this.Current_Message_Length + Cut_Str'Length;  -- TODO: This is not entirely accurate because it counts color codes
 
                -- Append to Reprint Buffer if we are in this block because an animation is contained
@@ -315,12 +323,12 @@ package body Logger_Type is
             end if;
          end;
       else
-         Put(Str);
+         Print(Print_Event_Type(Message), Str);
          this.Current_Message_Length := this.Current_Message_Length + Str'Length;            -- TODO: This is not entirely accurate because it counts color codes
       end if;
 
       -- Always append Color Reset to avoid colors bleeding into the next element
-      Put(Colors.Reset);
+      Print(Print_Event_Type(Message), Colors.Reset);
    end Internal_Log;
 
 
