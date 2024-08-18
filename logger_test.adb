@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-16 15:01:12
+-- Last Modified: 2024-08-18 12:19:37
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -116,22 +116,36 @@ begin
    --  delay 2.0;
 
 
-   -- Test reading input
-   declare
-      User_Input_No_Timeout   : access String := Logger.Read_Input("Please submit your name: ");
-      User_Input_With_Timeout : access String := Logger.Read_Input("Please submit your name: ", 2.5);
-   begin
-      Logger.Info("User is called " & User_Input_No_Timeout.all).Nl.EoL;
+   -- Test reading input and queueing simultaneously logged messages. We use a task in this example to achieve concurrency.
+   --  declare
+   --     task T;
 
-      -- Differentiate between input-less submit and timeout
-      if User_Input_With_Timeout = null then
-         Logger.Warn("Input timeout detected!").Nl.EoL;
-      elsif User_Input_With_Timeout.all = "" then
-         Logger.Warn("User did not provide an input!").Nl.EoL;
-      else
-         Logger.Info("User is called " & User_Input_With_Timeout.all).Nl.EoL;
-      end if;
-   end;
+   --     task body T is
+   --        User_Input_No_Timeout   : access String;
+   --        User_Input_With_Timeout : access String;
+   --     begin
+   --        -- We must call Read_Input from the body in this case to remain concurrent. Calling it from the task spec would result in it blocking the declare body.
+   --        User_Input_No_Timeout   := Logger.Read_Input("Please submit your name: ");
+   --        User_Input_With_Timeout := Logger.Read_Input("Please submit your name: ", 2.5);
+
+   --        Logger.Info("No Timeout: User is called " & User_Input_No_Timeout.all).Nl.EoL;
+
+   --        -- Differentiate between input-less submit and timeout
+   --        if User_Input_With_Timeout = null then
+   --           Logger.Warn("With Timeout: Input timeout detected!").Nl.EoL;
+   --        elsif User_Input_With_Timeout.all = "" then
+   --           Logger.Warn("With Timeout: User did not provide an input!").Nl.EoL;
+   --        else
+   --           Logger.Info("With Timeout: User is called " & User_Input_With_Timeout.all).Nl.EoL;
+   --        end if;
+   --     end T;
+   --  begin
+   --     Logger.Warn("This message should get processed simultaneously as the Read_Input task (check timestamp), but only appear in stdout afterwards.").Nl.EoL;
+
+   --     Logger.Animate(Default_Animations.Loading).Info("This should also work with animations").Nl.EoL;
+   --     delay 0.5;
+   --     Logger.Stop_Animation;
+   --  end;
 
 
    -- Bechmark
