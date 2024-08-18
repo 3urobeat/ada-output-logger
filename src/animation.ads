@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:08
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-30 16:40:43
+-- Last Modified: 2024-08-18 12:02:43
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -18,9 +18,11 @@ with Ada.Characters.Latin_1; -- Used for escape char carriage return
 with Ada.Calendar;
 with Ada.Text_IO;
 with Helpers;
+with Print_Manager;
 
 use Ada.Calendar;
 use Helpers;
+use Print_Manager;
 
 
 package Animation is

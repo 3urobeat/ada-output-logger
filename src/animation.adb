@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-06 16:49:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-07-30 16:40:43
+-- Last Modified: 2024-08-18 12:02:43
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -65,8 +65,8 @@ package body Animation is
             if Clock >= Next_Run then
 
                -- Print this animation frame and reset cursor so the next frame can overwrite this one
-               Ada.Text_IO.Put("[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)));      -- Note: Should you want to use Internal_Log again, these messages must not be counted in message length and not appended to the reprint buffer!
-               Ada.Text_IO.Put("] " & Ada.Characters.Latin_1.CR);
+               Print(Animation_Update, "[" & Animation_Frames_Bounded.To_String(Current_Animation(Index)));      -- Note: Should you want to use Internal_Log again, these messages must not be counted in message length and not appended to the reprint buffer!
+               Print(Animation_Update, "] " & Ada.Characters.Latin_1.CR);
 
                -- Reset index if we reached the end or the animation does not contain any more frames
                if (Index = Animation_Index'Last) or (Current_Animation(Animation_Index'Succ(Index)) = Animation_Frames_Bounded.Null_Bounded_String) then

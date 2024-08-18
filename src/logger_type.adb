@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-17 10:44:16
+-- Last Modified: 2024-08-18 12:02:43
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -263,18 +263,19 @@ package body Logger_Type is
          User_Input : aliased String := Get_Line;
       begin
          -- Hide cursor again and return result
-         Put(Colors.Hide_Cursor);
+         Put(Colors.Hide_Cursor);   -- Hide cursor again
+         Unlock_Stdout;             -- Unlock Print_Manager to log queued messages
          return User_Input;
       end Get_User_Input;
 
    begin    -- TODO: Pause animations, cache new log calls (if even necessary), ...
 
-      -- Lock Print_Manager
-      Lock_Stdout;
-
       -- Print question if one was set and show cursor
       this.Internal_Log(Question); -- TODO: Should this use Internal_Log?  -- TODO: This does not appear in output file, is this intended?
       Put(Colors.Show_Cursor);
+
+      -- Lock Print_Manager
+      Lock_Stdout;
 
       -- Get input, abort if Timeout ran out (as long as a timeout was provided)
       if Timeout > 0.0 then
@@ -284,19 +285,16 @@ package body Logger_Type is
             return new String'(Get_User_Input);
          end select;
 
-         -- Unlock Print_Manager again and return null
-         Unlock_Stdout;
          return null;
       else
-         -- Unlock Print_Manager and return user input
-         Unlock_Stdout;
          return new String'(Get_User_Input);
       end if;
 
    exception
       when ADA.IO_EXCEPTIONS.DEVICE_ERROR => -- Ignore Error caused by aborting Get_Line
+         Put(Colors.Hide_Cursor);            -- Hide cursor again
          New_Line;                           -- Print New_Line because ENTER press by user is missing on abort
-         Unlock_Stdout;                      -- Unlock Print_Manager
+         Unlock_Stdout;                      -- Unlock Print_Manager to log queued messages
          return null;                        -- ...aaand return null
    end Read_Input;
 
