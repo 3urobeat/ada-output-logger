@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-18 12:02:43
+-- Last Modified: 2024-08-18 12:28:03
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -208,7 +208,7 @@ package body Logger_Type is
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
       File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
-      New_Line;
+      Print(Message, "" & Ada.Characters.Latin_1.LF);
 
       -- Reset message length counter because we are now on a new line
       this.Current_Message_Length := 0;

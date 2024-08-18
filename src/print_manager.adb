@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-17 10:44:16
+-- Last Modified: 2024-08-18 12:28:03
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -36,11 +36,11 @@ package body Print_Manager is
             null;
 
          when Message =>
-            --  if Stdout_Is_Locked then
-            --     Log_Queue.Append(Str'Access);
-            --  else
+            if Stdout_Is_Locked then
+               Log_Queue.Append(new String'(Str));
+            else
                Put(Str);
-            --  end if;
+            end if;
 
          when Finalize =>
             null;
@@ -67,7 +67,7 @@ package body Print_Manager is
 
       -- Iterate through all queued messages and log them
       for Str of Log_Queue loop
-         Put(Str.all);
+         Print(Message, Str.all);
       end loop;
 
       Log_Queue.Clear;
