@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-20 10:45:51
+-- Last Modified: 2024-08-20 13:15:56
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -63,6 +63,11 @@ begin
    --  Logger.Log(Warn, "Hello", "logger_test.adb", True).Log(" World").Nl.EoL;
    --  Logger.Log(Error, "Hello World", "").Nl.EoL;
    --  Logger.Log("Unformatted message").Nl.EoL;
+
+
+   -- Test logging different data types
+   --  Logger.Log(Info, 10).Log(" That was an int!").Nl.EoL;
+   --  Logger.Log(Warn, "The pen is ").Log(7.2).Log("cm long.").Nl.EoL; -- Easily construct messages of different data types!
 
 
    -- Test removing message

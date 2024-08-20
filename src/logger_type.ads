@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-20 10:45:51
+-- Last Modified: 2024-08-20 13:15:56
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -101,11 +101,23 @@ package Logger_Type with Elaborate_Body is
    procedure Stop_Animation(this : access Logger_Dummy);
 
 
-   -- Logs a message to stdout without any formatting, use this for appending to an existing message
+   -- Logs a String to stdout without any formatting, use this for appending to an existing message
    -- @param this Instance of Logger, automatically provided when using dot notation
    -- @param Msg The message to log
    -- @return Returns `this` instance of Logger to support chaining another function call
    function Log(this : access Logger_Dummy; Msg : String) return access Logger_Dummy;
+
+   -- Logs a Integer to stdout without any formatting, use this for appending to an existing message
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   -- @param Msg The message to log
+   -- @return Returns `this` instance of Logger to support chaining another function call
+   function Log(this : access Logger_Dummy; Msg : Integer) return access Logger_Dummy;
+
+   -- Logs a Float to stdout without any formatting, use this for appending to an existing message
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   -- @param Msg The message to log
+   -- @return Returns `this` instance of Logger to support chaining another function call
+   function Log(this : access Logger_Dummy; Msg : Float) return access Logger_Dummy;
 
 
    -- Logs a String to stdout, prefixed with log level, source & date (all optional)
@@ -116,6 +128,24 @@ package Logger_Type with Elaborate_Body is
    -- @param Nd Optional: No-Date - Set to true if your message should not include a timestamp
    -- @return Returns `this` instance of Logger to support chaining another function call
    function Log(this : access Logger_Dummy; Lvl : Log_Levels; Msg : String; Src : String := ""; Nd : Boolean := False) return access Logger_Dummy;
+
+   -- Logs a Integer to stdout, prefixed with log level, source & date (all optional)
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   -- @param Lvl The log level to use
+   -- @param Msg The message to log
+   -- @param Src Optional: Name of the file this log message originates from
+   -- @param Nd Optional: No-Date - Set to true if your message should not include a timestamp
+   -- @return Returns `this` instance of Logger to support chaining another function call
+   function Log(this : access Logger_Dummy; Lvl : Log_Levels; Msg : Integer; Src : String := ""; Nd : Boolean := False) return access Logger_Dummy;
+
+   -- Logs a Float to stdout, prefixed with log level, source & date (all optional)
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   -- @param Lvl The log level to use
+   -- @param Msg The message to log
+   -- @param Src Optional: Name of the file this log message originates from
+   -- @param Nd Optional: No-Date - Set to true if your message should not include a timestamp
+   -- @return Returns `this` instance of Logger to support chaining another function call
+   function Log(this : access Logger_Dummy; Lvl : Log_Levels; Msg : Float; Src : String := ""; Nd : Boolean := False) return access Logger_Dummy;
 
 
    -- Logs a newline to stdout
