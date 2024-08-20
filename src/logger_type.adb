@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-20 10:45:51
+-- Last Modified: 2024-08-20 13:15:56
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -115,6 +115,16 @@ package body Logger_Type is
       return this;
    end Log;
 
+   function Log(this : access Logger_Dummy; Msg : Integer) return access Logger_Dummy is
+   begin
+      return this.Log(Msg => Msg'Image);
+   end Log;
+
+   function Log(this : access Logger_Dummy; Msg : Float) return access Logger_Dummy is
+   begin
+      return this.Log(Msg => Msg'Image);
+   end Log;
+
 
    -- Logs a String to stdout, prefixed with log level, source & date (all optional)
    function Log(this : access Logger_Dummy; Lvl : Log_Levels; Msg : String; Src : String := ""; Nd : Boolean := False) return access Logger_Dummy is
@@ -170,6 +180,15 @@ package body Logger_Type is
       return this;
    end Log;
 
+   function Log(this : access Logger_Dummy; Lvl : Log_Levels; Msg : Integer; Src : String := ""; Nd : Boolean := False) return access Logger_Dummy is
+   begin
+      return this.Log(Lvl => Lvl, Msg => Msg'Image, Src => Src, Nd => Nd);
+   end Log;
+
+   function Log(this : access Logger_Dummy; Lvl : Log_Levels; Msg : Float; Src : String := ""; Nd : Boolean := False) return access Logger_Dummy is
+   begin
+      return this.Log(Lvl => Lvl, Msg => Msg'Image, Src => Src, Nd => Nd);
+   end Log;
 
 
    -- Logs a newline to stdout
