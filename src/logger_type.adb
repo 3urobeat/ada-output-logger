@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-18 12:28:03
+-- Last Modified: 2024-08-20 10:45:51
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -102,78 +102,74 @@ package body Logger_Type is
 
 
    -- Logs a message to stdout without any formatting, use this for appending to an existing message
-   function Log(this : access Logger_Dummy; STR : String) return access Logger_Dummy is
+   function Log(this : access Logger_Dummy; Msg : String) return access Logger_Dummy is
    begin
       if this.Submit_Animation = False then
          Animation.Stop;
          this.Current_Animation := Default_Animations.None;
       end if;
 
-      File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), STR);
-      this.Internal_Log(STR);
+      File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), Msg);
+      this.Internal_Log(Msg);
 
       return this;
    end Log;
 
 
-   -- Logs a message to stdout with 'INFO' prefix
-   function Info(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
+   -- Logs a String to stdout, prefixed with log level, source & date (all optional)
+   function Log(this : access Logger_Dummy; Lvl : Log_Levels; Msg : String; Src : String := ""; Nd : Boolean := False) return access Logger_Dummy is
    begin
-      this.Internal_Prefixed_Log(
-         Log_Lvl  => "INFO",
-         Color    => Colors.Br_Fg_Cyan,
-         STR      => STR,
-         SRC      => SRC,
-         ND       => ND
-      );
+      case Lvl is
+         when Debug =>
+            this.Internal_Prefixed_Log(
+               Log_Lvl  => "DEBUG",
+               Color    => Colors.Br_Fg_Cyan & Colors.Background,
+               STR      => Msg,
+               SRC      => SRC,
+               ND       => ND
+            );
+
+         when Info =>
+            this.Internal_Prefixed_Log(
+               Log_Lvl  => "INFO",
+               Color    => Colors.Br_Fg_Cyan,
+               STR      => Msg,
+               SRC      => SRC,
+               ND       => ND
+            );
+
+         when Warn =>
+            this.Internal_Prefixed_Log(
+               Log_Lvl  => "WARN",
+               Color    => Colors.Fg_Red,
+               STR      => Msg,
+               SRC      => SRC,
+               ND       => ND
+            );
+
+         when Error =>
+            this.Internal_Prefixed_Log(
+               Log_Lvl  => "ERROR",
+               Color    => Colors.Fg_Red & Colors.Background,
+               STR      => Msg,
+               SRC      => SRC,
+               ND       => ND
+            );
+
+         when others =>
+            this.Internal_Prefixed_Log(
+               Log_Lvl  => "",
+               Color    => "",
+               STR      => Msg,
+               SRC      => SRC,
+               ND       => ND
+            );
+
+      end case;
 
       return this;
-   end Info;
+   end Log;
 
-
-   -- Logs a message to stdout with 'DEBUG' prefix
-   function Debug(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
-   begin
-      this.Internal_Prefixed_Log(
-         Log_Lvl  => "DEBUG",
-         Color    => Colors.Br_Fg_Cyan & Colors.Background,
-         STR      => STR,
-         SRC      => SRC,
-         ND       => ND
-      );
-
-      return this;
-   end Debug;
-
-
-   -- Logs a message to stdout with 'WARN' prefix
-   function Warn(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
-   begin
-      this.Internal_Prefixed_Log(
-         Log_Lvl  => "WARN",
-         Color    => Colors.Fg_Red,
-         STR      => STR,
-         SRC      => SRC,
-         ND       => ND
-      );
-
-      return this;
-   end Warn;
-
-
-   -- Logs a message to stdout with 'ERROR' prefix
-   function Error(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy is
-   begin
-      this.Internal_Prefixed_Log(
-         Log_Lvl  => "ERROR",
-         Color    => Colors.Fg_Red & Colors.Background,
-         STR      => Colors.Fg_Red & STR,
-         SRC      => SRC,
-         ND       => ND
-      );
-
-      return this;
-   end Error;
 
 
    -- Logs a newline to stdout
