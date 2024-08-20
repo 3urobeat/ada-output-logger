@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-17 10:44:16
+-- Last Modified: 2024-08-20 10:45:51
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -39,6 +39,9 @@ package Logger_Type with Elaborate_Body is
 
    -- Expose set of default animations for easy access
    Default_Animations : Default_Animations_Type := Animation.Default_Animations;
+
+   -- Supported log levels
+   type Log_Levels is ( None, Debug, Info, Warn, Error );
 
 
    package Options_Bounded_128B is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 128); -- Used for configuration options below
@@ -97,43 +100,23 @@ package Logger_Type with Elaborate_Body is
    -- @param this Instance of Logger, automatically provided when using dot notation
    procedure Stop_Animation(this : access Logger_Dummy);
 
+
    -- Logs a message to stdout without any formatting, use this for appending to an existing message
    -- @param this Instance of Logger, automatically provided when using dot notation
-   -- @param STR The message to log
+   -- @param Msg The message to log
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Log(this : access Logger_Dummy; STR : String) return access Logger_Dummy;
+   function Log(this : access Logger_Dummy; Msg : String) return access Logger_Dummy;
 
-   -- Logs a message to stdout with 'INFO' prefix
-   -- @param this Instance of Logger, automatically provided when using dot notation
-   -- @param STR The message to log
-   -- @param SRC Optional: Name of the file this log message originates from
-   -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
-   -- @return Returns `this` instance of Logger to support chaining another function call
-   function Info(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy;
 
-   -- Logs a message to stdout with 'DEBUG' prefix
+   -- Logs a String to stdout, prefixed with log level, source & date (all optional)
    -- @param this Instance of Logger, automatically provided when using dot notation
-   -- @param STR The message to log
-   -- @param SRC Optional: Name of the file this log message originates from
-   -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
+   -- @param Lvl The log level to use
+   -- @param Msg The message to log
+   -- @param Src Optional: Name of the file this log message originates from
+   -- @param Nd Optional: No-Date - Set to true if your message should not include a timestamp
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Debug(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy;
+   function Log(this : access Logger_Dummy; Lvl : Log_Levels; Msg : String; Src : String := ""; Nd : Boolean := False) return access Logger_Dummy;
 
-   -- Logs a message to stdout with 'WARN' prefix
-   -- @param this Instance of Logger, automatically provided when using dot notation
-   -- @param STR The message to log
-   -- @param SRC Optional: Name of the file this log message originates from
-   -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
-   -- @return Returns `this` instance of Logger to support chaining another function call
-   function Warn(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy;
-
-   -- Logs a message to stdout with 'ERROR' prefix
-   -- @param this Instance of Logger, automatically provided when using dot notation
-   -- @param STR The message to log
-   -- @param SRC Optional: Name of the file this log message originates from
-   -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
-   -- @return Returns `this` instance of Logger to support chaining another function call
-   function Error(this : access Logger_Dummy; STR : String; SRC : String := ""; ND : Boolean := False) return access Logger_Dummy;
 
    -- Logs a newline to stdout
    -- @param this Instance of Logger, automatically provided when using dot notation

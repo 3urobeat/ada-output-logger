@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-18 12:19:37
+-- Last Modified: 2024-08-20 10:45:51
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -55,62 +55,63 @@ procedure Logger_Test is
 begin
 
    -- Get some space between us and the compile messages
-   -- Logger.Nl.EoL;
+   --  Logger.Nl.EoL;
 
    -- Test log levels with different formats
-   --  Logger.Info(STR => "Hello " & Colors.Fg_Magenta & "World", SRC => "logger_test.adb").Nl.EoL; -- Test if colors can bleed into the next message. This color should also not appear in the output file
-   --  Logger.Debug("Hello World").Nl.EoL;
-   --  Logger.Warn("Hello", "logger_test.adb", True).Log(" World").Nl.EoL;
-   --  Logger.Error("Hello World", "").Nl.EoL;
+   --  Logger.Log(Lvl => Info, Msg => "Hello " & Colors.Fg_Magenta & "World", Src => "logger_test.adb").Nl.EoL; -- Test if colors can bleed into the next message. This color should also not appear in the output file
+   --  Logger.Log(Debug, "Hello World").Nl.EoL;
+   --  Logger.Log(Warn, "Hello", "logger_test.adb", True).Log(" World").Nl.EoL;
+   --  Logger.Log(Error, "Hello World", "").Nl.EoL;
+   --  Logger.Log("Unformatted message").Nl.EoL;
 
 
    -- Test removing message
-   --  Logger.Rm.Info("Long message that should be gone in 500ms").EoL;
+   --  Logger.Rm.Log(Info, "Long message that should be gone in 500ms").EoL;
    --  delay 0.5;
-   --  Logger.Info("Hello Again").Nl.EoL;
+   --  Logger.Log(Info, "Hello Again").Nl.EoL;
 
-   --  Logger.Rm.Info("Short msg").EoL;
+   --  Logger.Rm.Log(Info, "Short msg").EoL;
    --  delay 0.5;
-   --  Logger.Info("Hello Again using a longer message").Nl.EoL;
+   --  Logger.Log(Info, "Hello Again using a longer message").Nl.EoL;
 
-   --  Logger.Rm.Info("Long message that should get overwritten by Finalize when the process exits or Logger gets deleted").EoL;
+   --  Logger.Rm.Log(Info, "Long message that should get overwritten by Finalize when the process exits or Logger gets deleted").EoL;
    --  delay 0.5;
 
 
    -- Test removing part of message printed after newline
-   --  Logger.Info("First part of the messageFirst part of the messageFirst part of the messageFirst part of the message").Nl.Rm.Log("Second part which should be removed").EoL; -- This is supposed to check if resetting Message_Length on Nl is correct
+   --  Logger.Log(Info, "First part of the message").Nl.Rm.Log("Second part which should be removed").EoL; -- This is supposed to check if resetting Message_Length on Nl is correct
 
 
    -- Test animations
-   --  Logger.Rm.Animate(Default_Animations.Loading).Info("Hello there").EoL;
+   --  Logger.Rm.Animate(Default_Animations.Loading).Log(Info, "Hello there").EoL;
    --  delay 2.4;
-   --  Logger.Rm.Animate(Default_Animations.Waiting).Warn("Next").EoL;  -- Start another animation to stop the previous one
-   --  Logger.Rm.Animate(Default_Animations.Loading).Warn("Next").EoL;  -- ...or continue with the same animation using a different message to showcase the frame retention
+   --  Logger.Rm.Animate(Default_Animations.Waiting).Log(Warn, "Next").EoL;  -- Start another animation to stop the previous one
+   --  Logger.Rm.Animate(Default_Animations.Loading).Log(Warn, "Next").EoL;  -- ...or continue with the same animation using a different message to showcase the frame retention
 
    --  test := Logger.Animate(Default_Animations.Loading);  -- Simulate that it takes time to change the message. The animation should retain the last frame and hold
    --  delay 0.9;
-   --  test.Rm.Warn("Next").EoL;
+   --  test.Rm.Log(Warn, "Next").EoL;
 
    --  delay 2.0;
-   --  Logger.Animate(Default_Animations.Waiting).Error("Test message").EoL;  -- Test "boop" appearing behind reprinted animation in output.txt
+   --  Logger.Animate(Default_Animations.Waiting).Log(Error, "Test message").EoL;  -- Test "boop" appearing behind reprinted animation in output.txt
    --  delay 2.1;
    --  Logger.Log("boop").EoL;
-   --  Logger.Rm.Animate(Default_Animations.Arrows).Debug("This should be gone").EoL;
+   --  Logger.Rm.Animate(Default_Animations.Arrows).Log(Debug, "This should be gone").EoL;
    --  delay 0.4;
 
 
    -- Test newline printing after animation is stopped
-   --  Logger.Animate(Default_Animations.Arrows).Info("This is not illegal anymore").Nl.EoL;
+   --  Logger.Animate(Default_Animations.Arrows).Log(Info, "This is not illegal anymore").Nl.EoL;
    --  delay 0.7;
-   --  Logger.Info("Boop").Nl.EoL;
-   --  Logger.Rm.Warn("This is illegal").Nl.EoL;
-   --  Logger.Rm.Animate(Default_Animations.Waiting).Warn("This is illegal as well").Nl.EoL;
+   --  Logger.Log(Info, "Boop").Nl.EoL;
+   --  Logger.Rm.Log(Warn, "This is illegal").Nl.EoL;
+   --  Logger.Rm.Animate(Default_Animations.Waiting).Log(Warn, "This is illegal as well").Nl.EoL;
 
 
    -- Test cutting long messages to terminal width
-   --  Logger.Rm.Debug("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").Log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb").EoL; -- Simple test
+   --  Logger.Rm.Log(Debug, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").Log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb").EoL; -- Simple test
 
-   --  test := Logger.Rm.Debug("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+   --  test := Logger.Rm.Log(Debug, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
    --  delay 5.0;                                                                                                        -- Resize terminal during print
    --  test.Log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb").EoL;
    --  delay 2.0;
@@ -128,21 +129,21 @@ begin
    --        User_Input_No_Timeout   := Logger.Read_Input("Please submit your name: ");
    --        User_Input_With_Timeout := Logger.Read_Input("Please submit your name: ", 2.5);
 
-   --        Logger.Info("No Timeout: User is called " & User_Input_No_Timeout.all).Nl.EoL;
+   --        Logger.Log(Info, "No Timeout: User is called " & User_Input_No_Timeout.all).Nl.EoL;
 
    --        -- Differentiate between input-less submit and timeout
    --        if User_Input_With_Timeout = null then
-   --           Logger.Warn("With Timeout: Input timeout detected!").Nl.EoL;
+   --           Logger.Log(Warn, "With Timeout: Input timeout detected!").Nl.EoL;
    --        elsif User_Input_With_Timeout.all = "" then
-   --           Logger.Warn("With Timeout: User did not provide an input!").Nl.EoL;
+   --           Logger.Log(Warn, "With Timeout: User did not provide an input!").Nl.EoL;
    --        else
-   --           Logger.Info("With Timeout: User is called " & User_Input_With_Timeout.all).Nl.EoL;
+   --           Logger.Log(Info, "With Timeout: User is called " & User_Input_With_Timeout.all).Nl.EoL;
    --        end if;
    --     end T;
    --  begin
-   --     Logger.Warn("This message should get processed simultaneously as the Read_Input task (check timestamp), but only appear in stdout afterwards.").Nl.EoL;
+   --     Logger.Log(Warn, "This message should get processed simultaneously as the Read_Input task (check timestamp), but only appear in stdout afterwards.").Nl.EoL;
 
-   --     Logger.Animate(Default_Animations.Loading).Info("This should also work with animations").Nl.EoL;
+   --     Logger.Animate(Default_Animations.Loading).Log(Info, "This should also work with animations").Nl.EoL;
    --     delay 0.5;
    --     Logger.Stop_Animation;
    --  end;
@@ -153,7 +154,7 @@ begin
 
    --  for i in 0 .. 19 loop         -- Use Put_Line 20 times and calculate average
    --     Benchmark_Start := Clock;
-   --     Logger.Info("Hello World", "logger_test.adb").Nl.EoL;
+   --     Logger.Log(Info, "Hello World", "logger_test.adb").Nl.EoL;
    --     Benchmark_Duration := Benchmark_Duration + (To_Duration(Clock - Benchmark_Start) * 1000000.0); -- Seconds -> Microseconds
    --  end loop;
 
