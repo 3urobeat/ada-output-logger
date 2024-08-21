@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-20 13:15:56
+-- Last Modified: 2024-08-21 21:17:23
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -92,9 +92,9 @@ package Logger_Type with Elaborate_Body is
 
    -- Prepends the following message with an animation. The animation will be refreshed every Animate_Interval ms as long as it is not canceled by logging another message. Call this before any other logger function.
    -- @param this Instance of Logger, automatically provided when using dot notation
-   -- @param ANIM The animation to start displaying
+   -- @param Anim The animation to start displaying
    -- @return Returns `this` instance of Logger to support chaining another function call
-   function Animate(this : access Logger_Dummy; ANIM : Animation_Type) return access Logger_Dummy;
+   function Animate(this : access Logger_Dummy; Anim : Animation_Type) return access Logger_Dummy;
 
    -- Stops an active animation
    -- @param this Instance of Logger, automatically provided when using dot notation
@@ -170,20 +170,12 @@ private
    procedure Initialize(this : in out Logger_Dummy);
 
    -- Internal: Overwrite Finalize to catch when Logger is deleted
-   procedure Finalize(this : in out Logger_Dummy); -- TODO: I wish I could private this
+   procedure Finalize(this : in out Logger_Dummy);
 
    -- Internal: Logs a message as is to stdout
-   -- @param this Instance of Logger, automatically provided when using dot notation
-   -- @param Str User provided message to log
    procedure Internal_Log(this : in out Logger_Dummy; Str : String);
 
    -- Internal: Constructs the actual message and logs it to file & stdout
-   -- @param this Instance of Logger, automatically provided when using dot notation
-   -- @param Log_Lvl Log Level of this message
-   -- @param Color Color Code to use for Log_Lvl
-   -- @param STR The message to log
-   -- @param SRC Optional: Name of the file this log message originates from
-   -- @param ND Optional: No-Date - Set to true if your message should not include a timestamp
-   procedure Internal_Prefixed_Log(this : in out Logger_Dummy; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False);
+   procedure Internal_Prefixed_Log(this : in out Logger_Dummy; Log_Lvl : String; Color : String; Msg : String; Src : String := ""; Nd : Boolean := False);
 
 end Logger_Type;

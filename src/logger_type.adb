@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-20 13:15:56
+-- Last Modified: 2024-08-21 21:17:23
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -74,18 +74,18 @@ package body Logger_Type is
 
 
    -- Prepends the following message with an animation. The animation will be refreshed every  Call this before any
-   function Animate(this : access Logger_Dummy; ANIM : Animation_Type) return access Logger_Dummy is
+   function Animate(this : access Logger_Dummy; Anim : Animation_Type) return access Logger_Dummy is
    begin
       -- Check if there is a running animation. If it is the same, get it printed and hold
-      if this.Current_Animation = ANIM then
+      if this.Current_Animation = Anim then
          this.Internal_Log(Animation.Log_Static); -- This prints the current animation frame once to offset the following message content
       else
          Animation.Stop;
-         this.Internal_Log("[" & Animation_Frames_Bounded.To_String(ANIM(Animation_Index'First)) & "] ");
+         this.Internal_Log("[" & Animation_Frames_Bounded.To_String(Anim(Animation_Index'First)) & "] ");
       end if;
 
       -- Register this animation
-      this.Current_Animation := ANIM;
+      this.Current_Animation := Anim;
       this.Submit_Animation := True;   -- Make sure this is set after the initial frame was printed, so that Internal_Log() does not append the animation frame to the Reprint_Buffer
 
       -- Note: The animation handler task will be started by RmEoL
@@ -134,45 +134,45 @@ package body Logger_Type is
             this.Internal_Prefixed_Log(
                Log_Lvl  => "DEBUG",
                Color    => Colors.Br_Fg_Cyan & Colors.Background,
-               STR      => Msg,
-               SRC      => SRC,
-               ND       => ND
+               Msg      => Msg,
+               Src      => Src,
+               Nd       => Nd
             );
 
          when Info =>
             this.Internal_Prefixed_Log(
                Log_Lvl  => "INFO",
                Color    => Colors.Br_Fg_Cyan,
-               STR      => Msg,
-               SRC      => SRC,
-               ND       => ND
+               Msg      => Msg,
+               Src      => Src,
+               Nd       => Nd
             );
 
          when Warn =>
             this.Internal_Prefixed_Log(
                Log_Lvl  => "WARN",
                Color    => Colors.Fg_Red,
-               STR      => Msg,
-               SRC      => SRC,
-               ND       => ND
+               Msg      => Msg,
+               Src      => Src,
+               Nd       => Nd
             );
 
          when Error =>
             this.Internal_Prefixed_Log(
                Log_Lvl  => "ERROR",
                Color    => Colors.Fg_Red & Colors.Background,
-               STR      => Msg,
-               SRC      => SRC,
-               ND       => ND
+               Msg      => Colors.Fg_Red & Msg,
+               Src      => Src,
+               Nd       => Nd
             );
 
          when others =>
             this.Internal_Prefixed_Log(
                Log_Lvl  => "",
                Color    => "",
-               STR      => Msg,
-               SRC      => SRC,
-               ND       => ND
+               Msg      => Msg,
+               Src      => Src,
+               Nd       => Nd
             );
 
       end case;
@@ -346,9 +346,9 @@ package body Logger_Type is
 
 
    -- Internal: Constructs the actual message and logs it to file & stdout
-   procedure Internal_Prefixed_Log(this : in out Logger_Dummy; Log_Lvl : String; Color : String; STR : String; SRC : String := ""; ND : Boolean := False) is
+   procedure Internal_Prefixed_Log(this : in out Logger_Dummy; Log_Lvl : String; Color : String; Msg : String; Src : String := ""; Nd : Boolean := False) is
       -- Construct string with prefix
-      String_To_Log : String := Get_Prefix(Color, Log_Lvl, SRC, ND) & str;
+      String_To_Log : String := Get_Prefix(Color, Log_Lvl, Src, Nd) & Msg;
    begin
       -- Stop animation from previous message
       if this.Submit_Animation = False then
