@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-18 12:28:03
+-- Last Modified: 2024-08-23 19:54:23
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -21,16 +21,16 @@ package body Print_Manager is
 
       case Event is
          when Animation_Create =>
-            null;
+            Put(Str);
 
          when Animation_Update =>
-            null;
+            Put(Str);
 
          when Animation_Remove =>
             null;
 
          when Read_Input_Start =>
-            null;
+            Put(Str);
 
          when Read_Input_End =>
             null;
