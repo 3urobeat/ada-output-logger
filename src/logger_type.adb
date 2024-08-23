@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-21 21:17:23
+-- Last Modified: 2024-08-23 19:54:23
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -283,14 +283,22 @@ package body Logger_Type is
          return User_Input;
       end Get_User_Input;
 
-   begin    -- TODO: Pause animations, cache new log calls (if even necessary), ...
+   begin
+
+      -- New Logger instance to reprint anything, Rm to avoid Question being offset, Log to stop animation, EoL to overwrite ghost chars
+      Logger.Rm.Log("").EoL;
+
+      -- Lock Print_Manager nearly instantly to avoid glitching messages in concurrent applications
+      Lock_Stdout;
 
       -- Print question if one was set and show cursor
-      this.Internal_Log(Question); -- TODO: Should this use Internal_Log?  -- TODO: This does not appear in output file, is this intended?
+      if Question'Length > 0 then
+         Print(Event => Read_Input_Start, Str => Question);  -- Print directly via the Print_Manager to bypass lock
+         File_Output.Print_To_File(path => Options_Bounded_128B.To_String(this.Output_File_Path), str => Question);
+      end if;
+
       Put(Colors.Show_Cursor);
 
-      -- Lock Print_Manager
-      Lock_Stdout;
 
       -- Get input, abort if Timeout ran out (as long as a timeout was provided)
       if Timeout > 0.0 then
