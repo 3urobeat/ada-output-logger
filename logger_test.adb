@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-20 13:15:56
+-- Last Modified: 2024-08-27 12:55:13
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -186,7 +186,7 @@ begin
 
    -- Exit when animation is active
    --  Logger.Stop_Animation; -- Exit
-   --  Logger.Info("Please exit").Nl.EoL; -- ...or exit by printing a message without animation
+   --  Logger.Log("Please exit").Nl.EoL; -- ...or exit by printing a message without animation
 
    null;
 

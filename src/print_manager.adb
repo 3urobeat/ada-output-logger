@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-23 19:54:23
+-- Last Modified: 2024-08-27 12:55:13
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -17,14 +17,24 @@ package body Print_Manager is
 
    -- Manages cursor movement and logs a string to stdout
    procedure Print(Event : Print_Event_Type; Str : String) is
+
+      procedure Print_When_Unlocked(Str : String) is
+      begin
+         if Stdout_Is_Locked then
+            Log_Queue.Append (new String'(Str));
+         else
+            Put (Str);
+         end if;
+      end Print_When_Unlocked;
+
    begin
 
       case Event is
          when Animation_Create =>
-            Put(Str);
+            Print_When_Unlocked(Str);
 
          when Animation_Update =>
-            Put(Str);
+            Print_When_Unlocked(Str);
 
          when Animation_Remove =>
             null;
@@ -36,11 +46,7 @@ package body Print_Manager is
             null;
 
          when Message =>
-            if Stdout_Is_Locked then
-               Log_Queue.Append(new String'(Str));
-            else
-               Put(Str);
-            end if;
+            Print_When_Unlocked(Str);
 
          when Finalize =>
             null;
