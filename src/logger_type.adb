@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-23 19:54:23
+-- Last Modified: 2024-08-28 18:22:11
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -291,10 +291,10 @@ package body Logger_Type is
       -- Lock Print_Manager nearly instantly to avoid glitching messages in concurrent applications
       Lock_Stdout;
 
-      -- Print question if one was set and show cursor
+      -- Print question if one was set, add additional newline to output file and show cursor
       if Question'Length > 0 then
          Print(Event => Read_Input_Start, Str => Question);  -- Print directly via the Print_Manager to bypass lock
-         File_Output.Print_To_File(path => Options_Bounded_128B.To_String(this.Output_File_Path), str => Question);
+         File_Output.Print_To_File(path => Options_Bounded_128B.To_String(this.Output_File_Path), Str => Question & Ada.Characters.Latin_1.LF);
       end if;
 
       Put(Colors.Show_Cursor);
