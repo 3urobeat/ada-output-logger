@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-28 18:22:11
+-- Last Modified: 2024-08-29 17:07:10
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -101,6 +101,19 @@ package body Logger_Type is
    end Stop_Animation;
 
 
+   -- Concat overload for Integer
+   function "&"(Left : in String; Right : in Integer) return String is
+   begin
+      return Left & Ada.Strings.Fixed.Trim(Integer'Image(Right), Ada.Strings.Left);
+   end "&";
+
+   -- Concat overload for Float
+   function "&"(Left : in String; Right : in Float) return String is
+   begin
+      return Left & Ada.Strings.Fixed.Trim(Float'Image(Right), Ada.Strings.Left);
+   end "&";
+
+
    -- Logs a message to stdout without any formatting, use this for appending to an existing message
    function Log(this : access Logger_Dummy; Msg : String) return access Logger_Dummy is
    begin
@@ -117,12 +130,12 @@ package body Logger_Type is
 
    function Log(this : access Logger_Dummy; Msg : Integer) return access Logger_Dummy is
    begin
-      return this.Log(Msg => Msg'Image);
+      return this.Log(Msg => "" & Msg);
    end Log;
 
    function Log(this : access Logger_Dummy; Msg : Float) return access Logger_Dummy is
    begin
-      return this.Log(Msg => Msg'Image);
+      return this.Log(Msg => "" & Msg);
    end Log;
 
 
@@ -182,12 +195,12 @@ package body Logger_Type is
 
    function Log(this : access Logger_Dummy; Lvl : Log_Levels; Msg : Integer; Src : String := ""; Nd : Boolean := False) return access Logger_Dummy is
    begin
-      return this.Log(Lvl => Lvl, Msg => Msg'Image, Src => Src, Nd => Nd);
+      return this.Log(Lvl => Lvl, Msg => "" & Msg, Src => Src, Nd => Nd);
    end Log;
 
    function Log(this : access Logger_Dummy; Lvl : Log_Levels; Msg : Float; Src : String := ""; Nd : Boolean := False) return access Logger_Dummy is
    begin
-      return this.Log(Lvl => Lvl, Msg => Msg'Image, Src => Src, Nd => Nd);
+      return this.Log(Lvl => Lvl, Msg => "" & Msg, Src => Src, Nd => Nd);
    end Log;
 
 

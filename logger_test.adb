@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-27 12:55:13
+-- Last Modified: 2024-08-29 17:07:10
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -34,6 +34,7 @@ with Ada.Calendar;
 with Ada.Calendar.Formatting;
 with Ada.Real_Time;
 with Ada.Text_IO;
+
 with Ada.Characters.Latin_1;
 with Ada.Directories;
 
@@ -67,7 +68,13 @@ begin
 
    -- Test logging different data types
    --  Logger.Log(Info, 10).Log(" That was an int!").Nl.EoL;
-   --  Logger.Log(Warn, "The pen is ").Log(7.2).Log("cm long.").Nl.EoL; -- Easily construct messages of different data types!
+   --  Logger.Log(Info, -345321123).Nl.EoL;
+   --  Logger.Log(Warn, "The pen is ").Log(-7.2).Log("cm long.").Nl.EoL; -- Easily construct messages of different data types!
+   --  Logger.Log(Warn, 142.1235).Nl.EoL;
+
+   -- Test concat overloads added by the lib
+   --  Logger.Log(Info, "Concatenating " & 10 & " to this string is easy!").Nl.EoL;
+   --  Logger.Log(Info, "This also works with " & 0.2567 & "% of floats! (metric has no scientific basis)").Nl.EoL;
 
 
    -- Test removing message
