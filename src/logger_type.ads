@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-21 21:17:23
+-- Last Modified: 2024-08-29 17:07:10
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -16,6 +16,7 @@
 with Ada.Finalization;
 with Ada.Text_IO;
 with Ada.Strings.Bounded;
+with Ada.Strings.Fixed;
 with Ada.Characters.Latin_1;  -- Used for escape character carriage return & newline
 with Animation;
 with Colors_Collection;
@@ -99,6 +100,13 @@ package Logger_Type with Elaborate_Body is
    -- Stops an active animation
    -- @param this Instance of Logger, automatically provided when using dot notation
    procedure Stop_Animation(this : access Logger_Dummy);
+
+
+   -- Concat overload for Integer
+   function "&"(Left : in String; Right : in Integer) return String;
+
+   -- Concat overload for Float
+   function "&"(Left : in String; Right : in Float) return String;
 
 
    -- Logs a String to stdout without any formatting, use this for appending to an existing message
