@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-29 17:07:10
+-- Last Modified: 2024-09-12 18:44:34
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -13,11 +13,11 @@
 -- You should have received a copy of the GNU Lesser General Public License along with this library. If not, see <https://www.gnu.org/licenses/>.
 
 
-with Ada.Finalization;
 with Ada.Text_IO;
 with Ada.Strings.Bounded;
 with Ada.Strings.Fixed;
 with Ada.Characters.Latin_1;  -- Used for escape character carriage return & newline
+with Interfaces.C;
 with Animation;
 with Colors_Collection;
 with Construct;
@@ -26,6 +26,7 @@ with Helpers;
 with Print_Manager;
 
 use Ada.Text_IO;
+use Interfaces.C;
 use Animation;
 use Colors_Collection;
 use Construct;
@@ -33,7 +34,7 @@ use Helpers;
 use Print_Manager;
 
 
-package Logger_Type with Elaborate_Body is
+package Logger_Type is
 
    -- Expose colors collection for easy access
    Colors : Colors_Type := Colors_Collection.Colors;
@@ -49,7 +50,7 @@ package Logger_Type with Elaborate_Body is
    package Reprint_Bounded_512B is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 512); -- Used for storing message that should be reprinted, for example a message not marked as Rm containing an animation.
 
    -- The default Logger instance, containing default settings
-   type Logger_Dummy is new Ada.Finalization.Controlled with record
+   type Logger_Dummy is tagged record
 
       -- Time in ms to wait between refreshing message with the next animation frame
       Animate_Interval : Duration := 0.5;
@@ -174,16 +175,16 @@ package Logger_Type with Elaborate_Body is
 
 private
 
-   -- Internal: Overwrite Initialize to catch when Logger is instantiated
-   procedure Initialize(this : in out Logger_Dummy);
-
-   -- Internal: Overwrite Finalize to catch when Logger is deleted
-   procedure Finalize(this : in out Logger_Dummy);
-
    -- Internal: Logs a message as is to stdout
    procedure Internal_Log(this : in out Logger_Dummy; Str : String);
 
    -- Internal: Constructs the actual message and logs it to file & stdout
    procedure Internal_Prefixed_Log(this : in out Logger_Dummy; Log_Lvl : String; Color : String; Msg : String; Src : String := ""; Nd : Boolean := False);
+
+   -- Internal: Logs exit message and shows cursor
+   procedure Ada_Log_Exit with
+      Export => True,
+      Convention => C,
+      External_Name => "ada_log_exit";
 
 end Logger_Type;

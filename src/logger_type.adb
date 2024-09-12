@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-29 17:07:10
+-- Last Modified: 2024-09-12 18:44:34
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -20,25 +20,6 @@ use Ada.Exceptions;
 
 
 package body Logger_Type is
-
-   -- Internal: Overwrite Initialize to catch when Logger is instantiated
-   procedure Initialize(this : in out Logger_Dummy) is
-   begin
-      Put(Colors.Hide_Cursor);
-   end Initialize;
-
-
-   -- Internal: Overwrite Finalize to catch when Logger is deleted
-   procedure Finalize(this : in out Logger_Dummy) is
-      Exit_Msg : String := Options_Bounded_128B.To_String(this.Exit_Message);
-   begin
-      Put(Colors.Show_Cursor);
-      this.Log(Exit_Msg).EoL;
-   exception                              -- TODO: Should be removed in release build for less overhead
-      when E : others =>
-         Put_Line("Logger Exception: " & Exception_Information(E));
-   end Finalize;
-
 
    -- Create Logger instance for everyone to use after Initialize has been processed in the elaboration phase
    Logger_Instance : aliased Logger_Dummy;
@@ -385,5 +366,27 @@ package body Logger_Type is
       -- Let Internal_Log handle printing to stdout
       this.Internal_Log(String_To_Log);
    end Internal_Prefixed_Log;
+
+
+   -- Internal: Logs exit message and shows cursor
+   procedure Ada_Log_Exit is
+      Exit_Msg : String := Options_Bounded_128B.To_String(Logger_Instance.Exit_Message);
+   begin
+      Logger.Log(Exit_Msg).EoL;
+      Put(Colors.Show_Cursor);
+   end Ada_Log_Exit;
+
+
+   -- Internal: Implemented in C to setup signal handler
+   procedure C_Handle_Exit with
+      Import => True,
+      Convention => C,
+      External_Name => "c_exit_handler";
+
+begin
+
+   C_Handle_Exit;
+
+   Put(Colors.Hide_Cursor);
 
 end Logger_Type;
