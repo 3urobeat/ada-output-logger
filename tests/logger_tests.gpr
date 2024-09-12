@@ -1,0 +1,8 @@
+with "../ada_output_logger.gpr";
+
+project Logger_Tests is
+   for Source_Dirs use (".");
+   for Main use ("logger_test.adb");
+   for Exec_Dir use "../out";
+   for Object_Dir use "../obj";
+end Logger_Tests;
