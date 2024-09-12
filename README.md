@@ -1,14 +1,14 @@
 # ada-output-logger
 An Ada logging library offspring of my [JS output-logger library](https://github.com/3urobeat/output-logger).  
 
-It allows you to painlessly log values of different data types with different log levels to stdout without having to join strings together manually.  
-It simultaneously provides color-highlighting based on log level, attaches a timestamp to your message, logs to an output file and much more.
+It drastically simplifies logging messages and interacting with stdout/-in while also providing a bunch of eyecandy for a better user experience.  
+See the list of features below!
 
 &nbsp;
 
 ## Features
 - Colored log levels: Info, Warn, Error & Debug
-- Keep track of every log message with a output file
+- Keep track of every log message with an output file
 - Display file name to keep track of log origins even in large projects
 - Overwrite a log message with the next one by marking it as *remove*
 - Animations: 6 are shipped by default
@@ -36,11 +36,25 @@ For examples, see the [logger_test.adb](./logger_test.adb) file.
 
 ## Include
 Create a `lib/` directory in your project and clone this repository into it.  
-Add `-I../lib/ada-output-logger/src` to your `gnatmake` command, assuming your run the command from a build folder inside your project root.
 
-You can then include the logger in your project using `with Logger_Type;` and `use Logger_Type;`.
+Add an import at the top of your main body:  
+`with Logger_Type; use Logger_Type;`
+
+At the top of your project's gpr file, add a with statement:  
+`with "lib/ada-output-logger/ada_output_logger.gpr";`
+
+You can then simply compile your project using gprbuild and the library will be included in the build process.    
+> Compiling using gnatmake is currently not supported because C sources are used as well.
 
 &nbsp;
 
 ## Functions
-For examples, see the [logger_test.adb](./logger_test.adb) file.
+Start constructing your message by calling `Logger`.  
+You can then chain any other function behind it, following a few rules:
+- `Rm`, indicating that this message should be removed by the next one, must always be the **first** function in the chain
+- `Animation` must always be the first, or in case of `Rm` existing the second, function in the chain 
+- `Nl`, indicating that a newline should be printed after this message, must always be the second to last function in the chain
+- Every call chain must end with `EoL;` to consume the return value of the previous function in the chain
+- You cannot add `Nl` to a message marked as `Rm` as it would obviously break the removal of it
+
+For basically any possible example, please see the [logger_test.adb](./tests/logger_test.adb) file.
