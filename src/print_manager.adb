@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-27 12:55:13
+-- Last Modified: 2024-09-13 15:09:25
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -23,7 +23,7 @@ package body Print_Manager is
          if Stdout_Is_Locked then
             Log_Queue.Append (new String'(Str));
          else
-            Put (Str);
+            Put(Standard_Output, Str);   -- Specifying Standard_Output can fix an exception when calling Ada from C
          end if;
       end Print_When_Unlocked;
 
@@ -40,7 +40,7 @@ package body Print_Manager is
             null;
 
          when Read_Input_Start =>
-            Put(Str);
+            Put(Standard_Output, Str);
 
          when Read_Input_End =>
             null;
@@ -49,7 +49,8 @@ package body Print_Manager is
             Print_When_Unlocked(Str);
 
          when Finalize =>
-            null;
+            Unlock_Stdout;
+            Put(Standard_Output, Str);
 
          when others =>
             null;
