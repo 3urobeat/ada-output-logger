@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-09-12 18:44:34
+-- Last Modified: 2024-09-16 18:09:50
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -13,6 +13,8 @@
 -- You should have received a copy of the GNU Lesser General Public License along with this library. If not, see <https://www.gnu.org/licenses/>.
 
 
+with Ada.Finalization;
+with Ada.Directories;
 with Ada.Text_IO;
 with Ada.Strings.Bounded;
 with Ada.Strings.Fixed;
@@ -34,7 +36,7 @@ use Helpers;
 use Print_Manager;
 
 
-package Logger_Type is
+package Logger_Type with Elaborate_Body is
 
    -- Expose colors collection for easy access
    Colors : Colors_Type := Colors_Collection.Colors;
@@ -50,7 +52,7 @@ package Logger_Type is
    package Reprint_Bounded_512B is new Ada.Strings.Bounded.Generic_Bounded_Length(Max => 512); -- Used for storing message that should be reprinted, for example a message not marked as Rm containing an animation.
 
    -- The default Logger instance, containing default settings
-   type Logger_Dummy is tagged record
+   type Logger_Dummy is new Ada.Finalization.Limited_Controlled with record
 
       -- Time in ms to wait between refreshing message with the next animation frame
       Animate_Interval : Duration := 0.5;
@@ -79,6 +81,9 @@ package Logger_Type is
 
       -- Internal: Tracks the currently active animation
       Current_Animation : Animation_Type := Default_Animations.None;
+
+      -- Internal: Handle to the output file currently opened by this instance
+      Output_File_Handle : aliased File_Type;
 
    end record;
 
@@ -174,6 +179,9 @@ package Logger_Type is
    function Read_Input(this : access Logger_Dummy; Question : String := ""; Timeout : Duration := 0.0) return access String;
 
 private
+
+   -- Internal: Overwrite Initialize to catch when Logger is instantiated
+   procedure Initialize(this : in out Logger_Dummy);
 
    -- Internal: Logs a message as is to stdout
    procedure Internal_Log(this : in out Logger_Dummy; Str : String);

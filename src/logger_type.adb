@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-09-13 15:09:25
+-- Last Modified: 2024-09-16 18:09:50
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -21,6 +21,21 @@ use Ada.Exceptions;
 
 package body Logger_Type is
 
+   -- Internal: Overwrite Initialize to catch when Logger is instantiated
+   procedure Initialize(this : in out Logger_Dummy) is
+      Path : String := Options_Bounded_128B.To_String(this.Output_File_Path);
+   begin
+      -- Open handle to output file
+      if Path'Length > 0 then
+         if Ada.Directories.Exists(Path) = False then
+            Create(this.Output_File_Handle, Append_File, Path);
+         else
+            Open(this.Output_File_Handle, Append_File, Path);
+         end if;
+      end if;
+   end Initialize;
+
+
    -- Create Logger instance for everyone to use after Initialize has been processed in the elaboration phase
    Logger_Instance : aliased Logger_Dummy;
 
@@ -32,7 +47,7 @@ package body Logger_Type is
       if this.Submit_Animation and then not this.Marked_As_Rm then
          this.Submit_Animation := False;
          this.Internal_Log(Reprint_Bounded_512B.To_String(this.Animation_Reprint_Buffer)); -- Do not force New_Line, let user decide. If they call Nl(), it should handle overwriting ghost chars
-         File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), Reprint_Bounded_512B.To_String(this.Animation_Reprint_Buffer));
+         File_Output.Print_To_File(this.Output_File_Handle'Access, Reprint_Bounded_512B.To_String(this.Animation_Reprint_Buffer));
       end if;
 
       -- Reset stuff
@@ -103,7 +118,7 @@ package body Logger_Type is
          this.Current_Animation := Default_Animations.None;
       end if;
 
-      File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), Msg);
+      File_Output.Print_To_File(this.Output_File_Handle'Access, Msg);
       this.Internal_Log(Msg);
 
       return this;
@@ -216,7 +231,7 @@ package body Logger_Type is
       this.Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
-      File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
+      File_Output.Print_To_File(this.Output_File_Handle'Access, "" & Ada.Characters.Latin_1.LF);
       Print(Message, "" & Ada.Characters.Latin_1.LF);
 
       -- Reset message length counter because we are now on a new line
@@ -241,7 +256,7 @@ package body Logger_Type is
 
          -- Always print newline to output file for messages marked as Rm because nothing can & should be overwritten there
          if this.Marked_As_Rm then
-            File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
+            File_Output.Print_To_File(this.Output_File_Handle'Access, "" & Ada.Characters.Latin_1.LF);
          end if;
 
          -- Start animation if one was set
@@ -288,7 +303,7 @@ package body Logger_Type is
       -- Print question if one was set, add additional newline to output file and show cursor
       if Question'Length > 0 then
          Print(Event => Read_Input_Start, Str => Question);  -- Print directly via the Print_Manager to bypass lock
-         File_Output.Print_To_File(path => Options_Bounded_128B.To_String(this.Output_File_Path), Str => Question & Ada.Characters.Latin_1.LF);
+         File_Output.Print_To_File(this.Output_File_Handle'Access, Question & Ada.Characters.Latin_1.LF);
       end if;
 
       Put(Colors.Show_Cursor);
@@ -360,7 +375,7 @@ package body Logger_Type is
 
       -- Only log to output file when message does not contain animation or is marked as Rm. Animation messages without Rm are reprinted in Logger() and will appear in output file
       if not this.Submit_Animation or this.Marked_As_Rm then
-         File_Output.Print_To_File(Options_Bounded_128B.To_String(this.Output_File_Path), String_To_Log);
+         File_Output.Print_To_File(this.Output_File_Handle'Access, String_To_Log);
       end if;
 
       -- Let Internal_Log handle printing to stdout
@@ -385,6 +400,7 @@ package body Logger_Type is
 
 begin
 
+   -- Attach signal interrupt handlers and hide cursor once when the library is initially loaded
    C_Handle_Exit;
 
    Put(Colors.Hide_Cursor);
