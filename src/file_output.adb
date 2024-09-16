@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:57:26
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-01 19:13:07
+-- Last Modified: 2024-09-16 18:09:50
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -15,30 +15,13 @@
 
 package body File_Output is
 
-   -- Internal: Creates (if not already done), opens file at path and populates Output_File
-   procedure Open_File(path : String) is
-   begin
-      if Ada.Directories.Exists(path) = False then
-         Create(Output_File, Append_File, path);
-      else
-         Open(Output_File, Append_File, path);
-      end if;
-   end Open_File;
-
-
    -- Internal: Calls Open_File if necessary and writes str to Output_File. If path is empty, the call will be ignored.
-   procedure Print_To_File(path : String; str : String) is
+   procedure Print_To_File(handle : access File_Type; str : String) is
    begin                                                       -- TODO: This function can surely be optimized
-      if path'Length = 0 then
-         return;
+      -- Remove colors from str and print to handle, as long as handle is not null
+      if handle /= null then
+         Put(handle.all, Remove_Escape_Chars(str));
       end if;
-
-      if Is_Open(Output_File) = False then
-         Open_File(path);
-      end if;
-
-      -- Remove colors from str
-      Put(Output_File, Remove_Escape_Chars(str));
    end Print_To_File;
 
 
