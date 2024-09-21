@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-09-16 18:09:50
+-- Last Modified: 2024-09-21 19:31:23
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -89,6 +89,13 @@ package Logger_Type with Elaborate_Body is
 
 
    -- Starts a new log message
+   -- @param this Optional: Pass existing Logger instance to use instead of the global one
+   -- @return Returns access to global Logger instance or `this` if it was provided
+   function Logger(this : access Logger_Dummy) return access Logger_Dummy;
+
+
+   -- Starts a new log message
+   -- @return Returns access to global Logger instance or `this` if it was provided
    function Logger return access Logger_Dummy;
 
 
