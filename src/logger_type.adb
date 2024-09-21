@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-09-16 18:09:50
+-- Last Modified: 2024-09-21 19:31:23
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -40,8 +40,7 @@ package body Logger_Type is
    Logger_Instance : aliased Logger_Dummy;
 
    -- Starts a new log message
-   function Logger return access Logger_Dummy is
-      this : access Logger_Dummy := Logger_Instance'Access;
+   function Logger(this : access Logger_Dummy) return access Logger_Dummy is
    begin
       -- Check if the last message should be reprinted
       if this.Submit_Animation and then not this.Marked_As_Rm then
@@ -58,6 +57,13 @@ package body Logger_Type is
       return this;
    end Logger;
 
+
+   -- Starts a new log message
+   function Logger return access Logger_Dummy is
+      this : access Logger_Dummy := Logger_Instance'Access;
+   begin
+      return Logger(this);
+   end Logger;
 
 
    -- Marks this message to be overwritten by the next logger call
