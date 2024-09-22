@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-09-12 18:38:12
+-- Last Modified: 2024-09-22 16:35:21
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -29,6 +29,10 @@ with Logger_Type;
 use Logger_Type;
 
 
+-- Only needed when creating a custom non-global Logger instance
+with Ada.Finalization;
+
+
 -- Stuff only needed for benchmarking
 with Ada.Calendar;
 with Ada.Calendar.Formatting;
@@ -44,6 +48,9 @@ use Ada.Characters.Latin_1;
 
 
 procedure Logger_Test is
+   -- Only needed for testing calling Logger with custom non-global Logger instance
+   Custom_Instance : aliased Logger_Dummy;
+
    -- Only needed for testing animation hold
    test : access Logger_Dummy;
 
@@ -75,6 +82,11 @@ begin
    -- Test concat overloads added by the lib
    --  Logger.Log(Info, "Concatenating " & 10 & " to this string is easy!").Nl.EoL;
    --  Logger.Log(Info, "This also works with " & 0.2567 & "% of floats! (metric has no scientific basis)").Nl.EoL;
+
+
+   -- Test calling Logger with existing Logger instance
+   --  Custom_Instance.Output_File_Path := Options_Bounded_128B.To_Bounded_String("./output3.txt");
+   --  Custom_Instance.Logger.Log(Info, "Logged using non-global Logger instance").Nl.EoL;
 
 
    -- Test removing message

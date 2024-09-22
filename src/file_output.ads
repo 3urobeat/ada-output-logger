@@ -3,7 +3,7 @@
 -- Created Date: 2024-07-03 18:57:26
 -- Author: 3urobeat
 --
--- Last Modified: 2024-09-16 18:09:50
+-- Last Modified: 2024-09-22 16:35:21
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -22,7 +22,7 @@ use Ada.Text_IO;
 package File_Output is
 
    -- Internal: Calls Open_File if necessary and writes str to Output_File. If path is empty, the call will be ignored.
-   procedure Print_To_File(handle : access File_Type; str : String);
+   procedure Print_To_File(Handle : access File_Type; Path : String; str : String);
 
 private
 
