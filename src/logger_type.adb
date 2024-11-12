@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-09-22 16:35:21
+-- Last Modified: 2024-11-12 10:06:51
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -379,7 +379,10 @@ package body Logger_Type is
       Exit_Msg : String := Options_Bounded_128B.To_String(Logger_Instance.Exit_Message);
    begin
       Print(Print_Event_Type(Finalize), Colors.Show_Cursor);
-      Logger.Log(Exit_Msg).Nl.EoL;
+
+      -- Disable printing Exit_Msg to output file for now, it always causes a Runtime Exception probably because the file handle is already closed
+      Print(Print_Event_Type(Finalize), Exit_Msg & Ada.Characters.Latin_1.LF);
+      --  Logger.Log(Exit_Msg).Nl.EoL;
    end Ada_Log_Exit;
 
 
