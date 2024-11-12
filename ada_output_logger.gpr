@@ -1,6 +1,6 @@
 library project Ada_Output_Logger is
    for Library_Name use "Ada_Output_Logger";
-   for Library_Version use "0.2.0";
+   for Library_Version use "0.3.0";
    for Library_Kind use "static";
    for Languages use ("ada", "c");
 
