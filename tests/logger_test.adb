@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-09-22 16:35:21
+-- Last Modified: 2024-11-12 09:20:38
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -14,13 +14,6 @@
 
 
 -- File for testing logger functions
-
-
--- Clean and create build folder once:
--- rm -rf ./build && mkdir ./build
-
--- Compile and run using: (The echo appendage makes sure your cursor reappears when the binary crashes)
--- ( $(cd build && gnatmake -g -I../src ../logger_test.adb -o logger-test) && ./build/logger-test ) ; echo -e "\033[?25h"
 
 
 -- Import the library

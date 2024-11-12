@@ -1,5 +1,8 @@
 with "../ada_output_logger.gpr";
 
+-- Build and run (from project root):
+-- gprbuild tests/logger_tests.gpr && out/logger_test
+
 project Logger_Tests is
    for Source_Dirs use (".");
    for Main use ("logger_test.adb");
