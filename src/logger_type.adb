@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-12 10:06:51
+-- Last Modified: 2024-11-24 22:23:46
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -320,6 +320,15 @@ package body Logger_Type is
          Unlock_Stdout;                      -- Unlock Print_Manager to log queued messages
          return null;                        -- ...aaand return null
    end Read_Input;
+
+
+   -- Sets the progress of an active progress bar to a specific value. If none is active, one will be created.
+   procedure Set_Progress_Bar(this : access Logger_Dummy; Progress : Progress_Type) is
+   begin
+      Progress_Bar.Show_Progress_Bar(Progress => Progress, New_Bar => this.Current_Progress_Bar = -1);
+
+      this.Current_Progress_Bar := Progress;
+   end Set_Progress_Bar;
 
 
 

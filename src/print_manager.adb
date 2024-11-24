@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-09-13 15:09:25
+-- Last Modified: 2024-11-24 22:35:33
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -37,6 +37,16 @@ package body Print_Manager is
             Print_When_Unlocked(Str);
 
          when Animation_Remove =>
+            null;
+
+         when Progress_Create =>
+            -- TODO: Cursor handling
+            Print_When_Unlocked(Str);
+
+         when Progress_Update =>
+            null;
+
+         when Progress_Remove =>
             null;
 
          when Read_Input_Start =>

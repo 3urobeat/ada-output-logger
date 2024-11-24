@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-08-17 10:44:16
+-- Last Modified: 2024-11-24 22:35:33
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -22,7 +22,7 @@ use Ada.Text_IO;
 package Print_Manager is
 
    -- Type of events the Print_Manager supports
-   type Print_Event_Type is ( Animation_Create, Animation_Update, Animation_Remove, Read_Input_Start, Read_Input_End, Message, Finalize );
+   type Print_Event_Type is ( Animation_Create, Animation_Update, Animation_Remove, Progress_Create, Progress_Update, Progress_Remove, Read_Input_Start, Read_Input_End, Message, Finalize );
 
 
    -- Manages cursor movement and logs a string to stdout
