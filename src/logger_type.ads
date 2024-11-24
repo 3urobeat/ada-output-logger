@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-09-22 16:35:21
+-- Last Modified: 2024-11-24 22:23:46
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -26,6 +26,7 @@ with Construct;
 with File_Output;
 with Helpers;
 with Print_Manager;
+with Progress_Bar;
 
 use Ada.Text_IO;
 use Interfaces.C;
@@ -34,6 +35,7 @@ use Colors_Collection;
 use Construct;
 use Helpers;
 use Print_Manager;
+use Progress_Bar;
 
 
 package Logger_Type is
@@ -81,6 +83,9 @@ package Logger_Type is
 
       -- Internal: Tracks the currently active animation
       Current_Animation : Animation_Type := Default_Animations.None;
+
+      -- Internal: Track the progress of the currently active progress bar. If no progress bar is active, -1 is set.
+      Current_Progress_Bar : Internal_Progress_Type := -1;
 
       -- Internal: Handle to the output file currently opened by this instance
       Output_File_Handle : aliased File_Type;
@@ -184,6 +189,11 @@ package Logger_Type is
    -- @param Timeout Optional: Duration in seconds after which the function will stop waiting for the user to submit an input. Disabled by default (softlock warning!)
    -- @return Returns access to user input or `null` on timeout. Make sure to check for `null` before dereferencing to prevent CONSTRAINT_ERROR.
    function Read_Input(this : access Logger_Dummy; Question : String := ""; Timeout : Duration := 0.0) return access String;
+
+   -- Sets the progress of an active progress bar to a specific value. If none is active, one will be created.
+   -- @param this Instance of Logger, automatically provided when using dot notation
+   -- @param Progress Amount in percent to set
+   procedure Set_Progress_Bar(this : access Logger_Dummy; Progress : Progress_Type);
 
 private
 
