@@ -3,7 +3,7 @@
 -- Created Date: 2024-11-23 17:29:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-25 16:59:58
+-- Last Modified: 2024-11-25 17:10:06
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -18,7 +18,7 @@ package body Progress_Bar is
    procedure Show_Progress_Bar(Progress : Progress_Type; New_Bar : Boolean) is
       Bar_Width       : Positive := Terminal.Get_Terminal_Width;
       Str             : String(1 .. Bar_Width + 14);              -- +14 to compensate for color codes
-      Hashtags_Amount : Positive;
+      Hashtags_Amount : Natural;
 
    begin
       -- TODO: Check if String is too short. Display only percentage or nothing at all.
@@ -37,7 +37,7 @@ package body Progress_Bar is
          & " [";
 
       -- Calculate the amount of hashtags to display and append them. Subtract 19 for the label and brackets
-      Hashtags_Amount := Positive(Float'Truncation(Float(Bar_Width - 19) * (Float(Progress) / 100.0))); -- Sorry for the amount of conversions
+      Hashtags_Amount := Natural(Float'Truncation(Float(Bar_Width - 19) * (Float(Progress) / 100.0))); -- Sorry for the amount of conversions
 
       Str(20 + 14 .. 20 + 14 + Hashtags_Amount - 1)  := (others => '#');
       Str(20 + 14 + Hashtags_Amount .. Str'Last - 1) := (others => ' ');
