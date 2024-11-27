@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-24 22:35:33
+-- Last Modified: 2024-11-27 11:41:25
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -15,8 +15,11 @@
 
 with Ada.Text_IO;
 with Ada.Containers.Vectors;
+with Ada.Characters.Latin_1;
+with Terminal;
 
 use Ada.Text_IO;
+use Ada.Characters.Latin_1;
 
 
 package Print_Manager is
@@ -24,6 +27,9 @@ package Print_Manager is
    -- Type of events the Print_Manager supports
    type Print_Event_Type is ( Animation_Create, Animation_Update, Animation_Remove, Progress_Create, Progress_Update, Progress_Remove, Read_Input_Start, Read_Input_End, Message, Finalize );
 
+
+   -- Clears the contents of the current stdout line
+   procedure Clear_Line;
 
    -- Manages cursor movement and logs a string to stdout
    -- @param Event How this message should be handled
