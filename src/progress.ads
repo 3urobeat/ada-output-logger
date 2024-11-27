@@ -1,9 +1,9 @@
--- File: progress_bar.ads
+-- File: progress.ads
 -- Project: ada-output-logger
--- Created Date: 2024-11-23 17:29:13
+-- Created Date: 2024-11-27 16:12:16
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-27 16:34:34
+-- Last Modified: 2024-11-27 16:13:13
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -13,17 +13,9 @@
 -- You should have received a copy of the GNU Lesser General Public License along with this library. If not, see <https://www.gnu.org/licenses/>.
 
 
-with Ada.Strings.Fixed;
-with Colors_Collection;
-with Print_Manager;
-with Progress;
-with Terminal;
+package Progress is
 
-use Progress;
+   subtype Internal_Progress_Type is Integer range -1 .. 100;
+   subtype Progress_Type          is Internal_Progress_Type range 0 .. 100;
 
-
-package Progress_Bar is
-
-   procedure Show_Progress_Bar(Progress : Progress_Type; New_Bar : Boolean);
-
-end Progress_Bar;
+end Progress;
