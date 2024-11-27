@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-24 22:35:33
+-- Last Modified: 2024-11-27 11:41:25
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -14,6 +14,13 @@
 
 
 package body Print_Manager is
+
+   -- Clears the contents of the current stdout line
+   procedure Clear_Line is                            -- TODO: This function could theoretically be optimized by using ANSI control chars instead? (I guess?)
+      Str : String(1 .. Terminal.Get_Terminal_Width) := (others => ' ');
+   begin
+      Put(Str);
+   end Clear_Line;
 
    -- Manages cursor movement and logs a string to stdout
    procedure Print(Event : Print_Event_Type; Str : String) is
