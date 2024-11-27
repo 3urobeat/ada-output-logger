@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-24 22:23:46
+-- Last Modified: 2024-11-27 16:50:01
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -223,7 +223,8 @@ package body Logger_Type is
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
       File_Output.Print_To_File(this.Output_File_Handle'Access, Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
-      Print(Message, "" & Ada.Characters.Latin_1.LF);
+      Print(Event => Print_Event_Type(Message),
+            Str => "" & Ada.Characters.Latin_1.LF);
 
       -- Reset message length counter because we are now on a new line
       this.Current_Message_Length := 0;
@@ -243,7 +244,8 @@ package body Logger_Type is
       -- Check if the message was marked to be removed or contains an animation
       if this.Marked_As_Rm or this.Submit_Animation then
          -- Print carriage return to stdout so the next msg overwrites this one
-         Print(Print_Event_Type(Message), "" & Ada.Characters.Latin_1.CR);
+         Print(Event => Print_Event_Type(Message),
+               Str => "" & Ada.Characters.Latin_1.CR);
 
          -- Always print newline to output file for messages marked as Rm because nothing can & should be overwritten there
          if this.Marked_As_Rm then
@@ -293,7 +295,8 @@ package body Logger_Type is
 
       -- Print question if one was set, add additional newline to output file and show cursor
       if Question'Length > 0 then
-         Print(Event => Read_Input_Start, Str => Question);  -- Print directly via the Print_Manager to bypass lock
+         Print(Event => Read_Input_Start,
+               Str => Question);
          File_Output.Print_To_File(this.Output_File_Handle'Access, Options_Bounded_128B.To_String(this.Output_File_Path), Question & Ada.Characters.Latin_1.LF);
       end if;
 
@@ -342,7 +345,8 @@ package body Logger_Type is
          begin
             If Cut_Str'Length > 0 then
 
-               Print(Print_Event_Type(Message), Cut_Str);
+               Print(Event => Print_Event_Type(Message),
+                     Str => Cut_Str);
                this.Current_Message_Length := this.Current_Message_Length + Cut_Str'Length;  -- TODO: This is not entirely accurate because it counts color codes
 
                -- Append to Reprint Buffer if we are in this block because an animation is contained
@@ -353,12 +357,14 @@ package body Logger_Type is
             end if;
          end;
       else
-         Print(Print_Event_Type(Message), Str);
+         Print(Event => Print_Event_Type(Message),
+               Str => Str);
          this.Current_Message_Length := this.Current_Message_Length + Str'Length;            -- TODO: This is not entirely accurate because it counts color codes
       end if;
 
       -- Always append Color Reset to avoid colors bleeding into the next element
-      Print(Print_Event_Type(Message), Colors.Reset);
+      Print(Event => Print_Event_Type(Message),
+            Str => Colors.Reset);
    end Internal_Log;
 
 
@@ -387,10 +393,12 @@ package body Logger_Type is
    procedure Ada_Log_Exit is
       Exit_Msg : String := Options_Bounded_128B.To_String(Logger_Instance.Exit_Message);
    begin
-      Print(Print_Event_Type(Finalize), Colors.Show_Cursor);
+      Print(Event => Print_Event_Type(Finalize),
+            Str => Colors.Show_Cursor);
 
       -- Disable printing Exit_Msg to output file for now, it always causes a Runtime Exception probably because the file handle is already closed
-      Print(Print_Event_Type(Finalize), Exit_Msg & Ada.Characters.Latin_1.LF);
+      Print(Event => Print_Event_Type(Finalize),
+            Str => Exit_Msg & Ada.Characters.Latin_1.LF);
       --  Logger.Log(Exit_Msg).Nl.EoL;
    end Ada_Log_Exit;
 

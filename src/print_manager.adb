@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-27 12:12:31
+-- Last Modified: 2024-11-27 16:50:03
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -104,7 +104,8 @@ package body Print_Manager is
 
       -- Iterate through all queued messages and log them
       for Str of Log_Queue loop
-         Print(Message, Str.all);
+         Print(Event => Message,
+               Str => Str.all);
       end loop;
 
       Log_Queue.Clear;
