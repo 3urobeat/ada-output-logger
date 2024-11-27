@@ -3,7 +3,7 @@
 -- Created Date: 2024-11-23 17:29:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-24 22:45:06
+-- Last Modified: 2024-11-27 16:34:34
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -14,16 +14,15 @@
 
 
 with Ada.Strings.Fixed;
-with Terminal;
 with Colors_Collection;
 with Print_Manager;
+with Progress;
+with Terminal;
+
+use Progress;
 
 
 package Progress_Bar is
-
-   subtype Internal_Progress_Type is Integer range -1 .. 100;
-   subtype Progress_Type          is Internal_Progress_Type range 0 .. 100;
-
 
    procedure Show_Progress_Bar(Progress : Progress_Type; New_Bar : Boolean);
 

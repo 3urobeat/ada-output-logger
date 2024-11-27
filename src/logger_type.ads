@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-24 22:23:46
+-- Last Modified: 2024-11-27 16:34:34
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -27,6 +27,7 @@ with File_Output;
 with Helpers;
 with Print_Manager;
 with Progress_Bar;
+with Progress;
 
 use Ada.Text_IO;
 use Interfaces.C;
@@ -35,7 +36,7 @@ use Colors_Collection;
 use Construct;
 use Helpers;
 use Print_Manager;
-use Progress_Bar;
+use Progress;
 
 
 package Logger_Type is
@@ -85,7 +86,7 @@ package Logger_Type is
       Current_Animation : Animation_Type := Default_Animations.None;
 
       -- Internal: Track the progress of the currently active progress bar. If no progress bar is active, -1 is set.
-      Current_Progress_Bar : Internal_Progress_Type := -1;
+      Current_Progress_Bar : aliased Internal_Progress_Type := -1;
 
       -- Internal: Handle to the output file currently opened by this instance
       Output_File_Handle : aliased File_Type;
