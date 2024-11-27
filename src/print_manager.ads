@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-27 11:41:25
+-- Last Modified: 2024-11-27 12:12:31
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -16,6 +16,7 @@
 with Ada.Text_IO;
 with Ada.Containers.Vectors;
 with Ada.Characters.Latin_1;
+with Ada.Strings.Fixed;
 with Terminal;
 
 use Ada.Text_IO;
@@ -30,6 +31,9 @@ package Print_Manager is
 
    -- Clears the contents of the current stdout line
    procedure Clear_Line;
+
+   -- Moves the cursor to a line relative from its current position
+   procedure Move_Cursor(Relative : Short_Integer);
 
    -- Manages cursor movement and logs a string to stdout
    -- @param Event How this message should be handled

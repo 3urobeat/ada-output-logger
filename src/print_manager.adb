@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-27 11:41:25
+-- Last Modified: 2024-11-27 12:12:31
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -21,6 +21,19 @@ package body Print_Manager is
    begin
       Put(Str);
    end Clear_Line;
+
+
+   -- Moves the cursor to a line relative from its current position
+   procedure Move_Cursor(Relative : Short_Integer) is
+      Relative_Str : String := Ada.Strings.Fixed.Trim(Short_Integer'Image(abs Relative), Ada.Strings.Left);
+   begin
+      if Relative < 0 then
+         Put(ESC & "[" & Relative_Str & "A");
+      else
+         Put(ESC & "[" & Relative_Str & "B");
+      end if;
+   end Move_Cursor;
+
 
    -- Manages cursor movement and logs a string to stdout
    procedure Print(Event : Print_Event_Type; Str : String) is
