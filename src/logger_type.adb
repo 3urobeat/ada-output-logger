@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-27 16:50:01
+-- Last Modified: 2024-11-27 16:59:29
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -333,6 +333,13 @@ package body Logger_Type is
       this.Current_Progress_Bar := Progress;
    end Set_Progress_Bar;
 
+   -- Removes an active progress bar
+   procedure Remove_Progress_Bar(this : access Logger_Dummy) is
+   begin
+      Progress_Bar.Remove_Progress_Bar;
+
+      this.Current_Progress_Bar := Internal_Progress_Type'First;
+   end Remove_Progress_Bar;
 
 
    -- Internal: Logs a message as is to stdout
