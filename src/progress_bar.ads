@@ -3,7 +3,7 @@
 -- Created Date: 2024-11-23 17:29:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-27 16:34:34
+-- Last Modified: 2024-11-27 16:59:29
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -24,6 +24,10 @@ use Progress;
 
 package Progress_Bar is
 
+   -- Constructs the progress bar string and instructs Print_Manager to log it
    procedure Show_Progress_Bar(Progress : Progress_Type; New_Bar : Boolean);
+
+   -- Instructs the Print_Manager to remove a currently active progress bar
+   procedure Remove_Progress_Bar;
 
 end Progress_Bar;
