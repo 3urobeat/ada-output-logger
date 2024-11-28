@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-27 16:50:03
+-- Last Modified: 2024-11-28 22:12:38
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -49,6 +49,11 @@ package body Print_Manager is
 
    begin
 
+      if Pending_Newline and Event /= Ctrl_Char then
+         Print_When_Unlocked("" & LF);
+         Pending_Newline := False;
+      end if;
+
       case Event is
          when Animation_Create =>
             Print_When_Unlocked(Str);
@@ -75,7 +80,8 @@ package body Print_Manager is
          when Read_Input_End =>
             null;
 
-         when Message =>
+         when Message |
+              Ctrl_Char =>
             Print_When_Unlocked(Str);
 
          when Finalize =>
@@ -89,6 +95,16 @@ package body Print_Manager is
 
    end Print;
 
+   -- Registers a newline, fulfilled by the next Print call
+   procedure Newline is
+   begin
+      -- If Newline was called multiple times between a Print call we need to fulfill ourselves first
+      if Pending_Newline then
+         Print(Event => Message, Str => ""); -- Empty String because Print checks for Pending_Newline and prints LF itself
+      end if;
+
+      Pending_Newline := True;
+   end Newline;
 
    -- Locks output to stdout and queues new messages instead
    procedure Lock_Stdout is

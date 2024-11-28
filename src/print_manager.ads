@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-27 12:12:31
+-- Last Modified: 2024-11-28 22:12:38
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -26,7 +26,10 @@ use Ada.Characters.Latin_1;
 package Print_Manager is
 
    -- Type of events the Print_Manager supports
-   type Print_Event_Type is ( Animation_Create, Animation_Update, Animation_Remove, Progress_Create, Progress_Update, Progress_Remove, Read_Input_Start, Read_Input_End, Message, Finalize );
+   type Print_Event_Type is ( Animation_Create, Animation_Update, Animation_Remove, Progress_Create, Progress_Update, Progress_Remove, Read_Input_Start, Read_Input_End, Message, Ctrl_Char, Finalize );
+
+   -- TODO: Storing this here outside of any record sucks so bad
+   Pending_Newline : Boolean := False;
 
 
    -- Clears the contents of the current stdout line
@@ -39,6 +42,9 @@ package Print_Manager is
    -- @param Event How this message should be handled
    -- @param Str The String to log
    procedure Print(Event : Print_Event_Type; Str : String);
+
+   -- Registers a newline, fulfilled by the next Print call
+   procedure Newline;
 
    -- Locks output to stdout and queues new messages instead
    procedure Lock_Stdout;

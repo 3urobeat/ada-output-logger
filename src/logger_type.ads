@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-27 16:59:29
+-- Last Modified: 2024-11-28 22:12:38
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -203,7 +203,7 @@ package Logger_Type is
 private
 
    -- Internal: Logs a message as is to stdout
-   procedure Internal_Log(this : in out Logger_Dummy; Str : String);
+   procedure Internal_Log(this : in out Logger_Dummy; Str : String; Print_Event : Print_Event_Type := Print_Event_Type(Message));
 
    -- Internal: Constructs the actual message and logs it to file & stdout
    procedure Internal_Prefixed_Log(this : in out Logger_Dummy; Log_Lvl : String; Color : String; Msg : String; Src : String := ""; Nd : Boolean := False);
