@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-27 16:59:29
+-- Last Modified: 2024-11-28 22:12:38
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -223,8 +223,7 @@ package body Logger_Type is
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
       File_Output.Print_To_File(this.Output_File_Handle'Access, Options_Bounded_128B.To_String(this.Output_File_Path), "" & Ada.Characters.Latin_1.LF);
-      Print(Event => Print_Event_Type(Message),
-            Str => "" & Ada.Characters.Latin_1.LF);
+      Print_Manager.Newline;
 
       -- Reset message length counter because we are now on a new line
       this.Current_Message_Length := 0;
@@ -236,15 +235,15 @@ package body Logger_Type is
    -- Ends the message. This is a required dummy function as Ada forces us to process return values, which we don't want when being done calling Logger functions
    procedure EoL(this : access Logger_Dummy) is
    begin
-      -- Append whitespaces if the previous message was longer and marked as Rm
-      this.Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length));
+      -- Append whitespaces if the previous message was longer and marked as Rm. Log as Ctrl_Char to prevent Pending_Newline being processed in Print_Manager
+      this.Internal_Log(Get_Trailing_Whitespaces(this.Current_Message_Length, this.Last_Message_Length), Print_Event_Type(Ctrl_Char));
       this.Last_Message_Length := 0; -- Reset because we have taken action
 
 
       -- Check if the message was marked to be removed or contains an animation
       if this.Marked_As_Rm or this.Submit_Animation then
          -- Print carriage return to stdout so the next msg overwrites this one
-         Print(Event => Print_Event_Type(Message),
+         Print(Event => Print_Event_Type(Ctrl_Char),
                Str => "" & Ada.Characters.Latin_1.CR);
 
          -- Always print newline to output file for messages marked as Rm because nothing can & should be overwritten there
@@ -343,7 +342,7 @@ package body Logger_Type is
 
 
    -- Internal: Logs a message as is to stdout
-   procedure Internal_Log(this : in out Logger_Dummy; Str : String) is
+   procedure Internal_Log(this : in out Logger_Dummy; Str : String; Print_Event : Print_Event_Type := Print_Event_Type(Message)) is
    begin
       -- Check if message needs to be cut to terminal width
       if this.Marked_As_Rm or this.Submit_Animation then
@@ -352,7 +351,7 @@ package body Logger_Type is
          begin
             If Cut_Str'Length > 0 then
 
-               Print(Event => Print_Event_Type(Message),
+               Print(Event => Print_Event,
                      Str => Cut_Str);
                this.Current_Message_Length := this.Current_Message_Length + Cut_Str'Length;  -- TODO: This is not entirely accurate because it counts color codes
 
@@ -364,13 +363,13 @@ package body Logger_Type is
             end if;
          end;
       else
-         Print(Event => Print_Event_Type(Message),
+         Print(Event => Print_Event,
                Str => Str);
          this.Current_Message_Length := this.Current_Message_Length + Str'Length;            -- TODO: This is not entirely accurate because it counts color codes
       end if;
 
       -- Always append Color Reset to avoid colors bleeding into the next element
-      Print(Event => Print_Event_Type(Message),
+      Print(Event => Print_Event_Type(Ctrl_Char),
             Str => Colors.Reset);
    end Internal_Log;
 
