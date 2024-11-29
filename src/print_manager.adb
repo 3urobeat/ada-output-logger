@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-28 22:12:38
+-- Last Modified: 2024-11-29 11:49:47
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -38,6 +38,7 @@ package body Print_Manager is
    -- Manages cursor movement and logs a string to stdout
    procedure Print(Event : Print_Event_Type; Str : String) is
 
+      -- Helper function to handle appending to queue or logging directly
       procedure Print_When_Unlocked(Str : String) is
       begin
          if Stdout_Is_Locked then
@@ -47,15 +48,21 @@ package body Print_Manager is
          end if;
       end Print_When_Unlocked;
 
+      -- Processes a pending newline if necessary on certain events
+      procedure Process_Pending_Newline is
+      begin
+         if Pending_Newline then
+            Pending_Newline := False;
+            Print(Event => Message, Str => "" & LF); -- Using Print() here to avoid having to do Cursor Management here again
+         end if;
+      end Process_Pending_Newline;
+
    begin
 
-      if Pending_Newline and Event /= Ctrl_Char then
-         Print_When_Unlocked("" & LF);
-         Pending_Newline := False;
-      end if;
 
       case Event is
          when Animation_Create =>
+            Process_Pending_Newline;
             Print_When_Unlocked(Str);
 
          when Animation_Update =>
@@ -75,17 +82,22 @@ package body Print_Manager is
             null;
 
          when Read_Input_Start =>
+            Process_Pending_Newline;
+
             Put(Standard_Output, Str);
 
          when Read_Input_End =>
             null;
+         when Message =>
+            Process_Pending_Newline;
 
-         when Message |
-              Ctrl_Char =>
             Print_When_Unlocked(Str);
 
+         when Ctrl_Char =>
+            Print_When_Unlocked(Str);
          when Finalize =>
             Unlock_Stdout;
+            Process_Pending_Newline;
             Put(Standard_Output, Str);
 
          when others =>
