@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-29 12:04:47
+-- Last Modified: 2024-11-29 18:11:55
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -124,7 +124,7 @@ package body Print_Manager is
             Put(Standard_Output, Str);
 
          when others =>
-            null;
+            raise Constraint_Error;
 
       end case;
 
