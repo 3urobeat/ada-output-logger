@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-29 11:49:47
+-- Last Modified: 2024-11-29 12:04:47
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -30,7 +30,7 @@ package body Print_Manager is
       if Relative < 0 then
          Put(ESC & "[" & Relative_Str & "A");
       else
-         Put(ESC & "[" & Relative_Str & "B");
+         Put(ESC & "[" & Relative_Str & "B " & CR);
       end if;
    end Move_Cursor;
 
@@ -69,17 +69,23 @@ package body Print_Manager is
             Print_When_Unlocked(Str);
 
          when Animation_Remove =>
-            null;
+            if Current_Progress_Bar.all = Progress.Internal_Progress_Type'First then
+               Clear_Line;
+            else
+               Move_Cursor(-2);
+               Clear_Line;
+               Move_Cursor(2);
+            end if;
 
          when Progress_Create =>
-            -- TODO: Cursor handling
-            Print_When_Unlocked(Str);
+            Print_When_Unlocked(LF & Str & CR);
 
          when Progress_Update =>
-            null;
+            Print_When_Unlocked(Str & CR);
 
          when Progress_Remove =>
-            null;
+            Clear_Line;
+            Move_Cursor(-2);
 
          when Read_Input_Start =>
             Process_Pending_Newline;
@@ -87,14 +93,31 @@ package body Print_Manager is
             Put(Standard_Output, Str);
 
          when Read_Input_End =>
-            null;
+            Process_Pending_Newline;
          when Message =>
             Process_Pending_Newline;
 
+            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               Move_Cursor(-2);
+            end if;
+
             Print_When_Unlocked(Str);
 
+            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               Move_Cursor(2);
+            end if;
+
          when Ctrl_Char =>
+            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               Move_Cursor(-2);
+            end if;
+
             Print_When_Unlocked(Str);
+
+            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               Move_Cursor(2);
+            end if;
+
          when Finalize =>
             Unlock_Stdout;
             Process_Pending_Newline;
