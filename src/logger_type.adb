@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 13:01:43
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-28 22:12:38
+-- Last Modified: 2024-11-29 12:04:47
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -416,6 +416,9 @@ package body Logger_Type is
       External_Name => "c_exit_handler";
 
 begin
+
+   -- Give the Print_Manager a reference to our Progress_Bar storage. This isn't thaaat great, could use a -- TODO: comment
+   Print_Manager.Current_Progress_Bar := Logger_Instance.Current_Progress_Bar'Access;
 
    -- Attach signal interrupt handlers and hide cursor once when the library is initially loaded
    C_Handle_Exit;

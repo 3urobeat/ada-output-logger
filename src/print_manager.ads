@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-28 22:12:38
+-- Last Modified: 2024-11-29 12:04:47
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -17,6 +17,7 @@ with Ada.Text_IO;
 with Ada.Containers.Vectors;
 with Ada.Characters.Latin_1;
 with Ada.Strings.Fixed;
+with Progress;
 with Terminal;
 
 use Ada.Text_IO;
@@ -29,6 +30,7 @@ package Print_Manager is
    type Print_Event_Type is ( Animation_Create, Animation_Update, Animation_Remove, Progress_Create, Progress_Update, Progress_Remove, Read_Input_Start, Read_Input_End, Message, Ctrl_Char, Finalize );
 
    -- TODO: Storing this here outside of any record sucks so bad
+   Current_Progress_Bar : access Progress.Internal_Progress_Type := null;
    Pending_Newline : Boolean := False;
 
 
