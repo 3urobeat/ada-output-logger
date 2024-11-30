@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-29 18:11:55
+-- Last Modified: 2024-11-30 21:44:11
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -90,10 +90,21 @@ package body Print_Manager is
          when Read_Input_Start =>
             Process_Pending_Newline;
 
+            -- Hide progress bar
+            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               Print(Event => Progress_Remove, Str => "");
+            end if;
+
             Put(Standard_Output, Str);
 
          when Read_Input_End =>
             Process_Pending_Newline;
+
+            -- Reinstate progress bar
+            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               Print(Event => Progress_Create, Str => ""); -- TODO:
+            end if;
+
          when Message =>
             Process_Pending_Newline;
 
