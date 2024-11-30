@@ -3,7 +3,7 @@
 -- Created Date: 2024-11-23 17:29:13
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-27 16:59:29
+-- Last Modified: 2024-11-30 22:21:40
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -18,7 +18,7 @@ package body Progress_Bar is
    -- Constructs the progress bar string and instructs Print_Manager to log it
    procedure Show_Progress_Bar(Progress : Progress_Type; New_Bar : Boolean) is
       Bar_Width       : Positive := Terminal.Get_Terminal_Width;
-      Str             : String(1 .. Bar_Width + 14);              -- +14 to compensate for color codes
+      Str             : String(1 .. Bar_Width + 14 + 1);          -- +14 to compensate for color codes, +1 to fully fill the line
       Hashtags_Amount : Natural;
 
    begin
@@ -58,8 +58,6 @@ package body Progress_Bar is
    -- Instructs the Print_Manager to remove a currently active progress bar
    procedure Remove_Progress_Bar is
    begin
-      -- TODO: Reject if no progress bar is currently active
-
       Print_Manager.Print(Print_Manager.Progress_Remove, "");
    end Remove_Progress_Bar;
 
