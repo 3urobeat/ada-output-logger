@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-12 09:20:38
+-- Last Modified: 2024-12-01 12:38:34
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -123,6 +123,25 @@ begin
    --  Logger.Log(Info, "Boop").Nl.EoL;
    --  Logger.Rm.Log(Warn, "This is illegal").Nl.EoL;
    --  Logger.Rm.Animate(Default_Animations.Waiting).Log(Warn, "This is illegal as well").Nl.EoL;
+
+
+
+   -- Test progress bars
+   --  Logger.Set_Progress_Bar(13);
+   --  delay 1.5;
+   --  Logger.Set_Progress_Bar(63);
+   --  delay 0.5;
+   --  Logger.Log(Info, "Does cursor management work ").EoL;
+   --  delay 1.5;
+   --  Logger.Set_Progress_Bar(98);
+   --  delay 0.5;
+   --  Logger.Set_Progress_Bar(100);
+   --  delay 0.25;
+   --  Logger.Log("as expected?").Nl.EoL;
+   --  delay 1.0;
+   --  Logger.Remove_Progress_Bar;
+   --
+   --  delay 1.5;
 
 
    -- Test cutting long messages to terminal width
