@@ -3,7 +3,7 @@
 -- Created Date: 2024-06-30 17:11:57
 -- Author: 3urobeat
 --
--- Last Modified: 2024-12-01 12:38:34
+-- Last Modified: 2024-12-01 12:47:22
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -133,11 +133,15 @@ begin
    --  delay 0.5;
    --  Logger.Log(Info, "Does cursor management work ").EoL;
    --  delay 1.5;
-   --  Logger.Set_Progress_Bar(98);
-   --  delay 0.5;
-   --  Logger.Set_Progress_Bar(100);
+   --  Logger.Set_Progress_Bar(77);
    --  delay 0.25;
    --  Logger.Log("as expected?").Nl.EoL;
+   --  delay 1.5;
+   --  Logger.Set_Progress_Bar(98);
+   --  delay 1.0;
+   --  Logger.Log(Debug, "Long message to check if automatic line breaks do not clip into the progress bar which should have been cleared. Please make sure the terminal window is short enough so that this message causes a line break, thaaaaanks.").Nl.EoL;
+   --  delay 1.5;
+   --  Logger.Set_Progress_Bar(100);
    --  delay 1.0;
    --  Logger.Remove_Progress_Bar;
    --
