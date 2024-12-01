@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-29 12:04:47
+-- Last Modified: 2024-12-01 12:47:22
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -66,6 +66,11 @@ private
       );
 
    Log_Queue : Log_Queue_Container.Vector;
+
+   -- Create a container to cache the last 3 stdout lines in
+   type Line_Cache_Type is array (Natural range 0 .. 2) of String_Access;
+
+   Line_Cache : Line_Cache_Type := (1 => new String'(""), others => null);
 
 
    -- Internal: Whether new messages should currently be hold back from stdout (for example while Read_Input is active)

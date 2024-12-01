@@ -3,7 +3,7 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-11-30 21:44:11
+-- Last Modified: 2024-12-01 12:47:22
 -- Modified By: 3urobeat
 --
 -- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
@@ -19,7 +19,7 @@ package body Print_Manager is
    procedure Clear_Line is                            -- TODO: This function could theoretically be optimized by using ANSI control chars instead? (I guess?)
       Str : String(1 .. Terminal.Get_Terminal_Width) := (others => ' ');
    begin
-      Put(Str);
+      Put(Str & CR);
    end Clear_Line;
 
 
@@ -45,6 +45,13 @@ package body Print_Manager is
             Log_Queue.Append (new String'(Str));
          else
             Put(Standard_Output, Str);   -- Specifying Standard_Output can fix an exception when calling Ada from C
+
+            -- If a progress bar is active, we'll reprint using Line_Cache
+            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               Put(Standard_Output, LF & LF);
+               Put(Standard_Output, Line_Cache(2).all & CR);
+            end if;
+
          end if;
       end Print_When_Unlocked;
 
@@ -62,13 +69,27 @@ package body Print_Manager is
 
       case Event is
          when Animation_Create =>
+            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               Move_Cursor(-2);
+            end if;
+
             Process_Pending_Newline;
             Print_When_Unlocked(Str);
 
+            Line_Cache(0) := new String'(Str);
+
          when Animation_Update =>
+            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               Move_Cursor(-2);
+            end if;
+
             Print_When_Unlocked(Str);
 
+            Line_Cache(0) := new String'(Str);
+
          when Animation_Remove =>
+            -- TODO: Implement reprinting on !Remove
+
             if Current_Progress_Bar.all = Progress.Internal_Progress_Type'First then
                Clear_Line;
             else
@@ -77,15 +98,29 @@ package body Print_Manager is
                Move_Cursor(2);
             end if;
 
+            Line_Cache(0) := new String'("");
+
          when Progress_Create =>
-            Print_When_Unlocked(LF & Str & CR);
+            if not Stdout_Is_Locked then
+               Put(Standard_Output, LF & LF & Str & CR);
+
+               Line_Cache(2) := new String'(Str);
+            end if;
 
          when Progress_Update =>
-            Print_When_Unlocked(Str & CR);
+            if not Stdout_Is_Locked then
+               Put(Standard_Output, Str & CR);
+
+               Line_Cache(2) := new String'(Str);
+            end if;
 
          when Progress_Remove =>
-            Clear_Line;
-            Move_Cursor(-2);
+            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               Clear_Line;
+               Move_Cursor(-2);
+            end if;
+
+            Line_Cache(2) := null;
 
          when Read_Input_Start =>
             Process_Pending_Newline;
@@ -96,6 +131,7 @@ package body Print_Manager is
             end if;
 
             Put(Standard_Output, Str);
+            Line_Cache(0) := new String'(Str);
 
          when Read_Input_End =>
             Process_Pending_Newline;
@@ -105,32 +141,33 @@ package body Print_Manager is
                Print(Event => Progress_Create, Str => ""); -- TODO:
             end if;
 
-         when Message =>
-            Process_Pending_Newline;
+            Line_Cache(0) := new String'("");
 
+         when Message =>
             if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               --  Clear_Line; -- Clear progress bar so that long strings won't get caught inside its ghost chars. It will get reprinted in a moment using Line_Cache
                Move_Cursor(-2);
             end if;
 
+            Process_Pending_Newline;
             Print_When_Unlocked(Str);
-
-            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
-               Move_Cursor(2);
-            end if;
+            Line_Cache(0) := new String'(Str);
 
          when Ctrl_Char =>
             if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               --  Clear_Line; -- Clear progress bar so that long strings won't get caught inside its ghost chars. It will get reprinted in a moment using Line_Cache
                Move_Cursor(-2);
             end if;
 
             Print_When_Unlocked(Str);
 
-            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
-               Move_Cursor(2);
-            end if;
-
          when Finalize =>
             Unlock_Stdout;
+
+            if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
+               Print(Event => Progress_Remove, Str => "");
+            end if;
+
             Process_Pending_Newline;
             Put(Standard_Output, Str);
 
