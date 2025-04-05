@@ -3,10 +3,10 @@
 -- Created Date: 2024-08-03 16:56:03
 -- Author: 3urobeat
 --
--- Last Modified: 2024-12-01 12:47:22
+-- Last Modified: 2025-04-05 14:51:23
 -- Modified By: 3urobeat
 --
--- Copyright (c) 2024 3urobeat <https://github.com/3urobeat>
+-- Copyright (c) 2024 - 2025 3urobeat <https://github.com/3urobeat>
 --
 -- This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
 -- This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
@@ -60,7 +60,7 @@ package body Print_Manager is
       begin
          if Pending_Newline then
             Pending_Newline := False;
-            Print(Event => Message, Str => "" & LF); -- Using Print() here to avoid having to do Cursor Management here again
+            Print(Event => Ctrl_Char, Str => "" & LF); -- Using Print() here to avoid having to do Cursor Management here again
          end if;
       end Process_Pending_Newline;
 
@@ -145,7 +145,7 @@ package body Print_Manager is
 
          when Message =>
             if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
-               --  Clear_Line; -- Clear progress bar so that long strings won't get caught inside its ghost chars. It will get reprinted in a moment using Line_Cache
+               Clear_Line; -- Clear progress bar so that long strings won't get caught inside its ghost chars. It will get reprinted in a moment using Line_Cache
                Move_Cursor(-2);
             end if;
 
@@ -155,7 +155,6 @@ package body Print_Manager is
 
          when Ctrl_Char =>
             if Current_Progress_Bar.all > Progress.Internal_Progress_Type'First then
-               --  Clear_Line; -- Clear progress bar so that long strings won't get caught inside its ghost chars. It will get reprinted in a moment using Line_Cache
                Move_Cursor(-2);
             end if;
 
